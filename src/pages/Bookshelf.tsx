@@ -1,6 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { BOOKS } from "../data/books";
+import { BOOKS } from "../data/books/books";
+
+const Background = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+
+  background-image: url("/ui/bg1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+`;
 
 const Page = styled.div`
   padding: 24px;
@@ -9,8 +20,8 @@ const Page = styled.div`
 `;
 
 const Title = styled.h1`
-  margin: 0;
-  font-size: 28px;
+  margin: auto;
+  font-size: 30px;
 `;
 
 const Grid = styled.div`
@@ -44,41 +55,47 @@ const ThumbImg = styled.img`
 
 const BookTitle = styled.p`
   font-size: 20px;
-  margin:0;
+  margin: 0;
+  font-style: bold;
 `;
 
 const BookSubTitle = styled.p`
   font-size: 18px;
-  margin:0;
+  margin: 0;
+  font-style: italic;
 `;
 
 export function Bookshelf() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    return (
-        <Page>
-            <Title>The Cosmic Travellers</Title>
+  return (
+    <>
+      <Background />
+      <Page>
+        <div style={{ textAlign: "center" }}>
+          <Title>The Cosmic Travellers and the Secrets of Life</Title>
+        </div>
 
+        <Grid>
+          {BOOKS.map((b) => (
             <Grid>
-                {BOOKS.map((b) => (
-                    <Grid>
-                        <CardButton
-                            key={b.slug}
-                            onClick={() => navigate(`/${b.slug}/1`)}
-                            disabled={b.isLocked}
-                            $locked={b.isLocked}
-                            aria-label={`Open ${b.title}`}
-                        >
-                            <Thumb>
-                                <ThumbImg src={b.thumbnailSrc} alt={b.title} />
-                            </Thumb>
-                        </CardButton>
-                        <BookTitle>{b.title}</BookTitle>
-                        <BookSubTitle>{b.subtitle}</BookSubTitle>
-                    </Grid>
-                ))}
-
+              <CardButton
+                key={b.slug}
+                onClick={() => navigate(`/${b.slug}/1`)}
+                disabled={b.isLocked}
+                $locked={b.isLocked}
+                aria-label={`Open ${b.title}`}
+              >
+                <Thumb>
+                  <ThumbImg src={b.thumbnailSrc} alt={b.title} />
+                </Thumb>
+              </CardButton>
+              <BookTitle>{b.title}</BookTitle>
+              <BookSubTitle>{b.subtitle}</BookSubTitle>
             </Grid>
-        </Page>
-    );
+          ))}
+        </Grid>
+      </Page>
+    </>
+  );
 }
