@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useChapterVideoPlayer } from "../hooks/useChapterVideoPlayer";
 import { BOOKS } from "../data/books";
 import { ArrowButton } from "../components/ArrowButton";
+import PageBackground from "../components/PageBackground";
 
 export default function BookPlayerPage() {
   const { bookSlug } = useParams();
@@ -72,67 +73,70 @@ export default function BookPlayerPage() {
   }
 
   return (
-    <Wrap>
-      <Stage>
-        <VideoFrame ref={frameRef}>
-          <Video
-            ref={videoRef}
-            src={book.videoSrc}
-            preload="auto"
-            playsInline
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-            onLoadedMetadata={onLoadedMetadata}
-            onTimeUpdate={onTimeUpdate}
-          />
+    <>
+      <PageBackground src="/ui/bg5.jpg" overlay />
+      <Wrap>
+        <Stage>
+          <VideoFrame ref={frameRef}>
+            <Video
+              ref={videoRef}
+              src={book.videoSrc}
+              preload="auto"
+              playsInline
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onLoadedMetadata={onLoadedMetadata}
+              onTimeUpdate={onTimeUpdate}
+            />
 
-          {/* Controls: visible ONLY on hover of the frame */}
-          <ControlsLayer>
-            <TopBar>
-              <Meta></Meta>
+            {/* Controls: visible ONLY on hover of the frame */}
+            <ControlsLayer>
+              <TopBar>
+                <Meta></Meta>
 
-              <IconButton
-                onClick={toggleFullscreen}
-                aria-label={
-                  isFullscreen ? "Exit fullscreen" : "Enter fullscreen"
-                }
-                title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-              >
-                {isFullscreen ? "⤢" : "⛶"}
-              </IconButton>
-            </TopBar>
+                <IconButton
+                  onClick={toggleFullscreen}
+                  aria-label={
+                    isFullscreen ? "Exit fullscreen" : "Enter fullscreen"
+                  }
+                  title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+                >
+                  {isFullscreen ? "⤢" : "⛶"}
+                </IconButton>
+              </TopBar>
 
-            <CenterControls>
-              <BigButton
-                onClick={togglePlayPause}
-                aria-label={isPlaying ? "Pause story" : "Play story"}
-                title={isPlaying ? "Pause" : "Play"}
-              >
-                {isPlaying ? "❚❚" : "▶"}
-              </BigButton>
-            </CenterControls>
+              <CenterControls>
+                <BigButton
+                  onClick={togglePlayPause}
+                  aria-label={isPlaying ? "Pause story" : "Play story"}
+                  title={isPlaying ? "Pause" : "Play"}
+                >
+                  {isPlaying ? "❚❚" : "▶"}
+                </BigButton>
+              </CenterControls>
 
-            <BottomLeft>
-              <ArrowButton
-                src="/ui/comet-left.png"
-                ariaLabel="Previous page"
-                onClick={goPrev}
-                size={120}
-              />
-            </BottomLeft>
+              <BottomLeft>
+                <ArrowButton
+                  src="/ui/comet-left.png"
+                  ariaLabel="Previous page"
+                  onClick={goPrev}
+                  size={120}
+                />
+              </BottomLeft>
 
-            <BottomRight>
-              <ArrowButton
-                src="/ui/comet-right.png"
-                ariaLabel="Next page"
-                onClick={goNext}
-                size={100}
-              />
-            </BottomRight>
-          </ControlsLayer>
-        </VideoFrame>
-      </Stage>
-    </Wrap>
+              <BottomRight>
+                <ArrowButton
+                  src="/ui/comet-right.png"
+                  ariaLabel="Next page"
+                  onClick={goNext}
+                  size={100}
+                />
+              </BottomRight>
+            </ControlsLayer>
+          </VideoFrame>
+        </Stage>
+      </Wrap>
+    </>
   );
 }
 
@@ -155,7 +159,7 @@ const Stage = styled.div`
 const VideoFrame = styled.div`
   position: relative;
 
-  width: 850px;
+  width: 1100px;
   max-width: 90vw;
   aspect-ratio: 16 / 9;
 
