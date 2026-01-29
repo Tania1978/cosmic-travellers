@@ -145,6 +145,7 @@ export default function BookPlayerPage() {
 const Wrap = styled.div`
   width: 100%;
   height: 100%;
+  margin-top: 35px;
 `;
 
 const Stage = styled.div`
@@ -159,7 +160,7 @@ const Stage = styled.div`
 const VideoFrame = styled.div`
   position: relative;
 
-  width: 1100px;
+  width: 950px;
   max-width: 90vw;
   aspect-ratio: 16 / 9;
 
