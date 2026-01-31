@@ -1,3 +1,7 @@
+* {
+  max-height: 1000000px; /* Prevents Chrome text autosizing quirk */
+}
+
 html,
 body,
 #root {
@@ -15,6 +19,7 @@ html {
 
 body {
   display: block;
+  font-size: 16px;
 }
 
 a {
@@ -28,6 +33,17 @@ a:hover {
 
 h1 {
   line-height: 1.1;
+  font-size: 24px;
+}
+
+body {
+  font-size: 16px;
+}
+
+input,
+textarea,
+select {
+  font-size: 16px;
 }
 
 @media (prefers-color-scheme: light) {
