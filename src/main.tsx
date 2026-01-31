@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./theme/theme";
 import ScrollToTop from "./components/ScrollToTop.tsx";
+import "./data/i18n/i18n.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -3,17 +3,29 @@ import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { ImageButton } from "../theme/styled";
 import LanguageSelect from "./LanguageSelect";
+import { useTranslation } from "react-i18next";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t, i18n } = useTranslation();
 
   const inHomePage = location.pathname === "/";
 
-  const [language, setLanguage] = React.useState("en");
   const [menuOpen, setMenuOpen] = React.useState(false);
 
   const closeMenu = () => setMenuOpen(false);
+
+  // keep a safe language value for the select (handles "el-GR" etc.)
+  const language = (i18n.resolvedLanguage || i18n.language || "en").startsWith(
+    "el",
+  )
+    ? "el"
+    : "en";
+
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+  };
 
   // Close menu on route change
   React.useEffect(() => {
@@ -38,9 +50,9 @@ export default function Header() {
             <ImageButton
               type="button"
               onClick={() => navigate("/")}
-              aria-label="Back to bookshelf"
+              aria-label={t("nav.backToBookshelf")}
             >
-              <img src="/ui/back-home.png" alt="Back" />
+              <img src="/ui/back-home.png" alt={t("nav.back")} />
             </ImageButton>
           )}
 
@@ -52,9 +64,12 @@ export default function Header() {
                 type="button"
                 $responsive
                 onClick={() => navigate("/writer-notes")}
-                aria-label="Open writer notes"
+                aria-label={t("nav.openWriterNotes")}
               >
-                <img src="/ui/writer-notes-2.png" alt="Writer Notes" />
+                <img
+                  src="/ui/writer-notes-2.png"
+                  alt={t("credits.writerNote")}
+                />
               </ImageButton>
             </DesktopOnly>
           )}
@@ -63,17 +78,14 @@ export default function Header() {
         <Right>
           {/* Desktop-only language selector */}
           <DesktopOnly>
-            <LanguageSelect
-              value={language}
-              onChange={(lang) => setLanguage(lang)}
-            />
+            <LanguageSelect value={language} onChange={changeLanguage} />
           </DesktopOnly>
 
           {/* Mobile hamburger */}
           <MobileOnly>
             <HamburgerButton
               type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-label={menuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
               aria-expanded={menuOpen}
               aria-controls="header-menu"
               onClick={() => setMenuOpen((v) => !v)}
@@ -95,18 +107,17 @@ export default function Header() {
 
       <Drawer id="header-menu" $open={menuOpen} role="dialog" aria-modal="true">
         <DrawerHeader>
-          <DrawerTitle>Menu</DrawerTitle>
+          <DrawerTitle>{t("nav.menu")}</DrawerTitle>
           <CloseButton
             type="button"
             onClick={closeMenu}
-            aria-label="Close menu"
+            aria-label={t("nav.closeMenu")}
           >
             ✕
           </CloseButton>
         </DrawerHeader>
 
         <DrawerContent>
-          {/* Add menu items here (scales as you add more) */}
           <MenuItemButton
             type="button"
             onClick={() => {
@@ -114,7 +125,7 @@ export default function Header() {
               closeMenu();
             }}
           >
-            Bookshelf
+            {t("ui.bookshelf")}
           </MenuItemButton>
 
           <MenuItemButton
@@ -124,7 +135,7 @@ export default function Header() {
               closeMenu();
             }}
           >
-            Writer Notes
+            {t("credits.writerNote")}
           </MenuItemButton>
 
           <MenuItemButton
@@ -134,23 +145,21 @@ export default function Header() {
               closeMenu();
             }}
           >
-            Art & Visual Credits
+            {t("credits.artVisual")}
           </MenuItemButton>
 
           <Divider />
 
-          <MenuSectionTitle>Language</MenuSectionTitle>
+          <MenuSectionTitle>{t("ui.language")}</MenuSectionTitle>
           <LanguageRow>
-            <LanguageSelect
-              value={language}
-              onChange={(lang) => setLanguage(lang)}
-            />
+            <LanguageSelect value={language} onChange={changeLanguage} />
           </LanguageRow>
         </DrawerContent>
       </Drawer>
     </>
   );
 }
+
 
 /* ---------------- styles ---------------- */
 

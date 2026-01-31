@@ -1,31 +1,19 @@
 export const writerNotesParagraphs = [
-  "Hello, young explorers!",
-
-  "My name is Tania Karageorgi, and I have spent my life learning about the amazing world of life on Earth. I studied Biology and Environmental Science in London and Edinburgh, and I have worked with animals, plants, and people to understand how life survives and thrives.",
-
-  "But what I have always loved most is teaching — helping children discover the secrets of nature in ways that feel exciting, meaningful, and full of wonder. From the tiniest insects to the largest oceans, from deserts to forests, everything in our world is connected — and every discovery can feel like magic.",
-
-  "Today, I also work as a software engineer, which allows me to create new kinds of learning experiences. The Cosmic Travellers is not only a story series I wrote, but also the digital world I designed and built, so that stories, science, and imagination can come together in a gentle and interactive way. Even though my tools now include technology, my love for Biology, nature, and teaching has never changed — it is the heart of everything I create.",
-
-  "This series began with my own child. When my son was very young, we would talk about flowers, fruits, animals, and rivers, asking simple questions and imagining the incredible stories behind them. I saw how curiosity grows when children are invited to wonder and explore, and how even big scientific ideas can become clear through imagination and conversation.",
-
-  "In these stories, you will meet brave young travellers, journey across deserts, oceans, forests, and skies, and discover how water, plants, animals — and even people — are all connected. You will solve riddles, try little experiments, and earn golden shells alongside our heroes. You are not just reading — you are part of the adventure.",
-
-  "Remember: science is full of magic, and your curiosity is the key to unlocking it.",
-
-  "Ready to explore? Let’s go!",
+  "writerNote.p1",
+  "writerNote.p2",
+  "writerNote.p3",
+  "writerNote.p4",
+  "writerNote.p5",
+  "writerNote.p6",
+  "writerNote.p7",
+  "writerNote.p8",
 ];
 
 export const artCreditsParagraphs = [
-  "This project has grown and evolved over many years, shaped by different creative contributions along the way.",
-
-  "The original character designs and the cover illustration for The Cosmic Travellers and the Secrets of Life were created by Ioustini Giannakopoulou during the early development of this story. Her artwork played an important role in defining the visual personality of the characters and the imaginative spirit of their world.",
-
-  "Those early illustrations helped bring the story to life at a time when it existed only on paper, and they continue to be part of the foundation of this universe.",
-
-  "All additional illustrations, environments, animations, and scene visuals in the current interactive experience were created later by Tania Karageorgi using digital and AI-assisted tools. These visuals are original reinterpretations developed as the project expanded into a digital learning world.",
-
-  "The illustrator was not involved in the creation of these later digital visuals, and they are not adaptations of her commissioned illustrations, but part of the story’s ongoing evolution.",
-
-  "With gratitude for the creativity that helped shape the beginnings of this journey.",
+  "artCredits.p1",
+  "artCredits.p2",
+  "artCredits.p3",
+  "artCredits.p4",
+  "artCredits.p5",
+  "artCredits.p6",
 ];

@@ -11,29 +11,25 @@ export type Book = {
 export const BOOKS: Book[] = [
   {
     slug: "the-mission-begins",
-    title: "How the Mission Began",
-    subtitle: "A Series Introduction Booklet",
+    title: "book.theMissionBegins.title",
+    subtitle: "book.theMissionBegins.subtitle",
+    summary: "book.theMissionBegins.summary",
     thumbnailSrc: "/books/intro/cover.jpg",
-    summary: `Four young travellers from a faraway world create Magical Glasses that can see the hidden language of nature. As a reward, they are sent on their first journey through space. 
-      
-      Guided by a mysterious message, they head toward Earth to explore how life works — together with the children reading their story. 
-      
-      A calm and magical introduction to the Cosmic Travellers series, where future adventures gently explore science, nature, and the wonders of our world.`,
     pagesCount: 10,
     isLocked: false,
   },
   {
-    slug: "meet-chracters",
-    title: "The Amazing Five",
-    subtitle: "Meet the Main Characters",
+    slug: "meet-characters",
+    title: "book.meetCharacters.title",
+    subtitle: "book.meetCharacters.subtitle",
     thumbnailSrc: "/books/intro/cover.jpg",
     pagesCount: 10,
     isLocked: true,
   },
   {
-    slug: "landing-on-earth`",
-    title: "  Landing on Earth",
-    subtitle: "The First Adventure",
+    slug: "landing-on-earth",
+    title: "book.landingOnEarth.title",
+    subtitle: "book.landingOnEarth.subtitle",
     thumbnailSrc: "/books/intro/cover.jpg",
     pagesCount: 10,
     isLocked: true,

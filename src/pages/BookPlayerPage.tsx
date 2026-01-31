@@ -6,9 +6,11 @@ import { useChapterVideoPlayer } from "../hooks/useChapterVideoPlayer";
 import { BOOKS } from "../data/books";
 import { ArrowButton } from "../components/ArrowButton";
 import PageBackground from "../components/PageBackground";
+import { useTranslation } from "react-i18next";
 
 export default function BookPlayerPage() {
   const { bookSlug } = useParams();
+  const { t } = useTranslation();
 
   const isValidSlug = useMemo(() => {
     return !!bookSlug && !!BOOKS[bookSlug];
@@ -80,7 +82,7 @@ export default function BookPlayerPage() {
   if (!book || !currentChapter) {
     return (
       <Fallback>
-        <div>Loading book…</div>
+        <div>{t("ui.loadingBook")}</div>
         <div style={{ opacity: 0.7 }}>slug: {bookSlug}</div>
       </Fallback>
     );
@@ -97,7 +99,7 @@ export default function BookPlayerPage() {
               <Placeholder>
                 <CalmBackground />
                 <ComingSoonText>
-                  ✨ Story animation coming soon ✨
+                  ✨ {t("ui.storyAnimationComingSoon")} ✨
                 </ComingSoonText>
               </Placeholder>
             ) : (

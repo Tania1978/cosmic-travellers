@@ -1,21 +1,25 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation();
   return (
     <Wrap>
       <Inner>
-        <Line>© {new Date().getFullYear()} The Cosmic Travellers</Line>
+        <Line>
+          © {new Date().getFullYear()} {t("title.series")}
+        </Line>
 
         <Links>
-          <StyledLink to="/art-credits">Art & Visual Credits</StyledLink>
+          <StyledLink to="/art-credits">{t("credits.artVisual")}</StyledLink>
           <Dot>·</Dot>
-          <StyledLink to="/writer-notes">Writer Notes</StyledLink>
+          <StyledLink to="/writer-notes">{t("credits.writerNote")}</StyledLink>
         </Links>
 
         <Credit>
-          Original character designs and cover illustration by{" "}
-          <strong>Ioustini Giannakopoulou</strong>.
+          {t("credits.originalArtBy")}{" "}
+          <strong>{t("credits.artistName")}</strong>.
         </Credit>
       </Inner>
     </Wrap>

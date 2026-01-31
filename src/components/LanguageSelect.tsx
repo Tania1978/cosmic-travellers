@@ -3,13 +3,12 @@ import styled from "styled-components";
 
 type Props = {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (lang: string) => void;
 };
 
 const OPTIONS = [
   { value: "en", label: "English" },
   { value: "el", label: "Ελληνικά" },
-  { value: "de", label: "Deutsch" },
 ];
 
 export default function LanguageSelect({ value, onChange }: Props) {

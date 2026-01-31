@@ -3,6 +3,7 @@ import { BOOKS } from "../data/books/books";
 import PageBackground from "../components/PageBackground";
 import { useState } from "react";
 import BookCard from "../components/BookCard";
+import { useTranslation } from "react-i18next";
 
 /* ---------- Layout ---------- */
 
@@ -89,6 +90,7 @@ const CreatorCredit = styled.p`
 
 export function Bookshelf() {
   const [flippedSlug, setFlippedSlug] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const toggleFlip = (slug: string) => {
     setFlippedSlug((cur) => (cur === slug ? null : slug));
@@ -100,8 +102,8 @@ export function Bookshelf() {
 
       <Page>
         <TitleWrap>
-          <Title>The Cosmic Travellers and the Secrets of Life</Title>
-          <CreatorCredit>Created by Tania Karageorgi</CreatorCredit>
+          <Title> {t("title.series")} </Title>
+          <CreatorCredit> {t("credits.createdBy")}</CreatorCredit>
         </TitleWrap>
 
         <Grid>

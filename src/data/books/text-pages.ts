@@ -24,4 +24,3 @@ export const TEXTPAGES: Record<string, TextPage> = {
     signature: "Tania Karageorgi",
   },
 };
-

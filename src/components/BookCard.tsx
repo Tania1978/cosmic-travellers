@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import type { Book } from "../data/books/books";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface IBookCardProps {
   b: Book;
@@ -10,6 +11,12 @@ interface IBookCardProps {
 
 export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const titleText = t(b.title);
+  const subtitleText = b.subtitle ? t(b.subtitle) : "";
+  const summaryText = b.summary ? t(b.summary) : t("ui.summaryComingSoon");
+
   return (
     <FlipCard key={b.slug} $flipped={flipped}>
       <div className="flipper">
@@ -29,22 +36,22 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
                   navigate(`/${b.slug}/1`);
                 }
               }}
-              aria-label={`Open ${b.title}`}
+              aria-label={`Open ${titleText}`}
             >
               <Thumb>
                 <ThumbImg
                   src={b.thumbnailSrc}
-                  alt={b.title}
+                  alt={titleText}
                   $locked={b.isLocked}
                 />
               </Thumb>
             </OpenArea>
 
-            {/* Dimmed meta only (locked), NOT the whole card */}
             <CardMeta $locked={b.isLocked}>
-              <BookTitle>{b.title}</BookTitle>
-              <BookSubTitle>{b.subtitle}</BookSubTitle>
+              <BookTitle>{titleText}</BookTitle>
+              {b.subtitle && <BookSubTitle>{subtitleText}</BookSubTitle>}
             </CardMeta>
+
             <div style={{ display: "flex", justifyContent: "center" }}>
               <SummaryLink
                 type="button"
@@ -58,18 +65,16 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
               </SummaryLink>
             </div>
 
-            {/* Buy button OUTSIDE dimmed meta so it stays bright */}
             {b.isLocked && (
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <BuyBtn
                   type="button"
                   onClick={() => {
                     alert("Payment Flow to be added");
-                    //window.open("https://your-payment-link.com", "_blank");
                   }}
                 >
                   <img src="/ui/buybutton-3.png" alt="" aria-hidden="true" />
-                  <span>Unlock Story</span>
+                  <span>{t("bookshelf.unlock")}</span>
                 </BuyBtn>
               </div>
             )}
@@ -80,9 +85,8 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
         <div className="face back" style={{ textAlign: "center" }}>
           <Card $locked={b.isLocked}>
             <BackMeta>
-              <SummaryTitle>{b.title}</SummaryTitle>
-
-              <BackText>{b?.summary ?? "Summary coming soon."}</BackText>
+              <SummaryTitle>{titleText}</SummaryTitle>
+              <BackText>{summaryText}</BackText>
 
               <BackRow>
                 <BackBtn

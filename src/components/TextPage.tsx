@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import PageBackground from "../components/PageBackground";
+import { useTranslation } from "react-i18next";
 
 /* ---------- Layout ---------- */
 
@@ -56,10 +57,10 @@ const Signature = styled.p`
 /* ---------- Component ---------- */
 
 interface ITextPageProps {
-  title: string;
-  paragraphs: string[];
+  title: string; // translation key
+  paragraphs: string[]; // translation keys
   bgSrc: string;
-  signature?: string;
+  signature?: string; // optional translation key (if you ever use it)
 }
 
 export default function TextPage({
@@ -68,19 +69,20 @@ export default function TextPage({
   bgSrc,
   signature,
 }: ITextPageProps) {
+  const { t } = useTranslation();
+
   return (
     <>
       <PageBackground src={bgSrc} overlay />
 
       <Page>
-        <Title>{title}</Title>
+        <Title>{t(title)}</Title>
 
         <Card>
-          {paragraphs.map((item, index) => {
-            return <Paragraph key={index}>{item}</Paragraph>;
-          })}
-
-          {signature && <Signature>— Tania Karageorgi</Signature>}
+          {paragraphs.map((key, index) => (
+            <Paragraph key={index}>{t(key)}</Paragraph>
+          ))}
+          {signature && <Signature>-{t(signature)}</Signature>}
         </Card>
       </Page>
     </>
