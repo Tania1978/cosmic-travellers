@@ -13,7 +13,7 @@ export default function Header() {
     location.pathname.split("/").length > 2 ||
     location.pathname === "/writer-notes";
 
-  const inOwnPage = location.pathname === "/writer-notes";
+  const inHomePage = location.pathname === "/";
 
   const [language, setLanguage] = React.useState("en");
 
@@ -32,7 +32,7 @@ export default function Header() {
             <img src="/ui/back-home.png" alt="Back" />
           </ImageButton>
         )}
-        {!inOwnPage && (
+        {inHomePage && (
           <ImageButton
             $width="240px"
             type="button"
