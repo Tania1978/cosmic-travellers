@@ -1,13 +1,6 @@
 import TextPage from "../components/TextPage";
-import { writerNotesParagraphs } from "../data/texts/texts";
+import type { TextPage as ITextPage } from "../data/books/text-pages";
 
-export default function WriterNotes() {
-  return (
-    <TextPage
-      bgSrc="/ui/bg5.jpg"
-      title="A Note from the Author ✨"
-      paragraphs={writerNotesParagraphs}
-      signature="-Tania Karageorgi"
-    />
-  );
+export default function WriterNotes({ data }: { data: ITextPage }) {
+  return <TextPage {...data} />;
 }

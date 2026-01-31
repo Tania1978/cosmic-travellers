@@ -127,6 +127,16 @@ export default function Header() {
             Writer Notes
           </MenuItemButton>
 
+          <MenuItemButton
+            type="button"
+            onClick={() => {
+              navigate("/art-credits");
+              closeMenu();
+            }}
+          >
+            Art & Visual Credits
+          </MenuItemButton>
+
           <Divider />
 
           <MenuSectionTitle>Language</MenuSectionTitle>

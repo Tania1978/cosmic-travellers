@@ -12,7 +12,7 @@ const Page = styled.div`
 
 const Title = styled.h1`
   text-align: center;
-  font-size: 34px;
+  font-size: clamp(24px, 3.4vw, 34px);
   margin-bottom: 24px;
 
   text-shadow:
