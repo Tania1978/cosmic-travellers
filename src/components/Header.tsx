@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { ImageButton } from "../theme/styled";
+import { ImageButton } from "./ImageButton";
 import LanguageSelect from "./LanguageSelect";
 import { useTranslation } from "react-i18next";
+import { GlowText } from "./GlowText";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -52,26 +53,27 @@ export default function Header() {
               onClick={() => navigate("/")}
               aria-label={t("nav.backToBookshelf")}
             >
-              <img src="/ui/back-home.png" alt={t("nav.back")} />
+              {language === "el" ? (
+                <img src="/ui/back-home-el.png" alt={t("nav.back")} />
+              ) : (
+                <img src="/ui/back-home.png" alt={t("nav.back")} />
+              )}
             </ImageButton>
           )}
 
           {/* Desktop-only left item (Writer Notes badge) */}
           {inHomePage && (
-            <DesktopOnly>
-              <ImageButton
-                $width="240px"
-                type="button"
-                $responsive
-                onClick={() => navigate("/writer-notes")}
-                aria-label={t("nav.openWriterNotes")}
-              >
-                <img
-                  src="/ui/writer-notes-2.png"
-                  alt={t("credits.writerNote")}
-                />
-              </ImageButton>
-            </DesktopOnly>
+            <ImageButton
+              $width="240px"
+              type="button"
+              $responsive
+              onClick={() => navigate("/writer-notes")}
+              aria-label={t("nav.openWriterNotes")}
+            >
+              <GlowText src="/ui/red-glow.png" variant="sm">
+                {t("credits.writerNote")}
+              </GlowText>
+            </ImageButton>
           )}
         </Left>
 
@@ -159,7 +161,6 @@ export default function Header() {
     </>
   );
 }
-
 
 /* ---------------- styles ---------------- */
 

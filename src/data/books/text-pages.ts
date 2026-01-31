@@ -12,15 +12,15 @@ export const TEXTPAGES: Record<string, TextPage> = {
   "/writer-notes": {
     url: "/writer-notes",
     bgSrc: "/ui/bg5.jpg",
-    title: "A Note from the Author ✨",
+    title: "credits.writerNote",
     paragraphs: writerNotesParagraphs,
-    signature: "Tania Karageorgi",
+    signature: "credits.creatorName",
   },
   "/art-credits": {
     url: "/art-credits",
     bgSrc: "/ui/bg5.jpg",
-    title: "Art & Visual Credits to Ioustini Giannakopoulou ✨",
+    title: "credits.title",
     paragraphs: artCreditsParagraphs,
-    signature: "Tania Karageorgi",
+    signature: "credits.creatorName",
   },
 };

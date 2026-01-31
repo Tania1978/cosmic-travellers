@@ -11,7 +11,9 @@ interface IBookCardProps {
 
 export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { language } = i18n;
+  console.log(language);
 
   const titleText = t(b.title);
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
@@ -52,7 +54,13 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
               {b.subtitle && <BookSubTitle>{subtitleText}</BookSubTitle>}
             </CardMeta>
 
-            <div style={{ display: "flex", justifyContent: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                paddingTop: "25px",
+              }}
+            >
               <SummaryLink
                 type="button"
                 onClick={(e) => {
@@ -61,7 +69,12 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
                   toggleFlip(b.slug);
                 }}
               >
-                <img src="/ui/summary.png" alt="Read story summary" />
+                <img
+                  src={
+                    language === "el" ? "/ui/summary-el.png" : "/ui/summary.png"
+                  }
+                  alt="Read story summary"
+                />
               </SummaryLink>
             </div>
 
@@ -116,7 +129,7 @@ const Card = styled.div<{ $locked?: boolean }>`
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(10px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  height: 400px;
+  height: 440px;
   width: 270px;
   margin: auto;
 `;
@@ -183,17 +196,17 @@ const SummaryLink = styled.button`
 `;
 
 const BuyBtn = styled.button`
-  position: relative;
   border: none;
   background: transparent;
   padding: 0;
   cursor: pointer;
-  margin: 10px auto 14px auto;
+  margin: 10px auto 6px auto;
   display: block;
-  bottom: 200px;
+  position: absolute;
+  top: 100px;
 
   img {
-    width: 130px;
+    width: 135px;
     height: auto;
     display: block;
   }
@@ -208,8 +221,6 @@ const BuyBtn = styled.button`
 
     font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.5px;
-
     color: ${({ theme }) => theme.colors.inkBlue};
     text-shadow:
       0 0 4px rgba(255, 255, 255, 0.9),
@@ -376,6 +387,7 @@ const BackText = styled.div`
   flex: 1;
   white-space: pre-line;
   color: ${({ theme }) => theme.colors.inkBlue};
+  text-align: left;
 `;
 
 const BackRow = styled.div`

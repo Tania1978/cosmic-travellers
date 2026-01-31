@@ -4,6 +4,7 @@ import PageBackground from "../components/PageBackground";
 import { useState } from "react";
 import BookCard from "../components/BookCard";
 import { useTranslation } from "react-i18next";
+import { GlowText } from "../components/GlowText";
 
 /* ---------- Layout ---------- */
 
@@ -72,7 +73,7 @@ const GridItem = styled.div`
   width: 100%;
   min-width: 0;
   position: relative;
-  height: clamp(450px, 34vw, 420px);
+  height: clamp(480px, 34vw, 420px);
   perspective: 1200px;
 `;
 
@@ -102,7 +103,7 @@ export function Bookshelf() {
 
       <Page>
         <TitleWrap>
-          <Title> {t("title.series")} </Title>
+          <GlowText src="/ui/title-glow.jpg" variant='lg'>{t("title.series")}</GlowText>
           <CreatorCredit> {t("credits.createdBy")}</CreatorCredit>
         </TitleWrap>
 

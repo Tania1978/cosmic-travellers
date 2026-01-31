@@ -1,10 +1,11 @@
 {
-  "bookshelf.unlock": "Unlock Story",
+  "bookshelf.unlock": "Unlock it!",
   "title.series": "The Cosmic Travellers and the Secrets of Life",
   "credits.artVisual": "Art & Visual Credits",
-  "credits.writerNote": "Writer Note",
+  "credits.writerNote": "A Note from the Author",
   "credits.originalArtBy": "Original character designs and cover illustration by",
   "credits.artistName": "Ioustini Giannakopoulou",
+  "credits.title":"Art & Visual Credits to Ioustini Giannakopoulou",
   "ui.language": "Language",
   "credits.creatorName": "Tania Karageorgi",
   "ui.loadingBook": "Loading book…",

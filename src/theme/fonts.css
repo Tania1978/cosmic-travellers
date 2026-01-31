@@ -1,0 +1,7 @@
+@font-face {
+  font-family: "Xarrovv";
+  src: url("../assets/fonts/Xarrovv.ttf") format("opentype");
+  font-weight: 600; /* change if it's bold, etc */
+  font-style: normal;
+  font-display: swap;
+}

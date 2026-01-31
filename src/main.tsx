@@ -7,6 +7,7 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "./theme/theme";
 import ScrollToTop from "./components/ScrollToTop.tsx";
 import "./data/i18n/i18n.ts";
+import "./theme/fonts.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

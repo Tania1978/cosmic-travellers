@@ -14,6 +14,7 @@ const Page = styled.div`
 const Title = styled.h1`
   text-align: center;
   font-size: 1.5rem; /* 24px */
+  font-style:italic;
 
   @media (min-width: 650px) {
     font-size: 1.875rem; /* 30px */
@@ -76,7 +77,7 @@ export default function TextPage({
       <PageBackground src={bgSrc} overlay />
 
       <Page>
-        <Title>{t(title)}</Title>
+        <Title>{`${t(title)}✨`}</Title>
 
         <Card>
           {paragraphs.map((key, index) => (
