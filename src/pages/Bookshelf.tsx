@@ -349,15 +349,15 @@ const BackBtn = styled.button`
 
 /* ---------- Footer Credit ---------- */
 
-const Credit = styled.div`
-  position: fixed;
-  right: 16px;
-  bottom: 14px;
-  font-size: 12px;
-  opacity: 0.65;
-  color: rgba(11, 18, 32, 0.8);
-  pointer-events: none;
-`;
+// const Credit = styled.div`
+//   position: fixed;
+//   right: 16px;
+//   bottom: 14px;
+//   font-size: 12px;
+//   opacity: 0.65;
+//   color: rgba(11, 18, 32, 0.8);
+//   pointer-events: none;
+// `;
 
 const CreatorCredit = styled.p`
   margin-top: 8px;
