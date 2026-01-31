@@ -63,7 +63,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <BuyBtn
                   type="button"
-                  onClick={(e) => {
+                  onClick={() => {
                     alert("Payment Flow to be added");
                     //window.open("https://your-payment-link.com", "_blank");
                   }}
