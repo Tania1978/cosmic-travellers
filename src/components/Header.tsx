@@ -324,7 +324,7 @@ const Divider = styled.div`
 `;
 
 const MenuSectionTitle = styled.div`
-  font-size: 12px;
+  font-size: 0.75rem;
   letter-spacing: 0.6px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.7);

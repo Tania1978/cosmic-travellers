@@ -12,7 +12,7 @@ const Page = styled.div`
 
 const Title = styled.h1`
   text-align: center;
-  font-size: clamp(24px, 3.4vw, 34px);
+  font-size: clamp(1.5rem, 3.4vw, 2.125rem);
   margin-bottom: 24px;
 
   text-shadow:
@@ -28,7 +28,7 @@ const Card = styled.div`
   border-radius: 24px;
   padding: 36px 32px;
   line-height: 1.8;
-  font-size: 17px;
+  ont-size: 1.063rem;
 
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 `;

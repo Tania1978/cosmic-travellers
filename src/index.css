@@ -7,6 +7,12 @@ body,
   font-family: "Nunito', system-ui, sans-serif";
 }
 
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   display: block;
 }
@@ -21,7 +27,6 @@ a:hover {
 }
 
 h1 {
-  font-size: 3.2em;
   line-height: 1.1;
 }
 

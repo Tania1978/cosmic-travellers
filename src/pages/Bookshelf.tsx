@@ -21,7 +21,7 @@ const Title = styled.h1`
   font-family: "Fredoka", system-ui, sans-serif;
   font-weight: 700;
 
-  font-size: clamp(24px, 3.4vw, 44px);
+  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
   line-height: 1.12;
   letter-spacing: 0.4px;
   text-align: center;
@@ -69,7 +69,7 @@ const GridItem = styled.div`
 
 const CreatorCredit = styled.p`
   margin-top: 8px;
-  font-size: 20px;
+  font-size: 1.25rem;
   color: rgba(255, 255, 255, 0.85);
   text-align: center;
   letter-spacing: 0.5px;

@@ -148,13 +148,13 @@ const CardMeta = styled.div<{ $locked?: boolean }>`
 `;
 
 const BookTitle = styled.p`
-  font-size: 20px;
+  font-size: 1.25rem;
   margin: 6px 0 0 0;
   text-align: center;
 `;
 
 const BookSubTitle = styled.p`
-  font-size: 16px;
+  font-size: 1rem;
   margin: 0;
   opacity: 0.7;
   text-align: center;
@@ -202,7 +202,7 @@ const BuyBtn = styled.button`
     justify-content: flex-end;
     padding-right: 10px;
 
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.5px;
 
@@ -300,7 +300,7 @@ const BackMeta = styled.div`
 const SummaryTitle = styled.h3`
   position: relative;
   text-align: center;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   letter-spacing: 0.5px;
   margin: 8px 0 0 0;
@@ -330,7 +330,7 @@ const SummaryTitle = styled.h3`
   &::after {
     content: "✦";
     position: absolute;
-    font-size: 12px;
+    font-size: 0.75rem;
     color: #ffffff;
     opacity: 0.8;
     animation: sparkleFloat 4s ease-in-out infinite;
@@ -365,7 +365,7 @@ const SummaryTitle = styled.h3`
 `;
 
 const BackText = styled.div`
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.4;
   opacity: 0.85;
   min-height: 320px;

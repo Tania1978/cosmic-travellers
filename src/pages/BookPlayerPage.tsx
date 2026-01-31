@@ -254,7 +254,7 @@ const Meta = styled.div`
 
 // const PageInfo = styled.div`
 //   margin-top: 2px;
-//   font-size: 12px;
+//   font-size: 0.75rem;
 //   opacity: 0.75;
 // `;
 
@@ -272,7 +272,7 @@ const IconButton = styled.button`
 
   display: grid;
   place-items: center;
-  font-size: 18px;
+  font-size: 1.125rem;
 `;
 
 const CenterControls = styled.div`
@@ -298,7 +298,7 @@ const BigButton = styled.button`
 
   display: grid;
   place-items: center;
-  font-size: 28px;
+  ont-size: 1.75rem;
 `;
 
 const BottomLeft = styled.div`
@@ -321,7 +321,7 @@ const Fallback = styled.div`
   place-items: center;
   background: #000;
   color: white;
-  font-size: 16px;
+  font-size: 1rem;
 `;
 
 /** Placeholder fills the same exact space as the video */
@@ -359,7 +359,7 @@ const ComingSoonText = styled.p`
   margin: 0;
   padding: 10px 14px;
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 0.875rem;
   letter-spacing: 0.2px;
   color: rgba(255, 255, 255, 0.92);
   background: rgba(0, 0, 0, 0.35);

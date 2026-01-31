@@ -46,7 +46,7 @@ const Inner = styled.div`
 `;
 
 const Line = styled.div`
-  font-size: 14px;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.75);
   letter-spacing: 0.4px;
 `;
@@ -59,7 +59,7 @@ const Links = styled.div`
 `;
 
 const StyledLink = styled(Link)`
-  font-size: 14px;
+  font-size: 0.875rem;
   color: rgba(180, 220, 255, 0.9);
   text-decoration: none;
   font-weight: 600;
@@ -75,7 +75,7 @@ const Dot = styled.span`
 `;
 
 const Credit = styled.div`
-  font-size: 13px;
+  ont-size: 0.813rem;
   color: rgba(255, 255, 255, 0.65);
   line-height: 1.5;
 `;

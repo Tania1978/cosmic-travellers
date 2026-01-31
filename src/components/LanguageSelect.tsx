@@ -90,7 +90,7 @@ const Trigger = styled.button`
 `;
 
 const Star = styled.span`
-  font-size: 12px;
+  font-size: 0.75rem;
   text-shadow: 0 0 10px rgba(120, 180, 255, 0.6);
 `;
 
