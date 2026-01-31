@@ -32,12 +32,9 @@ export default function Header() {
             <img src="/ui/back-home.png" alt="Back" />
           </ImageButton>
         )}
-      </Left>
-
-      <Right>
         {!inOwnPage && (
           <ImageButton
-            $width="130px"
+            $width="240px"
             type="button"
             onClick={() => navigate("/writer-notes")}
             aria-label="Back to bookshelf"
@@ -45,7 +42,9 @@ export default function Header() {
             <img src="/ui/writer-notes-2.png" alt="Back" />
           </ImageButton>
         )}
+      </Left>
 
+      <Right>
         <LanguageSelect
           value={language}
           onChange={(lang) => setLanguage(lang)}

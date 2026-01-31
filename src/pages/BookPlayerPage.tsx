@@ -1,8 +1,7 @@
-// src/pages/BookPlayerPage.tsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-
+import { DISABLE_VIDEO } from "../config/features";
 import { useChapterVideoPlayer } from "../hooks/useChapterVideoPlayer";
 import { BOOKS } from "../data/books";
 import { ArrowButton } from "../components/ArrowButton";
@@ -11,7 +10,11 @@ import PageBackground from "../components/PageBackground";
 export default function BookPlayerPage() {
   const { bookSlug } = useParams();
 
-  if (!bookSlug || !BOOKS[bookSlug]) return <Navigate to="/" replace />;
+  const isValidSlug = useMemo(() => {
+    return !!bookSlug && !!BOOKS[bookSlug];
+  }, [bookSlug]);
+
+  if (!isValidSlug) return <Navigate to="/" replace />;
 
   const {
     book,
@@ -30,19 +33,30 @@ export default function BookPlayerPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // Keep fullscreen state in sync (and clean up listeners).
   useEffect(() => {
     const onFsChange = () => setIsFullscreen(!!document.fullscreenElement);
     document.addEventListener("fullscreenchange", onFsChange);
     return () => document.removeEventListener("fullscreenchange", onFsChange);
   }, []);
 
+  // If video is disabled, ensure play state doesn't get stuck "true".
+  useEffect(() => {
+    if (DISABLE_VIDEO) setIsPlaying(false);
+  }, []);
+
   const togglePlayPause = async () => {
+    if (DISABLE_VIDEO) return;
+
     const v = videoRef.current;
     if (!v) return;
 
     try {
-      if (v.paused) await v.play();
-      else v.pause();
+      if (v.paused) {
+        await v.play();
+      } else {
+        v.pause();
+      }
     } catch (e) {
       console.log("play/pause error", e);
     }
@@ -78,21 +92,31 @@ export default function BookPlayerPage() {
       <Wrap>
         <Stage>
           <VideoFrame ref={frameRef}>
-            <Video
-              ref={videoRef}
-              src={book.videoSrc}
-              preload="auto"
-              playsInline
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-              onLoadedMetadata={onLoadedMetadata}
-              onTimeUpdate={onTimeUpdate}
-            />
+            {/* Media area: either video, or a calm placeholder (no MP4 mode) */}
+            {DISABLE_VIDEO ? (
+              <Placeholder>
+                <CalmBackground />
+                <ComingSoonText>
+                  ✨ Story animation coming soon ✨
+                </ComingSoonText>
+              </Placeholder>
+            ) : (
+              <Video
+                ref={videoRef}
+                src={book.videoSrc}
+                preload="auto"
+                playsInline
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onLoadedMetadata={onLoadedMetadata}
+                onTimeUpdate={onTimeUpdate}
+              />
+            )}
 
             {/* Controls: visible ONLY on hover of the frame */}
             <ControlsLayer>
               <TopBar>
-                <Meta></Meta>
+                <Meta />
 
                 <IconButton
                   onClick={toggleFullscreen}
@@ -107,11 +131,21 @@ export default function BookPlayerPage() {
 
               <CenterControls>
                 <BigButton
-                  onClick={togglePlayPause}
-                  aria-label={isPlaying ? "Pause story" : "Play story"}
-                  title={isPlaying ? "Pause" : "Play"}
+                  type="button"
+                  onClick={DISABLE_VIDEO ? undefined : togglePlayPause}
+                  aria-label={
+                    DISABLE_VIDEO
+                      ? "Story video not available yet"
+                      : isPlaying
+                        ? "Pause story"
+                        : "Play story"
+                  }
+                  title={
+                    DISABLE_VIDEO ? "Coming soon" : isPlaying ? "Pause" : "Play"
+                  }
+                  disabled={DISABLE_VIDEO}
                 >
-                  {isPlaying ? "❚❚" : "▶"}
+                  {DISABLE_VIDEO ? "✨" : isPlaying ? "❚❚" : "▶"}
                 </BigButton>
               </CenterControls>
 
@@ -213,16 +247,16 @@ const Meta = styled.div`
   pointer-events: none;
 `;
 
-const Title = styled.div`
-  font-size: 15px;
-  opacity: 0.9;
-`;
+// const Title = styled.div`
+//   font-size: 15px;
+//   opacity: 0.9;
+// `;
 
-const PageInfo = styled.div`
-  margin-top: 2px;
-  font-size: 12px;
-  opacity: 0.75;
-`;
+// const PageInfo = styled.div`
+//   margin-top: 2px;
+//   font-size: 12px;
+//   opacity: 0.75;
+// `;
 
 const IconButton = styled.button`
   pointer-events: auto;
@@ -288,4 +322,46 @@ const Fallback = styled.div`
   background: #000;
   color: white;
   font-size: 16px;
+`;
+
+/** Placeholder fills the same exact space as the video */
+const Placeholder = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+`;
+
+/** Replace this with your calm still (or gentle gradient / stars) */
+const CalmBackground = styled.div`
+  position: absolute;
+  inset: 0;
+
+  /* Example gentle background */
+  background:
+    radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0) 45%
+    ),
+    radial-gradient(
+      circle at 70% 60%,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0) 45%
+    ),
+    linear-gradient(180deg, rgba(10, 14, 30, 0.9), rgba(5, 8, 18, 0.95));
+`;
+
+const ComingSoonText = styled.p`
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
 `;

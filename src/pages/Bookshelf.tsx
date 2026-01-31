@@ -139,7 +139,7 @@ const BuyBtn = styled.button`
   display: block;
 
   img {
-    width: 110px;
+    width: 130px;
     height: auto;
     display: block;
   }
@@ -149,7 +149,8 @@ const BuyBtn = styled.button`
     inset: 0;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
+    padding-right: 10px;
 
     font-size: 12px;
     font-weight: 700;
@@ -458,7 +459,7 @@ export function Bookshelf() {
                             }}
                           >
                             <img
-                              src="/ui/buybutton1.png"
+                              src="/ui/buybutton-3.png"
                               alt=""
                               aria-hidden="true"
                             />
