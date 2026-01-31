@@ -36,6 +36,7 @@ export default function Header() {
           <ImageButton
             $width="240px"
             type="button"
+            $responsive
             onClick={() => navigate("/writer-notes")}
             aria-label="Back to bookshelf"
           >

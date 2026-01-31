@@ -3,6 +3,7 @@ import styled from "styled-components";
 interface BackButtonProps {
   $width?: string;
   $height?: string;
+  $responsive?: boolean;
 }
 
 export const ImageButton = styled.button<BackButtonProps>`
@@ -25,15 +26,21 @@ export const ImageButton = styled.button<BackButtonProps>`
     display: block;
   }
 
-  /* 📱 Mobile: scale image to 50% */
-  @media (max-width: 600px) {
-    img {
-      ${({ $width, $height }) =>
-        $width
-          ? `width: calc(${$width} * 0.7);`
-          : $height
-            ? `height: calc(${$height} * 0.7);`
-            : `height: 14px;`}
+  /* 📱 Mobile scaling only when $responsive is true */
+  ${({ $responsive, $width, $height }) =>
+    $responsive &&
+    `
+    @media (max-width: 600px) {
+      img {
+        ${
+          $width
+            ? `width: calc(${$width} * 0.7);`
+            : $height
+              ? `height: calc(${$height} * 0.7);`
+              : `height: 14px;`
+        }
+      }
     }
-  }
+  `}
 `;
+
