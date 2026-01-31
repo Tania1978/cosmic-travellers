@@ -19,37 +19,6 @@ const TitleWrap = styled.div`
   text-align: center;
 `;
 
-const Title = styled.h1`
-  font-family: "Fredoka", system-ui, sans-serif;
-  font-weight: 700;
-
-  font-size: 1.5rem; /* 24px */
-
-  @media (min-width: 650px) {
-    font-size: 2.125rem; /* 34px */
-  }
-
-  @media (min-width: 900px) {
-    font-size: 2.75rem; /* 44px */
-  }
-  line-height: 1.12;
-  letter-spacing: 0.4px;
-  text-align: center;
-
-  /* Glow texture fill */
-  background-image: url("/ui/title-glow-2.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-  /* ✨ OUTER DEPTH ONLY (doesn't tint letters) */
-  filter: drop-shadow(0 6px 14px rgba(121, 71, 9, 0.35));
-`;
-
 const Grid = styled.div`
   margin-top: 36px;
   display: grid;
@@ -103,7 +72,9 @@ export function Bookshelf() {
 
       <Page>
         <TitleWrap>
-          <GlowText src="/ui/title-glow.jpg" variant='lg'>{t("title.series")}</GlowText>
+          <GlowText src="/ui/title-glow.jpg" variant="lg">
+            {t("title.series")}
+          </GlowText>
           <CreatorCredit> {t("credits.createdBy")}</CreatorCredit>
         </TitleWrap>
 
