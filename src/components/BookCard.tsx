@@ -378,6 +378,8 @@ const BackRow = styled.div`
   gap: 10px;
   justify-content: flex-end;
   margin-right: 10px;
+  position: relative;
+  bottom: 30px;
 `;
 
 const BackBtn = styled.button`
