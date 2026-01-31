@@ -14,7 +14,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
     <FlipCard key={b.slug} $flipped={flipped}>
       <div className="flipper">
         {/* FRONT */}
-        <div className="face front">
+        <div className="face front" style={{ textAlign: "center" }}>
           <Card $locked={b.isLocked}>
             <OpenArea
               $locked={b.isLocked}
@@ -64,8 +64,8 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
                 <BuyBtn
                   type="button"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    window.open("https://your-payment-link.com", "_blank");
+                    alert("Payment Flow to be added");
+                    //window.open("https://your-payment-link.com", "_blank");
                   }}
                 >
                   <img src="/ui/buybutton-3.png" alt="" aria-hidden="true" />
@@ -77,7 +77,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
         </div>
 
         {/* BACK */}
-        <div className="face back">
+        <div className="face back" style={{ textAlign: "center" }}>
           <Card $locked={b.isLocked}>
             <BackMeta>
               <SummaryTitle>{b.title}</SummaryTitle>
@@ -114,6 +114,7 @@ const Card = styled.div<{ $locked?: boolean }>`
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   height: 400px;
   width: 270px;
+  margin: auto;
 `;
 
 const OpenArea = styled.div<{ $locked?: boolean }>`

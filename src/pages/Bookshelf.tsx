@@ -63,7 +63,6 @@ const GridItem = styled.div`
   width: 100%;
   min-width: 0;
   position: relative;
-
   height: clamp(450px, 34vw, 420px);
   perspective: 1200px;
 `;
