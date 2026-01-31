@@ -21,7 +21,15 @@ const Title = styled.h1`
   font-family: "Fredoka", system-ui, sans-serif;
   font-weight: 700;
 
-  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
+  font-size: 1.5rem; /* 24px */
+
+  @media (min-width: 650px) {
+    font-size: 2.125rem; /* 34px */
+  }
+
+  @media (min-width: 900px) {
+    font-size: 2.75rem; /* 44px */
+  }
   line-height: 1.12;
   letter-spacing: 0.4px;
   text-align: center;
