@@ -110,7 +110,7 @@ const Dropdown = styled.div`
   top: calc(100% + 8px);
   right: 0;
 
-  background: rgba(20, 30, 60, 0.95);
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(14px);
   border-radius: 16px;
   padding: 8px;
