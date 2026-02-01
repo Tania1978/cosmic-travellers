@@ -48,12 +48,19 @@ const GridItem = styled.div`
 
 const CreatorCredit = styled.p`
   margin-top: 8px;
-  font-size: 1.25rem;
+  font-size: 18px;
   color: rgba(255, 255, 255, 0.85);
   text-align: center;
   letter-spacing: 0.5px;
   text-shadow: 0 0 8px rgba(120, 180, 255, 0.4);
   font-weight: 800;
+  @media (min-width: 700px) {
+    font-size: 18px;
+  }
+
+  @media (min-width: 900px) {
+    font-size: 20px;
+  }
 `;
 
 /* ---------- Component ---------- */

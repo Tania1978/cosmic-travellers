@@ -27,41 +27,43 @@ export const GlowText = styled.p.withConfig({
     `}
 
   /* ✨ Size variants */
-  ${({ variant = "sm" }) =>
+  ${({ variant }) =>
     variant === "sm" &&
     css`
-      font-size: 1.125rem;
+      font-size: 18px;
       font-style: italic;
-      @media (min-width: 650px) {
-        font-size: 1.5rem;
+      @media (min-width: 700px) {
+        font-size: 18px;
       }
-      @media (min-width: 900px) {
-        font-size: 1.25rem;
-        font-style: italic;
-      }
-    `}
 
-  ${({ variant = "md" }) =>
-    variant === "md" &&
-    css`
-      font-size: 1.25rem;
-      @media (min-width: 650px) {
-        font-size: 2.125rem;
-      }
       @media (min-width: 900px) {
-        font-size: 1.75rem;
+        font-size: 20px; /* optional bigger desktop */
       }
     `}
 
   ${({ variant }) =>
-    variant === "lg" &&
+    variant === "md" &&
     css`
-      font-size: 2rem;
+      font-size: 24px;
       @media (min-width: 650px) {
-        font-size: 2.75rem;
+        font-size: 20px;
       }
       @media (min-width: 900px) {
-        font-size: 2.125rem;
+        font-size: 24px;
+      }
+    `}
+
+${({ variant }) =>
+    variant === "lg" &&
+    css`
+      font-size: 24px; /* mobile default */
+
+      @media (min-width: 700px) {
+        font-size: 28px;
+      }
+
+      @media (min-width: 900px) {
+        font-size: 30px; /* optional bigger desktop */
       }
     `}
 
