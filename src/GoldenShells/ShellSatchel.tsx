@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useGoldenShells } from "./GoldenShellsProvider";
+import styled from "styled-components";
 
 export function ShellSatchel() {
   const { totalEarned, lastEvent, clearLastEvent, setSatchelEl } =
@@ -28,12 +29,14 @@ export function ShellSatchel() {
       ref={satchelRef}
       style={{
         position: "absolute",
-        top: 16,
         left: 16,
+        top:10,
+        marginBottom: 20, // 20px above the frame
         display: "flex",
         alignItems: "center",
-        gap: 10,
-        padding: "10px 12px",
+        justifyContent: "center",
+        gap: 5,
+        padding: "12px",
         borderRadius: 999,
         background: "rgba(255,255,255,0.12)",
         backdropFilter: "blur(6px)",
@@ -41,12 +44,24 @@ export function ShellSatchel() {
         transform: pulse ? "scale(1.05)" : "scale(1)",
         transition: "transform 300ms ease, box-shadow 300ms ease",
         boxShadow: pulse ? "0 0 0 2px rgba(255,215,120,0.35)" : "none",
+        color: "white",
       }}
     >
-      <span style={{ fontSize: 18 }}>🎒</span>
-      <span style={{ fontSize: 14, color: "rgba(255,255,255,0.92)" }}>
-        🐚 {totalEarned}
-      </span>
+      <Img
+        src={"/ui/saschet.png"}
+        alt=""
+        draggable={false}
+        style={{ width: "35px", height: "35px" }}
+      />{" "}
+      {totalEarned}
+      {/* <Img src={"/ui/golden-shell.png"} alt="" draggable={false} /> */}
     </div>
   );
 }
+const Img = styled.img`
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+`;

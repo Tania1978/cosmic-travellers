@@ -27,7 +27,7 @@ export function GoldenShellIcon() {
       aria-label="Golden Shell"
       title="Golden Shell"
     >
-      <Img src={"/ui/comet-left.png"} alt="" draggable={false} />
+      <Img src={"/ui/golden-shell.png"} alt="" draggable={false} />
 
       <style>{`
         @keyframes shellPulse {
