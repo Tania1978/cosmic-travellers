@@ -2,6 +2,7 @@ export type Chapter = {
   page: number;
   start: number;
   end: number;
+  kind?: "story" | "gratitude";
 };
 
 export type BookConfig = {

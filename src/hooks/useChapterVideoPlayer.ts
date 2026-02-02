@@ -6,6 +6,7 @@ import type { BookConfig, Chapter } from "../data/books/introBook";
 type Options = {
   pauseAtChapterEnd?: boolean; // bedtime mode
   endEpsilonSeconds?: number; // tolerance for timeupdate comparisons
+  earnedThisSession: number;
 };
 
 function clampPageToBook(book: BookConfig, page: number) {
@@ -15,8 +16,12 @@ function clampPageToBook(book: BookConfig, page: number) {
   return Math.max(min, Math.min(max, page));
 }
 
-export function useChapterVideoPlayer(options: Options = {}) {
-  const { pauseAtChapterEnd = false, endEpsilonSeconds = 0.12 } = options;
+export function useChapterVideoPlayer(options: Options) {
+  const {
+    pauseAtChapterEnd = false,
+    endEpsilonSeconds = 0.12,
+    earnedThisSession,
+  } = options;
 
   const { bookSlug, page } = useParams();
   const navigate = useNavigate();
@@ -27,6 +32,8 @@ export function useChapterVideoPlayer(options: Options = {}) {
     if (!bookSlug) return null;
     return BOOKS[bookSlug] ?? null;
   }, [bookSlug]);
+
+  console.log("book", book);
 
   const pageNumber = useMemo(() => {
     const n = Number(page);
@@ -39,16 +46,21 @@ export function useChapterVideoPlayer(options: Options = {}) {
     return book.chapters.findIndex((c) => c.page === clamped);
   }, [book, pageNumber]);
 
+  console.log("currentChapterIndex", currentChapterIndex);
+
   const currentChapter: Chapter | null = useMemo(() => {
     if (!book) return null;
     if (currentChapterIndex < 0) return null;
     return book.chapters[currentChapterIndex] ?? null;
   }, [book, currentChapterIndex]);
 
+  console.log("currentChapter", currentChapter);
+
   // Prevent repeat-seek loops
   const lastSeekTargetRef = useRef<number | null>(null);
 
   const seekTo = useCallback((t: number) => {
+    console.log("seekTo fucntion called param t", t);
     const v = videoRef.current;
     if (!v) return;
     lastSeekTargetRef.current = t;
@@ -58,6 +70,7 @@ export function useChapterVideoPlayer(options: Options = {}) {
 
   const goToPage = useCallback(
     (targetPage: number, replace = false) => {
+      console.log("GO TO PAGE CALLED TO KEEP PLAYING");
       if (!book) return;
       const clamped = clampPageToBook(book, targetPage);
       navigate(`/${book.slug}/${clamped}`, { replace });
@@ -83,8 +96,9 @@ export function useChapterVideoPlayer(options: Options = {}) {
   useEffect(() => {
     if (!book) return;
     const clamped = clampPageToBook(book, pageNumber);
+    console.log("clamped in useeffect", clamped);
+    console.log("pageNumber", pageNumber);
     if (clamped !== pageNumber) {
-      // normalize URL if someone typed a weird page
       goToPage(clamped, true);
       return;
     }
@@ -103,12 +117,15 @@ export function useChapterVideoPlayer(options: Options = {}) {
 
   // End-of-chapter handling
   const [chapterEnded, setChapterEnded] = useState(false);
+  console.log("chapterEnded", chapterEnded);
 
   const onTimeUpdate = useCallback(() => {
+    console.log("ontimeupdate funcitn called");
     const v = videoRef.current;
     if (!v || !currentChapter) return;
 
     const t = v.currentTime;
+    console.log("t", t);
 
     // Reset end flag if user seeks backwards or enters new chapter
     if (t < currentChapter.start + 0.2 && chapterEnded) {
@@ -123,11 +140,20 @@ export function useChapterVideoPlayer(options: Options = {}) {
         // snap to end for clean stillness
         v.currentTime = currentChapter.end;
       } else {
-        // continuous: auto-advance page as we enter next chapter (no seeking necessary; video keeps going)
-        // but we DO update URL for correctness.
         const next = book?.chapters[currentChapterIndex + 1];
+        console.log("next", next);
         if (next) {
-          // avoid rapid-fire updates by checking we haven't already navigated
+          console.log("in if to play next video");
+          const isGratitudeChapter =
+            next.kind === "gratitude" || next.page === 999; // pick one convention
+          console.log(isGratitudeChapter);
+
+          if (isGratitudeChapter && earnedThisSession === 0) {
+            console.log("in if of gratitude chapter to pause");
+            v.pause();
+            return;
+          }
+
           goToPage(next.page, true);
         }
       }
@@ -140,6 +166,7 @@ export function useChapterVideoPlayer(options: Options = {}) {
     endEpsilonSeconds,
     goToPage,
     pauseAtChapterEnd,
+    earnedThisSession, // ✅ add dependency
   ]);
 
   const onLoadedMetadata = useCallback(() => {
