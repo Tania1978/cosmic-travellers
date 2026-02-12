@@ -293,12 +293,6 @@ const DrawerHeader = styled.div`
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 `;
 
-const DrawerTitle = styled.div`
-  font-weight: 800;
-  letter-spacing: 0.4px;
-  color: rgba(255, 255, 255, 0.92);
-`;
-
 const CloseButton = styled.button`
   width: 40px;
   height: 40px;
