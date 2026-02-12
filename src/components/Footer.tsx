@@ -16,11 +16,6 @@ export default function Footer() {
           <Dot>·</Dot>
           <StyledLink to="/writer-notes">{t("credits.writerNote")}</StyledLink>
         </Links>
-
-        <Credit>
-          {t("credits.originalArtBy")}{" "}
-          <strong>{t("credits.artistName")}</strong>.
-        </Credit>
       </Inner>
     </Wrap>
   );

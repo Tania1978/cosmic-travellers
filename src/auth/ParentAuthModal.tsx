@@ -127,7 +127,7 @@ const styles: Record<string, React.CSSProperties> = {
     zIndex: 9999,
   },
   modal: {
-    width: "min(520px, 100%)",
+    width: "min(360px, 70%)",
     borderRadius: 16,
     backgroundImage: "url('/ui/bg5.jpg')",
     padding: 30,
@@ -172,7 +172,7 @@ const styles: Record<string, React.CSSProperties> = {
     margin: "6px 0",
   },
   divider: { flex: 1, height: 1, background: "#e6e6e6" },
-  dividerText: { fontSize: 12, opacity: 0.7, color:'white' },
+  dividerText: { fontSize: 12, opacity: 0.7, color: "white" },
   success: {
     fontSize: 13,
     padding: 10,
