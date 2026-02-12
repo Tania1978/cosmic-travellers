@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "./supabaseClient";
 import { sendMagicLink } from "./sendMagicLink";
 import { GoogleLogin } from "@react-oauth/google";

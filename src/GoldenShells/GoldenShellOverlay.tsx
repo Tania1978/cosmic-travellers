@@ -1,5 +1,4 @@
-// GoldenShellOverlay.tsx
-import React from "react";
+
 import { GoldenShellIcon } from "./GoldenShellIcon";
 import { GoldenShellModal } from "./GoldenShellModal";
 import { ShellSatchel } from "./ShellSatchel";
