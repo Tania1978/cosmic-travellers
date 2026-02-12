@@ -22,7 +22,7 @@ const TitleWrap = styled.div`
 const Grid = styled.div`
   margin-top: 36px;
   display: grid;
-  gap: 50px;
+  gap: 100px;
 
   /* Large screens (your original behavior) */
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));

@@ -11,8 +11,11 @@ type Options = {
 
 function clampPageToBook(book: BookConfig, page: number) {
   const pages = book.chapters.map((c) => c.page);
+  console.log("pages", pages);
   const min = Math.min(...pages);
+  console.log("min", min);
   const max = Math.max(...pages);
+  console.log("max", max);
   return Math.max(min, Math.min(max, page));
 }
 
@@ -43,10 +46,9 @@ export function useChapterVideoPlayer(options: Options) {
   const currentChapterIndex = useMemo(() => {
     if (!book) return -1;
     const clamped = clampPageToBook(book, pageNumber);
+    console.log("clamped", clamped);
     return book.chapters.findIndex((c) => c.page === clamped);
   }, [book, pageNumber]);
-
-  console.log("currentChapterIndex", currentChapterIndex);
 
   const currentChapter: Chapter | null = useMemo(() => {
     if (!book) return null;
@@ -60,7 +62,6 @@ export function useChapterVideoPlayer(options: Options) {
   const lastSeekTargetRef = useRef<number | null>(null);
 
   const seekTo = useCallback((t: number) => {
-    console.log("seekTo fucntion called param t", t);
     const v = videoRef.current;
     if (!v) return;
     lastSeekTargetRef.current = t;
@@ -70,7 +71,6 @@ export function useChapterVideoPlayer(options: Options) {
 
   const goToPage = useCallback(
     (targetPage: number, replace = false) => {
-      console.log("GO TO PAGE CALLED TO KEEP PLAYING");
       if (!book) return;
       const clamped = clampPageToBook(book, targetPage);
       navigate(`/${book.slug}/${clamped}`, { replace });
@@ -96,7 +96,6 @@ export function useChapterVideoPlayer(options: Options) {
   useEffect(() => {
     if (!book) return;
     const clamped = clampPageToBook(book, pageNumber);
-    console.log("clamped in useeffect", clamped);
     console.log("pageNumber", pageNumber);
     if (clamped !== pageNumber) {
       goToPage(clamped, true);
@@ -120,12 +119,9 @@ export function useChapterVideoPlayer(options: Options) {
   console.log("chapterEnded", chapterEnded);
 
   const onTimeUpdate = useCallback(() => {
-    console.log("ontimeupdate funcitn called");
     const v = videoRef.current;
     if (!v || !currentChapter) return;
-
     const t = v.currentTime;
-    console.log("t", t);
 
     // Reset end flag if user seeks backwards or enters new chapter
     if (t < currentChapter.start + 0.2 && chapterEnded) {
@@ -141,15 +137,11 @@ export function useChapterVideoPlayer(options: Options) {
         v.currentTime = currentChapter.end;
       } else {
         const next = book?.chapters[currentChapterIndex + 1];
-        console.log("next", next);
         if (next) {
-          console.log("in if to play next video");
           const isGratitudeChapter =
             next.kind === "gratitude" || next.page === 999; // pick one convention
-          console.log(isGratitudeChapter);
 
           if (isGratitudeChapter && earnedThisSession === 0) {
-            console.log("in if of gratitude chapter to pause");
             v.pause();
             return;
           }

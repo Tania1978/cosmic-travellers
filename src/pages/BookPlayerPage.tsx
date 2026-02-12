@@ -219,7 +219,7 @@ export default function BookPlayerPage() {
             </ControlsLayer>
 
             {/* ✅ Golden Shell UI + Satchel + Story FX overlays */}
-            <GoldenShellOverlay />
+            {/* <GoldenShellOverlay /> */}
           </VideoFrame>
         </Stage>
       </Wrap>

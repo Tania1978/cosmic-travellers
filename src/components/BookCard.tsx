@@ -2,6 +2,7 @@ import styled from "styled-components";
 import type { Book } from "../data/books/books";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../auth/authContext";
 
 interface IBookCardProps {
   b: Book;
@@ -13,7 +14,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { language } = i18n;
-  console.log(language);
+  const { isLoggedIn, setAuthModalOpen } = useAuth();
 
   const titleText = t(b.title);
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
@@ -54,13 +55,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
               {b.subtitle && <BookSubTitle>{subtitleText}</BookSubTitle>}
             </CardMeta>
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                paddingTop: "25px",
-              }}
-            >
+            <CenterWrapper book={b.number}>
               <SummaryLink
                 type="button"
                 onClick={(e) => {
@@ -76,14 +71,16 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
                   alt="Read story summary"
                 />
               </SummaryLink>
-            </div>
+            </CenterWrapper>
 
             {b.isLocked && (
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <BuyBtn
                   type="button"
                   onClick={() => {
-                    alert("Payment Flow to be added");
+                    isLoggedIn
+                      ? alert("Payment Flow to be added")
+                      : setAuthModalOpen(true);
                   }}
                 >
                   <img src="/ui/buybutton-3.png" alt="" aria-hidden="true" />
@@ -125,13 +122,21 @@ const Card = styled.div<{ $locked?: boolean }>`
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+
   height: 440px;
   width: 270px;
   margin: auto;
+
+  /* Stronger physical separation */
+  box-shadow:
+    0 28px 60px rgba(0, 0, 0, 0.22),
+    /* main depth */ 0 10px 20px rgba(0, 0, 0, 0.12),
+    /* near shadow */ 0 2px 6px rgba(0, 0, 0, 0.08),
+    /* edge contact */ inset 0 1px 0 rgba(255, 255, 255, 0.7); /* light edge */
 `;
 
 const OpenArea = styled.div<{ $locked?: boolean }>`
@@ -413,4 +418,15 @@ const BackBtn = styled.button`
     width: auto;
     display: block;
   }
+`;
+
+export const CenterWrapper = styled.div<{ book?: number }>`
+  display: flex;
+  justify-content: center;
+
+  ${({ book }) =>
+    book !== 2 &&
+    `
+      padding-top: 25px;
+    `}
 `;

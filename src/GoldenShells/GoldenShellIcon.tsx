@@ -3,7 +3,6 @@ import { useGoldenShells } from "./GoldenShellsProvider";
 
 export function GoldenShellIcon() {
   const { activeOpportunity, isShellEarned, openModal } = useGoldenShells();
-  console.log(activeOpportunity);
 
   if (!activeOpportunity) return null;
   if (isShellEarned(activeOpportunity.id)) return null;

@@ -13,7 +13,6 @@ export function useGoldenShellOpportunity(params: {
 
   useEffect(() => {
     const opp = opportunities.find((o) => o.page === page) ?? null;
-    console.log("opportunity", opp);
     if (!opp) return setActiveOpportunity(null);
     if (isShellEarned(opp.id)) return setActiveOpportunity(null);
     setActiveOpportunity(opp);
