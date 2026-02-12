@@ -72,9 +72,3 @@ const StyledLink = styled(Link)`
 const Dot = styled.span`
   color: rgba(255, 255, 255, 0.4);
 `;
-
-const Credit = styled.div`
-  ont-size: 0.813rem;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.5;
-`;
