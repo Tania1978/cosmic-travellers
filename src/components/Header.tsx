@@ -13,7 +13,7 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();
-  const { isLoggedIn, authModalOpen, setAuthModalOpen } = useAuth();
+  const { authModalOpen, setAuthModalOpen } = useAuth();
 
   const inHomePage = location.pathname === "/";
 

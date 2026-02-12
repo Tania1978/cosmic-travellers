@@ -1,10 +1,9 @@
-// GoldenShellsProvider.tsx
+
 import React, {
   createContext,
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import type { GoldenShellsStore, ShellId, ShellOpportunity } from "./types";

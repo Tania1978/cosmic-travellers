@@ -7,7 +7,6 @@ import { BOOKS } from "../data/books";
 import { CustomIconButton } from "../components/CustomIconButton";
 import PageBackground from "../components/PageBackground";
 import { useTranslation } from "react-i18next";
-import { GoldenShellOverlay } from "../GoldenShells/GoldenShellOverlay";
 import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { ShellOpportunityBinder } from "../GoldenShells/utils";
 
