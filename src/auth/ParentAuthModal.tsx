@@ -172,7 +172,7 @@ const styles: Record<string, React.CSSProperties> = {
     margin: "6px 0",
   },
   divider: { flex: 1, height: 1, background: "#e6e6e6" },
-  dividerText: { fontSize: 12, opacity: 0.7 },
+  dividerText: { fontSize: 12, opacity: 0.7, color:'white' },
   success: {
     fontSize: 13,
     padding: 10,
