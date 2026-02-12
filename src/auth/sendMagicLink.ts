@@ -5,7 +5,7 @@ export async function sendMagicLink(email: string) {
     email,
     options: {
       // user clicks the link and returns here
-      emailRedirectTo: window.location.origin,
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
     },
   });
 
