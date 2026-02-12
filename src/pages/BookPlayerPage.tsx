@@ -4,19 +4,19 @@ import styled from "styled-components";
 import { DISABLE_VIDEO } from "../config/features";
 import { useChapterVideoPlayer } from "../hooks/useChapterVideoPlayer";
 import { BOOKS } from "../data/books";
-import { ArrowButton } from "../components/ArrowButton";
+import { CustomIconButton } from "../components/CustomIconButton";
 import PageBackground from "../components/PageBackground";
 import { useTranslation } from "react-i18next";
+import { GoldenShellOverlay } from "../GoldenShells/GoldenShellOverlay";
+import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
+import { ShellOpportunityBinder } from "../GoldenShells/utils";
 
 export default function BookPlayerPage() {
-  const { bookSlug } = useParams();
+  const { bookSlug, page } = useParams();
   const { t } = useTranslation();
+  const { earnedThisSession, isModalOpen } = useGoldenShells();
 
-  const isValidSlug = useMemo(() => {
-    return !!bookSlug && !!BOOKS[bookSlug];
-  }, [bookSlug]);
-
-  if (!isValidSlug) return <Navigate to="/" replace />;
+  const wasPlayingRef = useRef(false);
 
   const {
     book,
@@ -28,7 +28,52 @@ export default function BookPlayerPage() {
     goPrev,
   } = useChapterVideoPlayer({
     pauseAtChapterEnd: false,
+    earnedThisSession,
   });
+
+  async function fadeTo(video: HTMLVideoElement, target: number, ms = 250) {
+    const start = video.volume;
+    const steps = 10;
+    for (let i = 1; i <= steps; i++) {
+      video.volume = start + (target - start) * (i / steps);
+      await new Promise((r) => setTimeout(r, ms / steps));
+    }
+  }
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let cancelled = false;
+
+    (async () => {
+      if (isModalOpen) {
+        wasPlayingRef.current = !video.paused && !video.ended;
+        if (wasPlayingRef.current) {
+          await fadeTo(video, 0.15, 250);
+          if (!cancelled) video.pause();
+        } else {
+          video.pause();
+        }
+      } else {
+        if (wasPlayingRef.current) {
+          await video.play().catch(() => {});
+          if (!cancelled) await fadeTo(video, 1.0, 250);
+        }
+        wasPlayingRef.current = false;
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isModalOpen]);
+
+  const isValidSlug = useMemo(() => {
+    return !!bookSlug && !!BOOKS[bookSlug];
+  }, [bookSlug]);
+
+  if (!isValidSlug) return <Navigate to="/" replace />;
 
   const frameRef = useRef<HTMLDivElement | null>(null);
 
@@ -94,6 +139,9 @@ export default function BookPlayerPage() {
       <Wrap>
         <Stage>
           <VideoFrame ref={frameRef}>
+            {/* ✅ Shell opportunity binding for current page */}
+            <ShellOpportunityBinder page={Number(page)} />
+
             {/* Media area: either video, or a calm placeholder (no MP4 mode) */}
             {DISABLE_VIDEO ? (
               <Placeholder>
@@ -152,7 +200,7 @@ export default function BookPlayerPage() {
               </CenterControls>
 
               <BottomLeft>
-                <ArrowButton
+                <CustomIconButton
                   src="/ui/comet-left.png"
                   ariaLabel="Previous page"
                   onClick={goPrev}
@@ -161,7 +209,7 @@ export default function BookPlayerPage() {
               </BottomLeft>
 
               <BottomRight>
-                <ArrowButton
+                <CustomIconButton
                   src="/ui/comet-right.png"
                   ariaLabel="Next page"
                   onClick={goNext}
@@ -169,6 +217,9 @@ export default function BookPlayerPage() {
                 />
               </BottomRight>
             </ControlsLayer>
+
+            {/* ✅ Golden Shell UI + Satchel + Story FX overlays */}
+            {/* <GoldenShellOverlay /> */}
           </VideoFrame>
         </Stage>
       </Wrap>

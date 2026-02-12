@@ -5,11 +5,15 @@ import { ImageButton } from "./ImageButton";
 import LanguageSelect from "./LanguageSelect";
 import { useTranslation } from "react-i18next";
 import { GlowText } from "./GlowText";
+import { useAuth } from "../auth/authContext";
+import ParentLoginButton from "../auth/ParentLoginButton";
+import ParentAuthModal from "../auth/ParentAuthModal";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();
+  const { isLoggedIn, authModalOpen, setAuthModalOpen } = useAuth();
 
   const inHomePage = location.pathname === "/";
 
@@ -70,7 +74,7 @@ export default function Header() {
               onClick={() => navigate("/writer-notes")}
               aria-label={t("nav.openWriterNotes")}
             >
-              <GlowText src="/ui/red-glow.png" variant="sm">
+              <GlowText color="#18f2e1" variant="sm">
                 {t("credits.writerNote")}
               </GlowText>
             </ImageButton>
@@ -82,6 +86,8 @@ export default function Header() {
           <DesktopOnly>
             <LanguageSelect value={language} onChange={changeLanguage} />
           </DesktopOnly>
+
+          <ParentLoginButton />
 
           {/* Mobile hamburger */}
           <MobileOnly>
@@ -158,6 +164,11 @@ export default function Header() {
           </LanguageRow>
         </DrawerContent>
       </Drawer>
+      <ParentAuthModal
+        open={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        reason="login"
+      />
     </>
   );
 }

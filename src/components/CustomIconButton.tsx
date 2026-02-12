@@ -7,7 +7,7 @@ type ArrowButtonProps = {
   size?: number; // optional, default 64
 };
 
-export function ArrowButton({
+export function CustomIconButton({
   src,
   onClick,
   ariaLabel,

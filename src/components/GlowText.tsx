@@ -8,15 +8,24 @@ interface GlowTextProps {
   width?: string;
 }
 
+interface GlowTextProps {
+  variant?: "sm" | "md" | "lg";
+  width?: string;
+  src?: string;
+  color?: string;
+}
+
 export const GlowText = styled.p.withConfig({
-  shouldForwardProp: (prop) => !["src", "variant", "width"].includes(prop),
+  shouldForwardProp: (prop) =>
+    !["src", "variant", "width", "color"].includes(prop),
 })<GlowTextProps>`
   font-weight: 700;
+  font-family: "Fredoka", sans-serif;
+
   line-height: 1.12;
   letter-spacing: 0.4px;
   text-align: center;
   margin: 0;
-  font-style: italic;
 
   ${({ width }) =>
     width &&
@@ -31,13 +40,8 @@ export const GlowText = styled.p.withConfig({
     variant === "sm" &&
     css`
       font-size: 18px;
-      font-style: italic;
-      @media (min-width: 700px) {
-        font-size: 18px;
-      }
-
       @media (min-width: 900px) {
-        font-size: 20px; /* optional bigger desktop */
+        font-size: 20px;
       }
     `}
 
@@ -53,29 +57,34 @@ export const GlowText = styled.p.withConfig({
       }
     `}
 
-${({ variant }) =>
+  ${({ variant }) =>
     variant === "lg" &&
     css`
-      font-size: 24px; /* mobile default */
-
+      font-size: 24px;
       @media (min-width: 700px) {
         font-size: 28px;
       }
-
       @media (min-width: 900px) {
-        font-size: 30px; /* optional bigger desktop */
+        font-size: 30px;
       }
     `}
 
-  /* 🌈 Glow texture fill */
-  background-image: url(${({ src }) => src || "/ui/title-glow-2.jpg"});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  /* 🎨 Texture OR Color logic */
+  ${({ src, color }) =>
+    src
+      ? css`
+          background-image: url(${src});
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
 
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        `
+      : css`
+          color: ${color || "#FFD580"};
+        `}
 
   /* ✨ OUTER DEPTH */
   filter: drop-shadow(0 6px 14px rgba(121, 71, 9, 0.35))

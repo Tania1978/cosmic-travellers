@@ -6,6 +6,7 @@ export type Book = {
   pagesCount: number;
   isLocked?: boolean;
   summary?: string;
+  number:number;
 };
 
 export const BOOKS: Book[] = [
@@ -17,14 +18,17 @@ export const BOOKS: Book[] = [
     thumbnailSrc: "/books/intro/cover.jpg",
     pagesCount: 10,
     isLocked: false,
+    number: 1,
   },
   {
-    slug: "meet-characters",
-    title: "book.meetCharacters.title",
-    subtitle: "book.meetCharacters.subtitle",
-    thumbnailSrc: "/books/intro/cover.jpg",
+    slug: "booklet-2",
+    title: "book.booklet_2.title",
+    subtitle: "book.booklet_2.subtitle",
+    summary:"book.booklet_2.summary",
+    thumbnailSrc: "/books/chapter/cover_2.png",
     pagesCount: 10,
     isLocked: true,
+    number: 2,
   },
   {
     slug: "landing-on-earth",
@@ -33,5 +37,6 @@ export const BOOKS: Book[] = [
     thumbnailSrc: "/books/intro/cover.jpg",
     pagesCount: 10,
     isLocked: true,
+    number: 3,
   },
 ];
