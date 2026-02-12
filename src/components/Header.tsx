@@ -65,20 +65,21 @@ export default function Header() {
             </ImageButton>
           )}
 
-          {/* Desktop-only left item (Writer Notes badge) */}
-          {inHomePage && (
-            <ImageButton
-              $width="240px"
-              type="button"
-              $responsive
-              onClick={() => navigate("/writer-notes")}
-              aria-label={t("nav.openWriterNotes")}
-            >
-              <GlowText color="#18f2e1" variant="sm">
-                {t("credits.writerNote")}
-              </GlowText>
-            </ImageButton>
-          )}
+          <DesktopOnly>
+            {inHomePage && (
+              <ImageButton
+                $width="240px"
+                type="button"
+                $responsive
+                onClick={() => navigate("/writer-notes")}
+                aria-label={t("nav.openWriterNotes")}
+              >
+                <GlowText color="#18f2e1" variant="sm">
+                  {t("credits.writerNote")}
+                </GlowText>
+              </ImageButton>
+            )}
+          </DesktopOnly>
         </Left>
 
         <Right>
@@ -115,7 +116,6 @@ export default function Header() {
 
       <Drawer id="header-menu" $open={menuOpen} role="dialog" aria-modal="true">
         <DrawerHeader>
-          <DrawerTitle>{t("nav.menu")}</DrawerTitle>
           <CloseButton
             type="button"
             onClick={closeMenu}

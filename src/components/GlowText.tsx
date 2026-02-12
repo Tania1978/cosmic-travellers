@@ -39,7 +39,7 @@ export const GlowText = styled.p.withConfig({
   ${({ variant }) =>
     variant === "sm" &&
     css`
-      font-size: 18px;
+      font-size: 14px;
       @media (min-width: 900px) {
         font-size: 20px;
       }
