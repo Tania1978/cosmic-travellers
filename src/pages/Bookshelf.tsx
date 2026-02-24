@@ -4,7 +4,6 @@ import PageBackground from "../components/PageBackground";
 import { useState } from "react";
 import BookCard from "../components/BookCard";
 import { useTranslation } from "react-i18next";
-import { GlowText } from "../components/GlowText";
 
 /* ---------- Layout ---------- */
 
