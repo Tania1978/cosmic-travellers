@@ -6,7 +6,7 @@ export type Book = {
   pagesCount: number;
   isLocked?: boolean;
   summary?: string;
-  number:number;
+  number: number;
 };
 
 export const BOOKS: Book[] = [
@@ -16,7 +16,7 @@ export const BOOKS: Book[] = [
     subtitle: "book.theMissionBegins.subtitle",
     summary: "book.theMissionBegins.summary",
     thumbnailSrc: "/books/intro/cover.jpg",
-    pagesCount: 10,
+    pagesCount: 16,
     isLocked: false,
     number: 1,
   },
@@ -24,9 +24,9 @@ export const BOOKS: Book[] = [
     slug: "booklet-2",
     title: "book.booklet_2.title",
     subtitle: "book.booklet_2.subtitle",
-    summary:"book.booklet_2.summary",
+    summary: "book.booklet_2.summary",
     thumbnailSrc: "/books/chapter/cover_2.png",
-    pagesCount: 10,
+    pagesCount: 14,
     isLocked: true,
     number: 2,
   },

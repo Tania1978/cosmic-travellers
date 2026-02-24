@@ -11,15 +11,13 @@ type Options = {
 
 function clampPageToBook(book: BookConfig, page: number) {
   const pages = book.chapters.map((c) => c.page);
-  console.log("pages", pages);
   const min = Math.min(...pages);
-  console.log("min", min);
   const max = Math.max(...pages);
-  console.log("max", max);
   return Math.max(min, Math.min(max, page));
 }
 
 export function useChapterVideoPlayer(options: Options) {
+  const START_EPSILON_SECONDS = 0.08;
   const {
     pauseAtChapterEnd = false,
     endEpsilonSeconds = 0.12,
@@ -108,10 +106,12 @@ export function useChapterVideoPlayer(options: Options) {
 
     // only seek if we're not already close
     const currentTime = v.currentTime || 0;
-    const target = currentChapter.start;
-    const alreadyNear = Math.abs(currentTime - target) < 0.25;
-
-    if (!alreadyNear) seekTo(target);
+    const target =
+      currentChapter.start +
+      (currentChapterIndex === 0 ? 0 : START_EPSILON_SECONDS);
+    const safeTarget = Math.min(target, currentChapter.end - 0.05);
+    const alreadyNear = Math.abs(currentTime - safeTarget) < 0.25;
+    if (!alreadyNear) seekTo(safeTarget);
   }, [book, pageNumber, currentChapter, goToPage, seekTo]);
 
   // End-of-chapter handling
@@ -168,8 +168,13 @@ export function useChapterVideoPlayer(options: Options) {
     if (!v) return;
 
     const t = v.currentTime || 0;
-    const target = currentChapter.start;
-    if (Math.abs(t - target) > 0.25) seekTo(target);
+    const target =
+      currentChapter.start +
+      (currentChapterIndex === 0 ? 0 : START_EPSILON_SECONDS);
+
+    const safeTarget = Math.min(target, currentChapter.end - 0.05);
+
+    if (Math.abs(t - safeTarget) > 0.25) seekTo(safeTarget);
   }, [currentChapter, seekTo]);
 
   return {

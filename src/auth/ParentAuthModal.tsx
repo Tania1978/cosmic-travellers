@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "./supabaseClient";
 import { sendMagicLink } from "./sendMagicLink";
 import { GoogleLogin } from "@react-oauth/google";
+import { useTranslation } from "react-i18next";
 
 type ParentAuthModalProps = {
   open: boolean;
@@ -19,7 +20,7 @@ export default function ParentAuthModal({
     "idle",
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
+  const { t } = useTranslation();
   if (!open) return null;
 
   const loginWithEmailLink = async () => {
@@ -38,16 +39,14 @@ export default function ParentAuthModal({
     <div style={styles.backdrop} role="dialog" aria-modal="true">
       <div style={styles.modal}>
         <div style={styles.headerRow}>
-          <h3 style={{ margin: 0, color: "white" }}>For parents</h3>
+          <h3 style={{ margin: 0, color: "white" }}>{t("auth.parents")}</h3>
           <button onClick={onClose} style={styles.xButton} aria-label="Close">
             ✕
           </button>
         </div>
 
         <p style={{ marginTop: 8, marginBottom: 16, color: "white" }}>
-          {reason === "unlock"
-            ? "To unlock books (and keep them on all devices), a parent signs in."
-            : "Sign in to restore your library and purchases."}
+          {reason === "unlock" ? t("auth.unlock") : t("auth.signin")}
         </p>
 
         <div style={{ display: "grid", gap: 10 }}>
@@ -70,13 +69,13 @@ export default function ParentAuthModal({
           </div>
           <div style={styles.dividerRow}>
             <div style={styles.divider} />
-            <span style={styles.dividerText}>or</span>
+            <span style={styles.dividerText}>{t("auth.or")}</span>
             <div style={styles.divider} />
           </div>
 
           <label style={{ display: "grid", gap: 6 }}>
             <span style={{ fontSize: 12, opacity: 0.8, color: "white" }}>
-              Email link
+              {t("auth.email.link")}
             </span>
             <input
               value={email}
@@ -93,13 +92,13 @@ export default function ParentAuthModal({
             disabled={!email.trim() || status === "sending"}
             style={styles.secondaryButton}
           >
-            {status === "sending" ? "Sending…" : "Send magic link"}
+            {status === "sending"
+              ? t("auth.magicLink.sending")
+              : t("auth.magicLink.send")}
           </button>
 
           {status === "sent" && (
-            <div style={styles.success}>
-              Link sent. Please check your email and open it on this device.
-            </div>
+            <div style={styles.success}>{t("auth.link.sent")}</div>
           )}
 
           {!!errorMsg && <div style={styles.error}>{errorMsg}</div>}
@@ -108,8 +107,7 @@ export default function ParentAuthModal({
         <p
           style={{ marginTop: 14, fontSize: 12, opacity: 0.75, color: "white" }}
         >
-          You can continue exploring without signing in — signing in is only
-          needed to unlock books.
+          {t("auth.continue")}
         </p>
       </div>
     </div>
