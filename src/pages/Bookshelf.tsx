@@ -47,8 +47,8 @@ const GridItem = styled.div`
 
 const CreatorCredit = styled.p`
   position: relative;
-  bottom: 20px;
-  font-size: 18px;
+
+  font-size: 10px;
   color: rgba(246, 241, 237, 0.85);
   text-align: center;
   letter-spacing: 0.5px;
@@ -60,6 +60,7 @@ const CreatorCredit = styled.p`
 
   @media (min-width: 900px) {
     font-size: 20px;
+    bottom: 20px;
   }
 `;
 
@@ -79,7 +80,7 @@ export function Bookshelf() {
 
       <Page>
         <TitleWrap>
-          <img src="ui/title.png" alt="title" style={{ width: "80%" }} />
+          <img src="ui/title.png" alt="title" style={{ width: "90%" }} />
           <CreatorCredit> {t("credits.createdBy")}</CreatorCredit>
         </TitleWrap>
 
