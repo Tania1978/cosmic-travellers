@@ -8,40 +8,50 @@ export function GoldenShellIcon() {
   if (isShellEarned(activeOpportunity.id)) return null;
 
   return (
-    <button
+    <ShellButton
       onClick={openModal}
-      style={{
-        position: "absolute",
-        top: 16,
-        right: 16,
-        width: 56,
-        height: 56,
-        borderRadius: 999,
-        border: "none",
-        background: "rgba(255, 255, 255, 0.12)",
-        backdropFilter: "blur(6px)",
-        cursor: "pointer",
-        pointerEvents: "auto",
-      }}
       aria-label="Golden Shell"
       title="Golden Shell"
     >
-      <Img src={"/ui/golden-shell.png"} alt="" draggable={false} />
-
-      <style>{`
-        @keyframes shellPulse {
-          0% { transform: translateY(0) scale(1); opacity: 0.92; }
-          50% { transform: translateY(-2px) scale(1.03); opacity: 1; }
-          100% { transform: translateY(0) scale(1); opacity: 0.92; }
-        }
-      `}</style>
-    </button>
+      <Img src="/ui/golden-shell.png" alt="" draggable={false} />
+    </ShellButton>
   );
 }
+
 const Img = styled.img`
   width: 100%;
   height: 100%;
   object-fit: contain;
-  pointer-events: none;
+  pointer-events: none; /* keep clicks on the button */
   user-select: none;
+
+  transition:
+    transform 0.6s ease,
+    filter 0.6s ease;
+
+  filter: drop-shadow(0 0 6px rgba(255, 215, 120, 0.35));
+`;
+
+const ShellButton = styled.button`
+  position: absolute;
+  top: 16px;
+  right: 60px;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  pointer-events: auto;
+  padding: 0;
+
+  /* Optional: keep the button itself calm */
+  transition: transform 0.6s ease;
+
+  &:hover ${/* sc-selector */ Img} {
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 12px rgba(255, 220, 140, 0.7))
+      drop-shadow(0 0 22px rgba(255, 200, 90, 0.5));
+  }
 `;

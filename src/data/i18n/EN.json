@@ -34,5 +34,16 @@
   "artCredits.p3": "Those early illustrations helped bring the story to life at a time when it existed only on paper, and they continue to be part of the foundation of this universe.",
   "artCredits.p4": "All additional illustrations, environments, animations, and scene visuals in the current interactive experience were created later by Tania Karageorgi using digital and AI-assisted tools. These visuals are original reinterpretations developed as the project expanded into a digital learning world.",
   "artCredits.p5": "The illustrator was not involved in the creation of these later digital visuals, and they are not adaptations of her commissioned illustrations, but part of the story’s ongoing evolution.",
-  "artCredits.p6": "With gratitude for the creativity that helped shape the beginnings of this journey."
+  "artCredits.p6": "With gratitude for the creativity that helped shape the beginnings of this journey.",
+  "auth.parents": "For parents",
+  "auth.unlock": "To unlock books (and keep them on all devices), a parent signs in.",
+  "auth.signin": "Sign in to restore your library and purchases.",
+  "auth.or": "or",
+  "auth.email.link": "Email link",
+  "auth.link.sent": "Magic link sent! Check your email.",
+  "auth.continue": "You can continue exploring without signing in — signing in is only needed to unlock books.",
+  "auth.magicLink.sending": "Sending…",
+  "auth.magicLink.send": "Send magic link",
+  "auth.parents.signOut": "Parents: Sign Out",
+  "auth.parents.signIn": "Parents: Sign In"
 }

@@ -54,7 +54,6 @@ export function ShellSatchel() {
         style={{ width: "35px", height: "35px" }}
       />{" "}
       {totalEarned}
-      {/* <Img src={"/ui/golden-shell.png"} alt="" draggable={false} /> */}
     </div>
   );
 }

@@ -9,6 +9,7 @@ import PageBackground from "../components/PageBackground";
 import { useTranslation } from "react-i18next";
 import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { ShellOpportunityBinder } from "../GoldenShells/utils";
+import { GoldenShellOverlay } from "../GoldenShells/GoldenShellOverlay";
 
 export default function BookPlayerPage() {
   const { bookSlug, page } = useParams();
@@ -139,7 +140,11 @@ export default function BookPlayerPage() {
         <Stage>
           <VideoFrame ref={frameRef}>
             {/* ✅ Shell opportunity binding for current page */}
-            <ShellOpportunityBinder page={Number(page)} />
+            <ShellOpportunityBinder
+              page={Number(page)}
+              videoRef={videoRef}
+              chapterEnd={currentChapter.end}
+            />
 
             {/* Media area: either video, or a calm placeholder (no MP4 mode) */}
             {DISABLE_VIDEO ? (
@@ -218,7 +223,7 @@ export default function BookPlayerPage() {
             </ControlsLayer>
 
             {/* ✅ Golden Shell UI + Satchel + Story FX overlays */}
-            {/* <GoldenShellOverlay /> */}
+            <GoldenShellOverlay />
           </VideoFrame>
         </Stage>
       </Wrap>

@@ -47,9 +47,10 @@ const GridItem = styled.div`
 `;
 
 const CreatorCredit = styled.p`
-  margin-top: 8px;
+  position: relative;
+  bottom: 20px;
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(246, 241, 237, 0.85);
   text-align: center;
   letter-spacing: 0.5px;
   text-shadow: 0 0 8px rgba(120, 180, 255, 0.4);
@@ -79,9 +80,7 @@ export function Bookshelf() {
 
       <Page>
         <TitleWrap>
-          <GlowText src="/ui/title-glow.jpg" variant="lg">
-            {t("title.series")}
-          </GlowText>
+          <img src="ui/title.png" alt="title" style={{ width: "80%" }} />
           <CreatorCredit> {t("credits.createdBy")}</CreatorCredit>
         </TitleWrap>
 

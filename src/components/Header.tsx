@@ -74,7 +74,7 @@ export default function Header() {
                 onClick={() => navigate("/writer-notes")}
                 aria-label={t("nav.openWriterNotes")}
               >
-                <GlowText color="#18f2e1" variant="sm">
+                <GlowText color="#ddb5f3ff" variant="sm">
                   {t("credits.writerNote")}
                 </GlowText>
               </ImageButton>

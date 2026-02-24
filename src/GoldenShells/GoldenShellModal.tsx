@@ -1,5 +1,105 @@
 import { useState } from "react";
+import styled from "styled-components";
 import { useGoldenShells } from "./GoldenShellsProvider";
+
+/**
+ * Styled Components
+ * Calm, magical, child-friendly (Cosmic Travellers tone)
+ */
+
+const Overlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+`;
+
+const ModalCard = styled.div`
+  width: min(550px, calc(100vw - 48px));
+  border-radius: 20px;
+  padding: 18px;
+
+  /* Background image (replace with your actual path) */
+  background-image: url("/ui/modal-gs-bg.jpg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Soft warm overlay for readability (Great Library vibe) */
+  background-color: rgba(255, 248, 220, 0.92);
+  background-blend-mode: overlay;
+
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 18px;
+`;
+
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+const CloseButton = styled.button`
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+const QuestionText = styled.div`
+  margin-top: 10px;
+  font-size: 18px;
+  line-height: 1.35;
+`;
+
+const ChoicesGrid = styled.div`
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+`;
+
+const ChoiceButton = styled.button`
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: white;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    background: #fffdf6;
+  }
+`;
+
+const FeedbackText = styled.div`
+  margin-top: 12px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  min-height: 20px; /* prevents layout shift */
+`;
 
 export function GoldenShellModal() {
   const {
@@ -9,18 +109,21 @@ export function GoldenShellModal() {
     submitAnswer,
     isShellEarned,
   } = useGoldenShells();
+
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const opp = activeOpportunity;
-
   const visible = isModalOpen && opp && !isShellEarned(opp.id);
+
   if (!visible) return null;
 
   const onPick = (choiceId: string) => {
     const res = submitAnswer(choiceId);
+
     if (res.correct) {
       setFeedback("✨ A Golden Shell appears!");
-      // Close gently after a short pause
+
+      // Gentle, calm close (fits Cosmic Travellers pacing)
       window.setTimeout(() => {
         setFeedback(null);
         closeModal();
@@ -32,79 +135,27 @@ export function GoldenShellModal() {
   };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      style={{
-        position: "absolute",
-        inset: 0,
-        display: "grid",
-        placeItems: "center",
-        background: "rgba(0,0,0,0.35)",
-        pointerEvents: "auto",
-      }}
-      onClick={closeModal}
-    >
-      <div
-        style={{
-          width: "min(720px, calc(100vw - 48px))",
-          borderRadius: 20,
-          padding: 18,
-          background: "rgba(255,255,255,0.92)",
-          boxShadow: "0 18px 50px rgba(0,0,0,0.25)",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div
-          style={{ display: "flex", justifyContent: "space-between", gap: 12 }}
-        >
-          <div style={{ fontWeight: 700 }}>🐚 Golden Shell Discovery</div>
-          <button
-            onClick={closeModal}
-            style={{
-              border: "none",
-              background: "transparent",
-              cursor: "pointer",
-              fontSize: 18,
-            }}
-            aria-label="Close"
-          >
+    <Overlay role="dialog" aria-modal="true" onClick={closeModal}>
+      <ModalCard onClick={(e) => e.stopPropagation()}>
+        <Header>
+          <Title>🐚 Golden Shell Discovery</Title>
+          <CloseButton onClick={closeModal} aria-label="Close">
             ✕
-          </button>
-        </div>
+          </CloseButton>
+        </Header>
 
-        <div style={{ marginTop: 10, fontSize: 18, lineHeight: 1.35 }}>
-          {opp.question}
-        </div>
+        <QuestionText>{opp.question}</QuestionText>
 
-        <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
+        <ChoicesGrid>
           {opp.choices.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => onPick(c.id)}
-              style={{
-                padding: "12px 14px",
-                borderRadius: 14,
-                border: "1px solid rgba(0,0,0,0.10)",
-                background: "white",
-                cursor: "pointer",
-                textAlign: "left",
-                fontSize: 16,
-              }}
-            >
+            <ChoiceButton key={c.id} onClick={() => onPick(c.id)}>
               {c.label}
-            </button>
+            </ChoiceButton>
           ))}
-        </div>
+        </ChoicesGrid>
 
-        {feedback && (
-          <div
-            style={{ marginTop: 12, fontSize: 14, color: "rgba(0,0,0,0.70)" }}
-          >
-            {feedback}
-          </div>
-        )}
-      </div>
-    </div>
+        {feedback && <FeedbackText>{feedback}</FeedbackText>}
+      </ModalCard>
+    </Overlay>
   );
 }

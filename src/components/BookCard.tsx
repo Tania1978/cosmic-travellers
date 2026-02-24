@@ -29,7 +29,10 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
             <OpenArea
               $locked={b.isLocked}
               onClick={() => {
-                if (!b.isLocked) navigate(`/${b.slug}/1`);
+                console.log("onclick called, b", b);
+                if (!b.isLocked) {
+                  navigate(`/${b.slug}/1`);
+                }
               }}
               role="button"
               tabIndex={b.isLocked ? -1 : 0}
@@ -125,18 +128,28 @@ const Card = styled.div<{ $locked?: boolean }>`
   border: 1px solid rgba(0, 0, 0, 0.05);
 
   background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
 
   height: 440px;
   width: 270px;
   margin: auto;
 
-  /* Stronger physical separation */
   box-shadow:
-    0 28px 60px rgba(0, 0, 0, 0.22),
-    /* main depth */ 0 10px 20px rgba(0, 0, 0, 0.12),
-    /* near shadow */ 0 2px 6px rgba(0, 0, 0, 0.08),
-    /* edge contact */ inset 0 1px 0 rgba(255, 255, 255, 0.7); /* light edge */
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    0 0 20px rgba(120, 180, 255, 0.15);
+
+  animation: fadeIn 180ms ease;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 `;
 
 const OpenArea = styled.div<{ $locked?: boolean }>`
@@ -421,12 +434,10 @@ const BackBtn = styled.button`
 `;
 
 export const CenterWrapper = styled.div<{ book?: number }>`
+  position: absolute;
   display: flex;
   justify-content: center;
-
-  ${({ book }) =>
-    book !== 2 &&
-    `
-      padding-top: 25px;
-    `}
+  bottom: calc(50px);
+  left: 50%;
+  transform: translateX(-50%);
 `;
