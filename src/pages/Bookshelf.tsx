@@ -64,6 +64,22 @@ const CreatorCredit = styled.p`
   }
 `;
 
+const TitlePicture = styled.picture`
+  display: block;
+  width: 90%;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+`;
+
+const TitleImg = styled.img`
+  width: 100%;
+  height: auto;
+  display: block;
+`;
+
 /* ---------- Component ---------- */
 
 export function Bookshelf() {
@@ -80,7 +96,10 @@ export function Bookshelf() {
 
       <Page>
         <TitleWrap>
-          <img src="ui/title.png" alt="title" style={{ width: "90%" }} />
+          <TitlePicture>
+            <source media="(max-width: 600px)" srcSet="ui/title-1.png" />
+            <TitleImg src="ui/title.png" alt="title" />
+          </TitlePicture>
           <CreatorCredit> {t("credits.createdBy")}</CreatorCredit>
         </TitleWrap>
 
