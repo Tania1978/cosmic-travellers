@@ -360,14 +360,14 @@ const BigButton = styled.button`
 
 const BottomLeft = styled.div`
   position: absolute;
-  bottom: 1px;
+  bottom: -12px;
   left: 12px;
   pointer-events: none;
 `;
 
 const BottomRight = styled.div`
   position: absolute;
-  bottom: 1px;
+  bottom: -12px;
   right: 12px;
   pointer-events: none;
 `;

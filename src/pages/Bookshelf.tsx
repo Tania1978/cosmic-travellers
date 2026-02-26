@@ -53,7 +53,6 @@ const CreatorCredit = styled.p`
   text-align: center;
   letter-spacing: 0.5px;
   text-shadow: 0 0 8px rgba(120, 180, 255, 0.4);
-  font-weight: 800;
   @media (min-width: 700px) {
     font-size: 18px;
   }
@@ -75,20 +74,38 @@ const TitlePicture = styled.picture`
 `;
 
 const TitleImg = styled.img`
-  width: 100%;
+  width: 90%;
   height: auto;
   display: block;
+  padding-left: 30px;
 `;
 
 /* ---------- Component ---------- */
 
 export function Bookshelf() {
   const [flippedSlug, setFlippedSlug] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+  const isMobile = window.innerWidth <= 768;
 
   const toggleFlip = (slug: string) => {
     setFlippedSlug((cur) => (cur === slug ? null : slug));
   };
+
+  const getTitleImageSrc = ({
+    lang,
+    isMobile,
+  }: {
+    lang: string;
+    isMobile: boolean;
+  }) => {
+    if (isMobile) {
+      return lang == "el" ? "/ui/title-gr-1.png" : "/ui/title-1.png";
+    }
+    return lang == "el" ? "/ui/title-gr.png" : "/ui/title.png";
+  };
+
+  const finalSrc = getTitleImageSrc({ lang, isMobile });
 
   return (
     <>
@@ -97,8 +114,8 @@ export function Bookshelf() {
       <Page>
         <TitleWrap>
           <TitlePicture>
-            <source media="(max-width: 600px)" srcSet="ui/title-1.png" />
-            <TitleImg src="ui/title.png" alt="title" />
+            {/* <source media="(max-width: 600px)" srcSet="ui/title-1.png" /> */}
+            <TitleImg src={finalSrc} alt="title" />
           </TitlePicture>
           <CreatorCredit> {t("credits.createdBy")}</CreatorCredit>
         </TitleWrap>
