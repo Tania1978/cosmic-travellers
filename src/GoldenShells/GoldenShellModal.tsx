@@ -186,24 +186,6 @@ const Medallion = styled.div`
   animation: ${breathe} 4s ease-in-out infinite;
 `;
 
-const ShellIcon = styled.div`
-  width: 36px;
-  height: 36px;
-  opacity: 0.95;
-  filter: drop-shadow(0 0 10px rgba(255, 190, 120, 0.35));
-
-  /* simple shell glyph using CSS mask (works without adding an SVG file) */
-  background: radial-gradient(
-    circle at 50% 40%,
-    rgba(255, 240, 220, 0.95),
-    rgba(255, 180, 120, 0.75)
-  );
-  -webkit-mask: radial-gradient(circle at 50% 85%, transparent 52%, #000 53%)
-    top/100% 100% no-repeat;
-  mask: radial-gradient(circle at 50% 85%, transparent 52%, #000 53%) top/100%
-    100% no-repeat;
-`;
-
 /* Top row: title + close */
 const Header = styled.div`
   display: flex;

@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { CustomIconButton } from "./CustomIconButton";
-import { saveChildFirstName } from "../requests";
 import { useUserState } from "../contexts/userContext";
-import { t } from "i18next";
 
 type MessageButtonProps = {
   videoSrc: string;
