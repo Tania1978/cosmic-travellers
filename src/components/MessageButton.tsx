@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { CustomIconButton } from "./CustomIconButton";
 import { useUserState } from "../contexts/userContext";
 
@@ -20,13 +20,13 @@ export const MessageButton = ({
   isLoggedIn,
   childFirstName,
 }: MessageButtonProps) => {
-  //const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const { setChildFirstName } = useUserState();
+  const [hasBeenOpened, setHasBeenOpened] = useState(false);
   console.log("childFirstName:", childFirstName);
 
   const handleSubmit = async () => {
@@ -41,6 +41,7 @@ export const MessageButton = ({
   };
 
   const open = () => {
+    setHasBeenOpened(true);
     setIsVisible(true);
     // requestAnimationFrame(() => {
     //   setIsOpen(true);
@@ -49,9 +50,6 @@ export const MessageButton = ({
 
   const close = () => {
     setIsClosing(true);
-    //setIsOpen(false);
-
-    // wait for animation before unmount
     setTimeout(() => {
       setIsVisible(false);
       setIsClosing(false);
@@ -86,12 +84,14 @@ export const MessageButton = ({
     <>
       {isLoggedIn && (
         <>
-          <CustomIconButton
-            src={iconSrc}
-            onClick={open}
-            ariaLabel="message-button"
-            size={size}
-          />
+          <PulseWrapper $shouldPulse={!hasBeenOpened}>
+            <CustomIconButton
+              src={iconSrc}
+              onClick={open}
+              ariaLabel="message-button"
+              size={size}
+            />
+          </PulseWrapper>
 
           {isVisible && (
             <Overlay $closing={isClosing} onClick={close} id="overlay">
@@ -243,5 +243,36 @@ const SubmitButton = styled.button`
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
+  }
+`;
+
+const pulseGlow = keyframes`
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0.4));
+  }
+
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  }
+
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0.4));
+  }
+`;
+
+const PulseWrapper = styled.div<{ $shouldPulse: boolean }>`
+  display: inline-block;
+
+  ${({ $shouldPulse }) =>
+    $shouldPulse &&
+    css`
+      animation: ${pulseGlow} 2.8s ease-in-out infinite;
+    `}
+
+  &:hover {
+    animation: none;
   }
 `;
