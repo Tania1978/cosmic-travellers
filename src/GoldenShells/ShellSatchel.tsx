@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useGoldenShells } from "./GoldenShellsProvider";
+import { pulseGlow } from "./GoldenShellIcon";
 
 export function ShellSatchel() {
   const { totalEarned, lastEvent, clearLastEvent, setSatchelEl } =
@@ -23,12 +24,12 @@ export function ShellSatchel() {
 
       const pulseTimer = window.setTimeout(() => {
         setPulse(false);
-      }, 900);
+      }, 4000);
 
       const hideTimer = window.setTimeout(() => {
         setVisible(false); // 👈 fully remove from DOM
         clearLastEvent();
-      }, 2200); // calm cinematic timing
+      }, 4000); // calm cinematic timing
 
       return () => {
         window.clearTimeout(pulseTimer);
@@ -77,11 +78,12 @@ const SatchelContainer = styled.div<{ $pulse: boolean }>`
 `;
 
 const SatchelIcon = styled.img`
-  width: 35px;
-  height: 35px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   pointer-events: none;
   user-select: none;
+  animation: ${pulseGlow} 2.8s ease-in-out infinite;
 `;
 
 const Count = styled.span`

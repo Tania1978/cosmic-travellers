@@ -19,7 +19,6 @@ export const GlowText = styled.p.withConfig({
   shouldForwardProp: (prop) =>
     !["src", "variant", "width", "color"].includes(prop),
 })<GlowTextProps>`
-  font-weight: 700;
   font-family: "Fredoka", sans-serif;
 
   line-height: 1.12;

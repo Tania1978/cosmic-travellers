@@ -4,7 +4,7 @@ export const BOOKLET2_SHELLS: ShellOpportunity[] = [
   {
     bookletId: "booklet-2",
     id: "first-life",
-    page: 14,
+    page: 13,
     question: "What were the first living things like?",
     choices: [
       { id: "a", label: "🦖 Small animals" },
@@ -16,7 +16,7 @@ export const BOOKLET2_SHELLS: ShellOpportunity[] = [
   {
     bookletId: "booklet-2",
     id: "origin-life",
-    page: 14,
+    page: 13,
     question: "Where did life begin on Earth?",
     choices: [
       { id: "a", label: "In the air" },

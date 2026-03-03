@@ -7,7 +7,6 @@ export default function App() {
   const { loading, isLoggedIn } = useAuth();
 
   if (loading) return <div>Loading…</div>;
-  console.log(loading, isLoggedIn);
 
   return (
     <>

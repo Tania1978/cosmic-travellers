@@ -2,39 +2,47 @@ export type Chapter = {
   page: number;
   start: number;
   end: number;
-  kind?: "story" | "gratitude";
+  kind?: string;
+  hidden?: boolean;
 };
 
 export type BookConfig = {
   slug: string;
   title: string;
-  subtitle?: string;
+  subtitle: string;
   videoSrc: string;
   chapters: Chapter[];
+  requiredShellIds?: string[]; // ✅ NEW (for hidden chapters)
 };
 
 export const INTRO_BOOK: BookConfig = {
   slug: "the-mission-begins",
   title: "The Mission Begins",
   subtitle: "A Series Introduction Booklet",
-  videoSrc: "/books/intro/intro_full.mp4", // local for now
+  videoSrc: "/books/intro/final-intro-music.mp4",
   chapters: [
     { page: 1, start: 0, end: 6 },
-    { page: 2, start: 6, end: 18 },
-    { page: 3, start: 18, end: 33 },
-    { page: 4, start: 33, end: 53 },
-    { page: 5, start: 53, end: 76 },
-    { page: 6, start: 76, end: 101 },
-    { page: 7, start: 101, end: 121 },
-    { page: 8, start: 121, end: 163 },
-    { page: 9, start: 163, end: 187 },
-    { page: 10, start: 187, end: 204 },
-    { page: 11, start: 204, end: 219 },
-    { page: 12, start: 219, end: 235 },
-    { page: 13, start: 235, end: 262 },
-    { page: 14, start: 262, end: 295 },
-    { page: 15, start: 295, end: 360 },
-    { page: 16, start: 360, end: 381 },
+    { page: 2, start: 6, end: 19 },
+    { page: 3, start: 19, end: 40 },
+    { page: 4, start: 40, end: 60 },
+    { page: 5, start: 60, end: 92 },
+    { page: 6, start: 92, end: 116 },
+
+    // +1 from page 7 onwards
+    { page: 7, start: 116, end: 147 },
+    { page: 8, start: 147, end: 157 },
+
+    // +1 more from page 9 onwards
+    { page: 9, start: 157, end: 170 },
+
+    // +1 more from page 10 onwards
+    { page: 10, start: 170, end: 186 },
+    { page: 11, start: 186, end: 202 },
+    { page: 12, start: 202, end: 229 },
+
+    // +1 more from page 13 onwards (final)
+    { page: 13, start: 229, end: 237 },
+    { page: 14, start: 237, end: 251 },
   ],
 };
 
@@ -42,21 +50,30 @@ export const SECOND_BOOK: BookConfig = {
   slug: "booklet-2",
   title: "Second Booklet",
   subtitle: "Cosmic Travellers",
-  videoSrc: "/books/chapter/second_full_keyframed.mp4",
+  videoSrc: "/books/chapter/final-1-music.mp4",
+  requiredShellIds: ["first-life", "origin-life"],
   chapters: [
-    { page: 1, start: 0, end: 5.02 }, // cover
-    { page: 2, start: 5.02, end: 30.04 },
-    { page: 3, start: 30.04, end: 42.13 },
-    { page: 4, start: 42.13, end: 82.15 },
-    { page: 5, start: 82.15, end: 112.17 },
-    { page: 6, start: 112.17, end: 184.19 },
-    { page: 7, start: 184.19, end: 218.21 },
-    { page: 8, start: 218.21, end: 248.3 },
-    { page: 9, start: 248.3, end: 264.56 }, // clip 8
-    { page: 10, start: 264.56, end: 284.58 }, // clip 8b
-    { page: 11, start: 284.58, end: 308.6 },
-    { page: 12, start: 308.6, end: 338.77 },
-    { page: 13, start: 338.77, end: 376.94 },
-    { page: 14, start: 376.94, end: 391.187007 }, // extend to actual file duration
+    { page: 1, start: 0, end: 5 },
+
+    // +1 from page 2 to 9
+    { page: 2, start: 5, end: 31 },
+    { page: 3, start: 31, end: 43 },
+    { page: 4, start: 43, end: 83 },
+    { page: 5, start: 83, end: 114 },
+    { page: 6, start: 114, end: 186 },
+    { page: 7, start: 186, end: 220 },
+    { page: 8, start: 220, end: 250 },
+    { page: 9, start: 250, end: 266 },
+
+    // +2 from page 10 to 12
+    { page: 10, start: 266, end: 290 },
+    { page: 11, start: 290, end: 314 },
+    { page: 12, start: 314, end: 344 },
+
+    // +3 from page 13 onwards
+    { page: 13, start: 344, end: 382 },
+    { page: 14, start: 383, end: 395, hidden: true },
   ],
 };
+
+export const BOOKSPAGES: BookConfig[] = [INTRO_BOOK, SECOND_BOOK];

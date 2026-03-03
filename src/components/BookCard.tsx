@@ -29,7 +29,6 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
             <OpenArea
               $locked={b.isLocked}
               onClick={() => {
-                console.log("onclick called, b", b);
                 if (!b.isLocked) {
                   navigate(`/${b.slug}/1`);
                 }

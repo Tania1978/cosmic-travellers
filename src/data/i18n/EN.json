@@ -12,7 +12,7 @@
   "credits.createdBy": "Created by Tania Karageorgi",
   "book.theMissionBegins.title": "How the Mission Began",
   "book.theMissionBegins.subtitle": "A Series Introduction Booklet",
-  "book.theMissionBegins.summary": "Four young travellers from a faraway world create Magical Glasses that can see the hidden language of nature. As a reward, they are sent on their first journey through space.\n\nGuided by a mysterious message, they head toward Earth to explore how life works — together with the children reading their story.\n\nA calm and magical introduction to the Cosmic Travellers series, where future adventures gently explore science, nature, and the wonders of our world.",
+  "book.theMissionBegins.summary": "Four young travellers from the Great School of the Universe receive a mysterious glowing scroll and a pair of Magical Glasses that reveal the hidden language of nature. \n\n Chosen for their very first journey, they set course for Earth to observe, learn, and discover how life works — together with the children reading their story. \n\n A magical introduction to the Cosmic Travellers series, where future adventures gently explore science, nature, and the wonders of our world.",
   "book.booklet_2.title": "Our Place in Space & Life’s Magical Ingredient",
   "book.booklet_2.subtitle": "Landing on Earth",
   "book.booklet_2.summary": "The Travellers land on Earth and meet their wise teacher, Mr. Polychronis, who welcomes them with a magical lakeside picnic. \n\n As they watch the evening sky, they learn about our planet’s place in the universe and the origins of life on Earth. \n\nTogether, they discover the quiet secret that connects every living being and makes life possible..",
@@ -45,5 +45,6 @@
   "auth.magicLink.sending": "Sending…",
   "auth.magicLink.send": "Send magic link",
   "auth.parents.signOut": "Parents: Sign Out",
-  "auth.parents.signIn": "Parents: Sign In"
+  "auth.parents.signIn": "Parents: Sign In",
+  "ui.modalTitle": "Golden Shell"
 }

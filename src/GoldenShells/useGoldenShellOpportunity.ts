@@ -1,6 +1,4 @@
-// useGoldenShellOpportunity.ts
-import { useEffect, useMemo, useRef } from "react";
-
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useGoldenShells } from "./GoldenShellsProvider";
 import type { ShellOpportunity } from "./types";
 
@@ -10,7 +8,7 @@ type RevealConfig =
       type: "chapterEnd";
       videoRef: React.RefObject<HTMLVideoElement | null>;
       chapterEnd: number;
-      buffer?: number; // seconds before end
+      buffer?: number;
     };
 
 export function useGoldenShellOpportunity(opts: {
@@ -21,57 +19,102 @@ export function useGoldenShellOpportunity(opts: {
   const { page, opportunities } = opts;
   const reveal: RevealConfig = opts.reveal ?? { type: "immediate" };
 
-  const { setActiveOpportunity, isShellEarned } = useGoldenShells();
+  const {
+    setActiveOpportunity,
+    isShellEarned,
+    activeOpportunity,
+    isModalOpen,
+  } = useGoldenShells();
 
-  const oppForPage = useMemo(() => {
-    // assuming opportunities include page
-    return opportunities.find((o) => o.page === page) ?? null;
-  }, [opportunities, page]);
+  // ✅ state drives renders
+  const [revealedOppId, setRevealedOppId] = useState<string | null>(null);
 
-  const revealedForPageRef = useRef<number | null>(null);
-
-  // Always clear on page change
+  // ✅ optional ref for event handler reads (no re-render needed)
+  const revealedOppIdRef = useRef<string | null>(null);
   useEffect(() => {
-    setActiveOpportunity(null);
-    revealedForPageRef.current = null;
-  }, [page, setActiveOpportunity]);
+    revealedOppIdRef.current = revealedOppId;
+  }, [revealedOppId]);
 
-  // If no opp or already earned, keep it hidden
+  const oppsForPage = useMemo(
+    () => opportunities.filter((o) => o.page === page),
+    [opportunities, page],
+  );
+
+  // sticky: if something was revealed, keep showing it (regardless of page)
+  const stickyOpp = useMemo(() => {
+    if (!revealedOppId) return null;
+    return opportunities.find((o) => o.id === revealedOppId) ?? null;
+  }, [opportunities, revealedOppId]);
+
+  const nextUnEarnedOpp = useMemo(() => {
+    return oppsForPage.find((o) => !isShellEarned(o.id)) ?? null;
+  }, [oppsForPage, isShellEarned]);
+
+  // ✅ Keep sticky visible until earned
   useEffect(() => {
-    if (!oppForPage) return;
-    if (isShellEarned(oppForPage.id)) return;
+    if (!stickyOpp) return;
 
-    if (reveal.type === "immediate") {
-      setActiveOpportunity(oppForPage);
-      revealedForPageRef.current = page;
+    if (isShellEarned(stickyOpp.id)) {
+      setActiveOpportunity(null);
+      setRevealedOppId(null);
+      return;
     }
-  }, [oppForPage, reveal.type, isShellEarned, page, setActiveOpportunity]);
+    if (isModalOpen) return;
+    setActiveOpportunity(stickyOpp);
+  }, [stickyOpp, isShellEarned, setActiveOpportunity]);
 
-  // Reveal at chapter end
+  // ✅ Also clear when current active opp becomes earned (covers UI timing)
   useEffect(() => {
-    if (!oppForPage) return;
-    if (isShellEarned(oppForPage.id)) return;
+    if (!activeOpportunity) return;
+    if (!isShellEarned(activeOpportunity.id)) return;
+
+    setActiveOpportunity(null);
+    setRevealedOppId(null);
+  }, [activeOpportunity, isShellEarned, setActiveOpportunity]);
+
+  // Immediate reveal (only if nothing is currently revealed)
+  useEffect(() => {
+    if (reveal.type !== "immediate") return;
+    if (revealedOppIdRef.current) return;
+    if (!nextUnEarnedOpp) return;
+
+    setRevealedOppId(nextUnEarnedOpp.id);
+    if (isModalOpen) return;
+    setActiveOpportunity(nextUnEarnedOpp);
+  }, [nextUnEarnedOpp, reveal.type, setActiveOpportunity]);
+
+  // Reveal at chapter end (only if nothing is currently revealed)
+  useEffect(() => {
     if (reveal.type !== "chapterEnd") return;
+    if (revealedOppIdRef.current) return;
+    if (!nextUnEarnedOpp) return;
 
     const video = reveal.videoRef.current;
     if (!video) return;
 
     const buffer = reveal.buffer ?? 0.3;
-    console.log(buffer, "buffer");
     const revealAt = Math.max(0, reveal.chapterEnd - buffer);
-    console.log(revealAt, "revealAt");
-    const onTimeUpdate = () => {
-      console.log("revealedForPageRef.current", revealedForPageRef.current);
-      console.log("page", page);
-      if (revealedForPageRef.current === page) return;
+
+    const tryReveal = () => {
+      if (revealedOppIdRef.current) return;
 
       if (video.currentTime >= revealAt) {
-        revealedForPageRef.current = page;
-        setActiveOpportunity(oppForPage);
+        setRevealedOppId(nextUnEarnedOpp.id);
+        if (isModalOpen) return;
+        setActiveOpportunity(nextUnEarnedOpp);
       }
     };
 
-    video.addEventListener("timeupdate", onTimeUpdate);
-    return () => video.removeEventListener("timeupdate", onTimeUpdate);
-  }, [oppForPage, isShellEarned, page, reveal, setActiveOpportunity]);
+    video.addEventListener("timeupdate", tryReveal);
+    video.addEventListener("seeked", tryReveal);
+    video.addEventListener("ended", tryReveal);
+
+    tryReveal();
+
+    return () => {
+      video.removeEventListener("timeupdate", tryReveal);
+      video.removeEventListener("seeked", tryReveal);
+      video.removeEventListener("ended", tryReveal);
+    };
+  }, [nextUnEarnedOpp, reveal, setActiveOpportunity]);
 }

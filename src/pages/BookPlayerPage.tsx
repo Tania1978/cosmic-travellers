@@ -10,12 +10,32 @@ import { useTranslation } from "react-i18next";
 import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { ShellOpportunityBinder } from "../GoldenShells/utils";
 import { GoldenShellOverlay } from "../GoldenShells/GoldenShellOverlay";
+import { BOOKSPAGES } from "../data/books/introBook";
 
 export default function BookPlayerPage() {
   const { bookSlug, page } = useParams();
   const { t } = useTranslation();
   const { earnedThisSession, isModalOpen } = useGoldenShells();
+  const currentPage = Number(page);
 
+  const foundBook = useMemo(
+    () => BOOKSPAGES.find((b) => b.slug === bookSlug),
+    [bookSlug],
+  );
+
+  // 2️⃣ Find current chapter
+  const chapterNow = useMemo(
+    () => foundBook?.chapters.find((c) => c.page === currentPage),
+    [foundBook, currentPage],
+  );
+
+  const nextChapter = useMemo(() => {
+    if (!foundBook || !chapterNow) return undefined;
+    const index = foundBook.chapters.findIndex((c) => c.page === currentPage);
+    return foundBook.chapters[index + 1];
+  }, [foundBook, chapterNow, currentPage]);
+
+  const isNextPageHidden = Boolean(nextChapter?.hidden);
   const wasPlayingRef = useRef(false);
 
   const {
@@ -144,6 +164,7 @@ export default function BookPlayerPage() {
               page={Number(page)}
               videoRef={videoRef}
               chapterEnd={currentChapter.end}
+              buffer={2.5} // ✅ reveal 2–3 seconds earlier
             />
 
             {/* Media area: either video, or a calm placeholder (no MP4 mode) */}
@@ -183,25 +204,31 @@ export default function BookPlayerPage() {
                 </IconButton>
               </TopBar>
 
-              <CenterControls>
-                <BigButton
-                  type="button"
-                  onClick={DISABLE_VIDEO ? undefined : togglePlayPause}
-                  aria-label={
-                    DISABLE_VIDEO
-                      ? "Story video not available yet"
-                      : isPlaying
-                        ? "Pause story"
-                        : "Play story"
-                  }
-                  title={
-                    DISABLE_VIDEO ? "Coming soon" : isPlaying ? "Pause" : "Play"
-                  }
-                  disabled={DISABLE_VIDEO}
-                >
-                  {DISABLE_VIDEO ? "✨" : isPlaying ? "❚❚" : "▶"}
-                </BigButton>
-              </CenterControls>
+              {!isNextPageHidden && (
+                <CenterControls>
+                  <BigButton
+                    type="button"
+                    onClick={DISABLE_VIDEO ? undefined : togglePlayPause}
+                    aria-label={
+                      DISABLE_VIDEO
+                        ? "Story video not available yet"
+                        : isPlaying
+                          ? "Pause story"
+                          : "Play story"
+                    }
+                    title={
+                      DISABLE_VIDEO
+                        ? "Coming soon"
+                        : isPlaying
+                          ? "Pause"
+                          : "Play"
+                    }
+                    disabled={DISABLE_VIDEO}
+                  >
+                    {DISABLE_VIDEO ? "✨" : isPlaying ? "❚❚" : "▶"}
+                  </BigButton>
+                </CenterControls>
+              )}
 
               <BottomLeft>
                 <CustomIconButton
@@ -222,7 +249,6 @@ export default function BookPlayerPage() {
               </BottomRight>
             </ControlsLayer>
 
-            {/* ✅ Golden Shell UI + Satchel + Story FX overlays */}
             <GoldenShellOverlay />
           </VideoFrame>
         </Stage>

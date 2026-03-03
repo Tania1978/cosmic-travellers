@@ -10,6 +10,7 @@ import "./data/i18n/i18n.ts";
 import "./theme/fonts.css";
 import { AuthProvider } from "./auth/authContext.tsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { UserStateProvider } from "./contexts/userContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,7 +19,9 @@ createRoot(document.getElementById("root")!).render(
         <BrowserRouter>
           <ScrollToTop />
           <ThemeProvider theme={theme}>
-            <App />
+            <UserStateProvider>
+              <App />
+            </UserStateProvider>
           </ThemeProvider>
         </BrowserRouter>
       </AuthProvider>

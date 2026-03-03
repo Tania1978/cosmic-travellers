@@ -5,15 +5,17 @@ export function ShellOpportunityBinder({
   page,
   videoRef,
   chapterEnd,
+  buffer
 }: {
   page: number;
   videoRef: React.RefObject<HTMLVideoElement | null>;
   chapterEnd: number;
+  buffer?: number;
 }) {
   useGoldenShellOpportunity({
     page,
     opportunities: BOOKLET2_SHELLS, // swap per book if needed
-    reveal: { type: "chapterEnd", videoRef, chapterEnd, buffer: 0.3 },
+    reveal: { type: "chapterEnd", videoRef, chapterEnd, buffer: buffer ?? 3 },
   });
 
   return null;

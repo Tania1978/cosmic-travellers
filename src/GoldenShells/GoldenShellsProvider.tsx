@@ -1,4 +1,3 @@
-
 import React, {
   createContext,
   useContext,
@@ -63,7 +62,7 @@ export function GoldenShellsProvider({ bookletId, children }: Props) {
   const [activeOpportunity, setActiveOpportunity] =
     useState<ShellOpportunity | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const suppressNextOpportunityRef = React.useRef(false);
   const [lastEvent, setLastEvent] = useState<ShellEarnedEvent | null>(null);
   const [fxPlayId, setFxPlayId] = useState(0);
   const [satchelEl, setSatchelEl] = useState<HTMLElement | null>(null);
@@ -115,12 +114,13 @@ export function GoldenShellsProvider({ bookletId, children }: Props) {
     const correct = choiceId === opp.correctChoiceId;
     if (!correct) return { correct: false };
 
-    // If already earned, don't double-count (still treat as correct)
     if (isShellEarned(opp.id)) {
       return { correct: true };
     }
 
-    // Mark earned in store + bump totals
+    // 🔥 Suppress binder BEFORE store updates (prevents instant second modal)
+    suppressNextOpportunityRef.current = true;
+
     setStore((prev) => {
       const prevBooklet = prev.byBooklet[bookletId] ?? {};
       const nextBooklet = { ...prevBooklet, [opp.id]: true };
@@ -128,7 +128,7 @@ export function GoldenShellsProvider({ bookletId, children }: Props) {
       const nextSessionCount =
         (prev.sessionEarnedByBooklet[bookletId] ?? 0) + 1;
 
-      const next: GoldenShellsStore = {
+      return {
         ...prev,
         byBooklet: { ...prev.byBooklet, [bookletId]: nextBooklet },
         totalEarned: prev.totalEarned + 1,
@@ -137,17 +137,18 @@ export function GoldenShellsProvider({ bookletId, children }: Props) {
           [bookletId]: nextSessionCount,
         },
       };
-
-      // Also emit the story-fx event (synced to the success moment)
-      // Note: setLastEvent isn't inside setStore to avoid stale closure issues.
-      // We'll set it right after setStore below using refs.
-      return next;
     });
 
-    // Fire event (story FX + satchel pulse)
-    // Use a microtask so store updates settle first.
+    // Clear immediately (good UX)
+    setActiveOpportunity(null);
+
+    // ✅ THIS is the “timeout until state settles” — but done correctly
+    setTimeout(() => {
+      suppressNextOpportunityRef.current = false;
+    }, 300); // one tick, not arbitrary delay
+
     queueMicrotask(() => {
-      const latest = loadShellsStore(); // safe read; store already saved in effect
+      const latest = loadShellsStore();
       const earnedNow = latest.sessionEarnedByBooklet[bookletId] ?? 0;
       setLastEvent({
         type: "shellEarned",

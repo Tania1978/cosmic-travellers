@@ -49,7 +49,7 @@ export function StoryMagicFxOverlay() {
   return (
     <MagicOverlayVideo
       ref={videoRef}
-      src="/ui/magic-shell-light.mp4"
+      src=""
       muted
       playsInline
       preload="auto"
