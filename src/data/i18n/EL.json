@@ -45,5 +45,6 @@
   "auth.magicLink.send": "Αποστολή μαγικού συνδέσμου!",
   "auth.parents.signOut": "Γονείς: Αποσύνδεση",
   "auth.parents.signIn": "Γονείς: Σύνδεση",
-  "ui.modalTitle": "Χρυσό Κοχύλι"
+  "ui.modalTitle": "Χρυσό Κοχύλι",
+  "ui.welcomeAdventure": "Καλώς ήρθες {{name}}! Χαρούμενη περιπέτεια!"
 }

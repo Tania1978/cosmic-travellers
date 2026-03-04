@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { CustomIconButton } from "./CustomIconButton";
 import { useUserState } from "../contexts/userContext";
+import { unlockBook } from "../requests";
+import { useTranslation } from "react-i18next";
 
 type MessageButtonProps = {
   videoSrc: string;
@@ -28,13 +30,13 @@ export const MessageButton = ({
   const { setChildFirstName } = useUserState();
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
   console.log("childFirstName:", childFirstName);
+  const { t } = useTranslation();
 
   const handleSubmit = async () => {
     if (!firstName.trim()) return;
     setIsSaving(true);
     try {
       await setChildFirstName(firstName);
-      //close();
     } finally {
       setIsSaving(false);
     }
@@ -43,9 +45,6 @@ export const MessageButton = ({
   const open = () => {
     setHasBeenOpened(true);
     setIsVisible(true);
-    // requestAnimationFrame(() => {
-    //   setIsOpen(true);
-    //});
   };
 
   const close = () => {
@@ -135,7 +134,7 @@ export const MessageButton = ({
                       color: "#431d84ff",
                     }}
                   >
-                    Welcome {childFirstName}! Enjoy your adventure!.
+                    {t("ui.welcomeAdventure", { name: childFirstName })}
                   </p>
                 )}
               </Modal>

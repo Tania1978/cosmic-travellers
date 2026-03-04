@@ -4,6 +4,7 @@ import PageBackground from "../components/PageBackground";
 import { useState } from "react";
 import BookCard from "../components/BookCard";
 import { useTranslation } from "react-i18next";
+import { useUserState } from "../contexts/userContext";
 
 /* ---------- Layout ---------- */
 
@@ -87,6 +88,8 @@ export function Bookshelf() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const isMobile = window.innerWidth <= 768;
+  const { unlockedBooks } = useUserState();
+  console.log("Unlocked books in Bookshelf:", unlockedBooks);
 
   const toggleFlip = (slug: string) => {
     setFlippedSlug((cur) => (cur === slug ? null : slug));
@@ -123,6 +126,9 @@ export function Bookshelf() {
         <Grid>
           {BOOKS.map((b) => {
             const flipped = flippedSlug === b.slug;
+            if (b.isLocked && unlockedBooks.includes(b.slug)) {
+              b.isLocked = false;
+            }
 
             return (
               <GridItem key={b.slug}>

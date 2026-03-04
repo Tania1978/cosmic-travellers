@@ -46,5 +46,6 @@
   "auth.magicLink.send": "Send magic link",
   "auth.parents.signOut": "Parents: Sign Out",
   "auth.parents.signIn": "Parents: Sign In",
-  "ui.modalTitle": "Golden Shell"
+  "ui.modalTitle": "Golden Shell",
+  "ui.welcomeAdventure": "Welcome {{name}}! Enjoy your adventure!"
 }

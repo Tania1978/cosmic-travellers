@@ -27,7 +27,7 @@ export const BOOKS: Book[] = [
     summary: "book.booklet_2.summary",
     thumbnailSrc: "/books/chapter/cover_2.png",
     pagesCount: 14,
-    isLocked: false,
+    isLocked: true,
     number: 2,
   },
   {
