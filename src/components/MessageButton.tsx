@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { CustomIconButton } from "./CustomIconButton";
 import { useUserState } from "../contexts/userContext";
-import { unlockBook } from "../requests";
 import { useTranslation } from "react-i18next";
 
 type MessageButtonProps = {
