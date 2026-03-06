@@ -81,3 +81,18 @@ export async function unlockBook(bookSlug: string) {
 
   if (upsertErr) throw upsertErr;
 }
+
+export async function setIntroStage(stage: "ask_name" | "welcome" | "done") {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("Not authenticated");
+
+  const { error } = await supabase
+    .from("user_state")
+    .update({ intro_stage: stage })
+    .eq("user_id", user.id);
+
+  if (error) throw error;
+}

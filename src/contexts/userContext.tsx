@@ -21,6 +21,7 @@ type UserState = {
   goldenShells: GoldenShellsStore | null;
   unlockedBooks: string[];
   isLoaded: boolean;
+  introStage?: string;
 
   setChildFirstName: (name: string) => Promise<void>;
   setGoldenShells: (store: GoldenShellsStore) => void; // local update (we persist with debounce)
@@ -45,7 +46,7 @@ async function fetchUserStateRow() {
 
   const { data, error } = await supabase
     .from("user_state")
-    .select("child_first_name, golden_shells, unlocked_books")
+    .select("child_first_name, golden_shells, unlocked_books, intro_stage")
     .eq("user_id", user.id)
     .maybeSingle();
 
