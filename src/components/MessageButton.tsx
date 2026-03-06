@@ -30,7 +30,7 @@ export const MessageButton = ({
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
   console.log("childFirstName:", childFirstName);
   const { t } = useTranslation();
-   const {introStage}= useUserState();
+
 
   const handleSubmit = async () => {
     if (!firstName.trim()) return;
