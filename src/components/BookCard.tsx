@@ -29,24 +29,23 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   return (
     <FlipCard $flipped={flipped}>
       <div className="flipper">
-        {/* FRONT */}
         <div className="face front" style={{ textAlign: "center" }}>
           <Card $locked={b.isLocked}>
-            {!b.isLocked && (
-              <CardTapArea
-                type="button"
-                aria-label={`Open ${titleText}`}
-                onClick={handleOpenBook}
-              />
-            )}
-
-            <Thumb>
-              <ThumbImg
-                src={b.thumbnailSrc}
-                alt={titleText}
-                $locked={b.isLocked}
-              />
-            </Thumb>
+            <OpenArea
+              type="button"
+              $locked={b.isLocked}
+              onClick={handleOpenBook}
+              aria-label={`Open ${titleText}`}
+              disabled={b.isLocked}
+            >
+              <Thumb>
+                <ThumbImg
+                  src={b.thumbnailSrc}
+                  alt={titleText}
+                  $locked={b.isLocked}
+                />
+              </Thumb>
+            </OpenArea>
 
             <CardMeta $locked={b.isLocked}>
               <BookTitle>{titleText}</BookTitle>
@@ -89,7 +88,6 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
           </Card>
         </div>
 
-        {/* BACK */}
         <div className="face back" style={{ textAlign: "center" }}>
           <Card $locked={b.isLocked}>
             <BackMeta>
@@ -135,8 +133,6 @@ const Card = styled.div<{ $locked?: boolean }>`
     0 0 20px rgba(120, 180, 255, 0.15);
 
   animation: fadeIn 180ms ease;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
 
   @keyframes fadeIn {
     from {
@@ -150,17 +146,14 @@ const Card = styled.div<{ $locked?: boolean }>`
   }
 `;
 
-const CardTapArea = styled.button`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 270px;
-  z-index: 2;
+const OpenArea = styled.button<{ $locked?: boolean }>`
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
   border: none;
   background: transparent;
-  padding: 0;
-  cursor: pointer;
+  cursor: ${({ $locked }) => ($locked ? "not-allowed" : "pointer")};
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 `;
@@ -206,7 +199,7 @@ const BookSubTitle = styled.p`
 
 const SummaryLink = styled.button`
   position: relative;
-  z-index: 3;
+  z-index: 2;
   margin-top: 8px;
   padding: 0;
   border: none;
@@ -225,7 +218,6 @@ const SummaryLink = styled.button`
 `;
 
 const BuyBtn = styled.button`
-  z-index: 3;
   border: none;
   background: transparent;
   padding: 0;
@@ -234,6 +226,7 @@ const BuyBtn = styled.button`
   display: block;
   position: absolute;
   top: 100px;
+  z-index: 2;
 
   img {
     width: 135px;
@@ -308,14 +301,12 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
     transform: rotateY(0deg) translateZ(1px);
     -webkit-transform: rotateY(0deg) translateZ(1px);
     pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
-    z-index: ${({ $flipped }) => ($flipped ? 1 : 2)};
   }
 
   .back {
     transform: rotateY(180deg) translateZ(1px);
     -webkit-transform: rotateY(180deg) translateZ(1px);
     pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
-    z-index: ${({ $flipped }) => ($flipped ? 2 : 1)};
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -323,18 +314,15 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
       transition: none;
       transform: none;
     }
-
     .face {
       position: static;
       transform: none;
       height: auto;
     }
-
     .back {
       display: ${({ $flipped }) => ($flipped ? "block" : "none")};
       pointer-events: auto;
     }
-
     .front {
       display: ${({ $flipped }) => ($flipped ? "none" : "block")};
       pointer-events: auto;

@@ -11,12 +11,14 @@ import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { ShellOpportunityBinder } from "../GoldenShells/utils";
 import { GoldenShellOverlay } from "../GoldenShells/GoldenShellOverlay";
 import { BOOKSPAGES } from "../data/books/introBook";
+import { useSound } from "../contexts/soundContext";
 
 export default function BookPlayerPage() {
   const { bookSlug, page } = useParams();
   const { t } = useTranslation();
   const { earnedThisSession, isModalOpen } = useGoldenShells();
   const currentPage = Number(page);
+  const { volume, setVolume, muted, setMuted } = useSound();
 
   const foundBook = useMemo(
     () => BOOKSPAGES.find((b) => b.slug === bookSlug),
@@ -111,6 +113,19 @@ export default function BookPlayerPage() {
   useEffect(() => {
     if (DISABLE_VIDEO) setIsPlaying(false);
   }, []);
+
+  useEffect(() => {
+    console.log("isplaying", isPlaying);
+    if (isPlaying) {
+      console.log("muting music when video starts");
+      setMuted(true);
+      setVolume(0);
+    } else {
+      console.log("start music when video stops");
+      setMuted(false);
+      setVolume(0.2);
+    }
+  }, [isPlaying]);
 
   const togglePlayPause = async () => {
     if (DISABLE_VIDEO) return;
