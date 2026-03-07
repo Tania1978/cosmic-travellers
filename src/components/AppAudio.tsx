@@ -15,13 +15,22 @@ export function AppAudio() {
 
     audioRef.current = audio;
 
-    audio.play().catch((error) => {
-      console.log("Autoplay blocked:", error);
-    });
+    const startMusic = async () => {
+      try {
+        await audio.play();
+        console.log("Music started");
+      } catch (err) {
+        console.error("Music failed", err);
+      }
+
+      window.removeEventListener("pointerdown", startMusic);
+    };
+
+    window.addEventListener("pointerdown", startMusic);
 
     return () => {
+      window.removeEventListener("pointerdown", startMusic);
       audio.pause();
-      audio.currentTime = 0;
     };
   }, []);
 
