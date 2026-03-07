@@ -2,7 +2,6 @@ import { useState } from "react";
 import styled from "styled-components";
 import { useSound } from "../contexts/soundContext";
 
-
 export function SoundControls() {
   const { volume, setVolume, muted, setMuted } = useSound();
   const [expanded, setExpanded] = useState(false);
@@ -26,11 +25,14 @@ export function SoundControls() {
           min="0"
           max="1"
           step="0.01"
-          value={muted ? 0 : volume}
+          value={volume}
           onChange={(e) => {
             const nextVolume = Number(e.target.value);
             setVolume(nextVolume);
-            if (muted && nextVolume > 0) {
+
+            if (nextVolume === 0) {
+              setMuted(true);
+            } else if (muted) {
               setMuted(false);
             }
           }}
@@ -101,4 +103,3 @@ const VolumeSlider = styled.input`
   cursor: pointer;
   accent-color: #c918f6ff; /* your color */
 `;
-

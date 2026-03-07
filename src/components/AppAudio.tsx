@@ -37,6 +37,7 @@ export function AppAudio() {
   // keep audio volume in sync with context
   useEffect(() => {
     if (!audioRef.current) return;
+    console.log("setting volume to", volume, typeof volume);
     audioRef.current.volume = volume;
   }, [volume]);
 
