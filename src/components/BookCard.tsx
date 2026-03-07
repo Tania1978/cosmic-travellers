@@ -291,7 +291,6 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
     -webkit-backface-visibility: hidden;
     transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
-    overflow: hidden;
   }
   .front {
     transform: rotateY(0deg) translateZ(1px);
