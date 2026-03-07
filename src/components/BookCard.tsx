@@ -273,7 +273,7 @@ const OpenArea = styled(Link)<{ $locked?: boolean }>`
   color: inherit;
 
   position: relative;
-  z-index: 3;
+  z-index: 10;
 
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
