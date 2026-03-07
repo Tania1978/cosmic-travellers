@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import styled from "styled-components";
 import type { Book } from "../data/books/books";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../auth/authContext";
 
@@ -12,6 +12,7 @@ interface IBookCardProps {
 }
 
 export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { language } = i18n;
   const { isLoggedIn, setAuthModalOpen } = useAuth();
@@ -19,6 +20,74 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const titleText = t(b.title);
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
   const summaryText = b.summary ? t(b.summary) : t("ui.summaryComingSoon");
+
+  const tapLockRef = useRef(false);
+
+  const isIPadSafariLike = useMemo(() => {
+    if (typeof window === "undefined") return false;
+
+    const ua = window.navigator.userAgent || "";
+    const platform = window.navigator.platform || "";
+    const maxTouchPoints = window.navigator.maxTouchPoints || 0;
+    const vendor = window.navigator.vendor || "";
+
+    const isAppleTouchDevice =
+      /iPad|iPhone|iPod/.test(ua) ||
+      (platform === "MacIntel" && maxTouchPoints > 1);
+
+    const isSafariLike =
+      /Safari/.test(ua) &&
+      /Apple/.test(vendor) &&
+      !/CriOS|FxiOS|EdgiOS|OPiOS|Chrome|Firefox|Edg/.test(ua);
+
+    return isAppleTouchDevice && isSafariLike;
+  }, []);
+
+  const openBook = () => {
+    if (b.isLocked) return;
+
+    if (isIPadSafariLike) {
+      window.location.assign(`/${b.slug}/1`);
+      return;
+    }
+
+    navigate(`/${b.slug}/1`);
+  };
+
+  const handleOpenBookClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
+    if (b.isLocked) {
+      e.preventDefault();
+      return;
+    }
+
+    if (isIPadSafariLike) {
+      return;
+    }
+
+    openBook();
+  };
+
+  const handleOpenBookTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
+    if (!isIPadSafariLike) return;
+
+    e.stopPropagation();
+
+    if (b.isLocked) {
+      e.preventDefault();
+      return;
+    }
+
+    if (tapLockRef.current) return;
+    tapLockRef.current = true;
+
+    openBook();
+
+    window.setTimeout(() => {
+      tapLockRef.current = false;
+    }, 400);
+  };
 
   const handleFlip = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -45,17 +114,12 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
             <CardFrame>
               <CardSurface $locked={b.isLocked}>
                 <OpenArea
-                  to={`/${b.slug}/1`}
+                  type="button"
                   $locked={b.isLocked}
                   aria-label={`Open ${titleText}`}
-                  onClick={(e) => {
-                    if (b.isLocked) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }
-                  }}
-                  tabIndex={b.isLocked ? -1 : 0}
-                  aria-disabled={b.isLocked ? true : undefined}
+                  disabled={b.isLocked}
+                  onClick={handleOpenBookClick}
+                  onTouchEnd={handleOpenBookTouchEnd}
                 >
                   <Thumb>
                     <ThumbImg
@@ -261,7 +325,7 @@ const CardSurface = styled.div<{ $locked?: boolean }>`
   }
 `;
 
-const OpenArea = styled(Link)<{ $locked?: boolean }>`
+const OpenArea = styled.button<{ $locked?: boolean }>`
   display: block;
   width: 100%;
   padding: 0;
@@ -269,14 +333,14 @@ const OpenArea = styled(Link)<{ $locked?: boolean }>`
   border: none;
   background: transparent;
   cursor: ${({ $locked }) => ($locked ? "not-allowed" : "pointer")};
-  text-decoration: none;
-  color: inherit;
 
   position: relative;
-  z-index: 10;
+  z-index: 3;
 
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
 `;
 
 const Thumb = styled.div`
