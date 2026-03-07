@@ -4,7 +4,6 @@ import { CustomIconButton } from "./CustomIconButton";
 import { useUserState } from "../contexts/userContext";
 import { useTranslation } from "react-i18next";
 
-
 type MessageButtonProps = {
   iconSrc?: string;
   size?: number;

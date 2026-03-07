@@ -116,13 +116,12 @@ export default function BookPlayerPage() {
 
   useEffect(() => {
     console.log("isplaying", isPlaying);
-    console.log("wasPlayingRef?.current", wasPlayingRef?.current);
     if (isPlaying) {
       console.log("muting music when video starts");
       setMuted(true);
       setVolume(0);
     }
-  }, [isPlaying, wasPlayingRef?.current]);
+  }, [isPlaying]);
 
   const togglePlayPause = async () => {
     if (DISABLE_VIDEO) return;
