@@ -12,6 +12,7 @@ type MessageButtonProps = {
 };
 
 const FADE_MS = 1000;
+const CLOSE_MS = 2000;
 
 export const MessageButton = ({
   iconSrc = "ui/message-button.png",
@@ -23,10 +24,12 @@ export const MessageButton = ({
   const [isClosing, setIsClosing] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const { setChildFirstName } = useUserState();
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
-  console.log("childFirstName:", childFirstName);
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
+
+  const { setChildFirstName } = useUserState();
   const { t } = useTranslation();
 
   const handleSubmit = async () => {
@@ -45,15 +48,17 @@ export const MessageButton = ({
   };
 
   const close = () => {
+    if (isClosing) return;
+
     setIsClosing(true);
-    setTimeout(() => {
+    window.setTimeout(() => {
       setIsVisible(false);
       setIsClosing(false);
-    }, 2000);
+    }, CLOSE_MS);
   };
 
   useEffect(() => {
-    if (!childFirstName) return;
+    if (!childFirstName || !isVisible) return;
 
     const timeoutId = window.setTimeout(() => {
       close();
@@ -70,11 +75,33 @@ export const MessageButton = ({
 
     if (isVisible && !isClosing) {
       v.currentTime = 0;
-      !childFirstName && v.play().catch(() => {});
+      v.volume = 0.5;
+      if (!childFirstName) {
+        v.play().catch(() => {});
+      }
     } else {
       v.pause();
     }
   }, [isVisible, isClosing, childFirstName]);
+
+  useEffect(() => {
+    if (!isVisible || isClosing) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (!target) return;
+
+      if (modalRef.current && !modalRef.current.contains(target)) {
+        close();
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+    };
+  }, [isVisible, isClosing]);
 
   return (
     <>
@@ -90,19 +117,15 @@ export const MessageButton = ({
           </PulseWrapper>
 
           {isVisible && (
-            <Overlay $closing={isClosing} onClick={close} id="overlay">
-              <Modal
-                $closing={isClosing}
-                onClick={(e) => e.stopPropagation()}
-                id="modal"
-              >
+            <Overlay $closing={isClosing} id="overlay">
+              <Modal ref={modalRef} $closing={isClosing} id="modal">
                 <Video
                   ref={videoRef}
                   src={`${import.meta.env.BASE_URL}ui/sebba-msg.mp4`}
                   playsInline
                   preload="auto"
-                  //onEnded={closeModal}
                 />
+
                 {!childFirstName && (
                   <FormSection>
                     <NameInput
@@ -121,6 +144,7 @@ export const MessageButton = ({
                     </SubmitButton>
                   </FormSection>
                 )}
+
                 {childFirstName && (
                   <p
                     style={{
@@ -159,31 +183,22 @@ const Overlay = styled.div<{ $closing: boolean }>`
   z-index: 5000;
   display: grid;
   place-items: center;
-
-  /* ✅ clean fade */
   background: rgba(180, 175, 175, 0.55);
-
-  /* Optional blur – comment out if you dislike it or it causes artifacts */
   backdrop-filter: blur(100px);
-
   animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${FADE_MS}ms
     ease forwards;
 `;
 
 const Modal = styled.div<{ $closing: boolean }>`
   width: min(500px, calc(100vw - 50px));
-  padding: 20px;
   height: 550px;
+  padding: 20px;
   border-radius: 22px;
   overflow: hidden;
-  position: absolute;
-  top: 60px;
   background: rgba(202, 202, 217, 0.9);
-
   box-shadow:
     0 30px 90px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(255, 255, 255, 0.08) inset;
-
   animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${FADE_MS}ms
     ease forwards;
 `;
@@ -196,6 +211,7 @@ const Video = styled.video`
   background: black;
   border-radius: 8px;
 `;
+
 const FormSection = styled.div`
   margin-top: 20px;
   display: flex;
@@ -214,34 +230,55 @@ const NameInput = styled.input`
   outline: none;
   background: white;
   text-align: center;
-
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+
+  &::placeholder {
+    color: #b8b8c9; /* lighter color */
+    transition: opacity 0.2s ease;
+  }
+
+  &:focus::placeholder {
+    opacity: 0; /* hide placeholder when focused */
+  }
 `;
 
 const SubmitButton = styled.button`
-  padding: 14px 26px;
-  font-size: 18px;
-  border-radius: 999px;
+  background: transparent;
   border: none;
+
+  background-image: url("/ui/name-button.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  width: 280px;
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #b8b8c9;
+  font-size: 14px;
+  letter-spacing: 1px;
+  font-weight: 600;
   cursor: pointer;
 
-  background: linear-gradient(135deg, #6e7cff, #9f6eff);
-  color: white;
-  font-weight: 600;
-
-  transition: transform 0.15s ease;
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease,
+    opacity 0.25s ease;
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.08);
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
   }
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
+  &:active {
+    transform: scale(0.95);
   }
 `;
-
 const pulseGlow = keyframes`
   0% {
     transform: scale(1);
@@ -249,7 +286,7 @@ const pulseGlow = keyframes`
   }
 
   50% {
-    transform: scale(1.08);
+    transform: scale(1.1);
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
   }
 

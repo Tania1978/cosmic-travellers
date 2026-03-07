@@ -11,6 +11,7 @@ import ParentAuthModal from "../auth/ParentAuthModal";
 import { MessageButton } from "./MessageButton";
 import { useUserState } from "../contexts/userContext";
 
+
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -83,6 +84,7 @@ export default function Header() {
               </ImageButton>
             )}
           </DesktopOnly>
+
         </Left>
 
         <Right>
