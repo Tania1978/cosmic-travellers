@@ -20,44 +20,40 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
   const summaryText = b.summary ? t(b.summary) : t("ui.summaryComingSoon");
 
+  const handleOpenBook = () => {
+    if (!b.isLocked) {
+      navigate(`/${b.slug}/1`);
+    }
+  };
+
   return (
-    <FlipCard key={b.slug} $flipped={flipped}>
+    <FlipCard $flipped={flipped}>
       <div className="flipper">
         {/* FRONT */}
         <div className="face front" style={{ textAlign: "center" }}>
           <Card $locked={b.isLocked}>
-            <OpenArea
-              $locked={b.isLocked}
-              onClick={() => {
-                if (!b.isLocked) {
-                  navigate(`/${b.slug}/1`);
-                }
-              }}
-              role="button"
-              tabIndex={b.isLocked ? -1 : 0}
-              onKeyDown={(e) => {
-                if (b.isLocked) return;
-                if (e.key === "Enter" || e.key === " ") {
-                  navigate(`/${b.slug}/1`);
-                }
-              }}
-              aria-label={`Open ${titleText}`}
-            >
-              <Thumb>
-                <ThumbImg
-                  src={b.thumbnailSrc}
-                  alt={titleText}
-                  $locked={b.isLocked}
-                />
-              </Thumb>
-            </OpenArea>
+            {!b.isLocked && (
+              <CardTapArea
+                type="button"
+                aria-label={`Open ${titleText}`}
+                onClick={handleOpenBook}
+              />
+            )}
+
+            <Thumb>
+              <ThumbImg
+                src={b.thumbnailSrc}
+                alt={titleText}
+                $locked={b.isLocked}
+              />
+            </Thumb>
 
             <CardMeta $locked={b.isLocked}>
               <BookTitle>{titleText}</BookTitle>
               {b.subtitle && <BookSubTitle>{subtitleText}</BookSubTitle>}
             </CardMeta>
 
-            <CenterWrapper book={b.number}>
+            <CenterWrapper>
               <SummaryLink
                 type="button"
                 onClick={(e) => {
@@ -128,6 +124,7 @@ const Card = styled.div<{ $locked?: boolean }>`
 
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
   height: 440px;
   width: 270px;
@@ -138,6 +135,8 @@ const Card = styled.div<{ $locked?: boolean }>`
     0 0 20px rgba(120, 180, 255, 0.15);
 
   animation: fadeIn 180ms ease;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 
   @keyframes fadeIn {
     from {
@@ -151,8 +150,19 @@ const Card = styled.div<{ $locked?: boolean }>`
   }
 `;
 
-const OpenArea = styled.div<{ $locked?: boolean }>`
-  cursor: ${({ $locked }) => ($locked ? "not-allowed" : "pointer")};
+const CardTapArea = styled.button`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 270px;
+  z-index: 2;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 const Thumb = styled.div`
@@ -195,6 +205,8 @@ const BookSubTitle = styled.p`
 `;
 
 const SummaryLink = styled.button`
+  position: relative;
+  z-index: 3;
   margin-top: 8px;
   padding: 0;
   border: none;
@@ -213,6 +225,7 @@ const SummaryLink = styled.button`
 `;
 
 const BuyBtn = styled.button`
+  z-index: 3;
   border: none;
   background: transparent;
   padding: 0;
@@ -260,8 +273,6 @@ const BuyBtn = styled.button`
   }
 `;
 
-/* ---------- Flip ---------- */
-
 const FlipCard = styled.div<{ $flipped: boolean }>`
   perspective: 1000px;
   -webkit-perspective: 1000px;
@@ -292,24 +303,44 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
     transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
   }
+
   .front {
     transform: rotateY(0deg) translateZ(1px);
     -webkit-transform: rotateY(0deg) translateZ(1px);
     pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
-    opacity: ${({ $flipped }) => ($flipped ? 0 : 1)};
-    transition: opacity 180ms ease;
+    z-index: ${({ $flipped }) => ($flipped ? 1 : 2)};
   }
 
   .back {
     transform: rotateY(180deg) translateZ(1px);
     -webkit-transform: rotateY(180deg) translateZ(1px);
     pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
-    opacity: ${({ $flipped }) => ($flipped ? 1 : 0)};
-    transition: opacity 180ms ease;
+    z-index: ${({ $flipped }) => ($flipped ? 2 : 1)};
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flipper {
+      transition: none;
+      transform: none;
+    }
+
+    .face {
+      position: static;
+      transform: none;
+      height: auto;
+    }
+
+    .back {
+      display: ${({ $flipped }) => ($flipped ? "block" : "none")};
+      pointer-events: auto;
+    }
+
+    .front {
+      display: ${({ $flipped }) => ($flipped ? "none" : "block")};
+      pointer-events: auto;
+    }
   }
 `;
-
-/* ---------- Back content ---------- */
 
 const BackMeta = styled.div`
   padding: 10px;
@@ -436,7 +467,7 @@ export const CenterWrapper = styled.div<{ book?: number }>`
   position: absolute;
   display: flex;
   justify-content: center;
-  bottom: calc(50px);
+  bottom: 50px;
   left: 50%;
   transform: translateX(-50%);
 `;
