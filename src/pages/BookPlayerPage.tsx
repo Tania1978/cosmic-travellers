@@ -120,10 +120,6 @@ export default function BookPlayerPage() {
       console.log("muting music when video starts");
       setMuted(true);
       setVolume(0);
-    } else {
-      console.log("start music when video stops");
-      setMuted(false);
-      setVolume(0.2);
     }
   }, [isPlaying]);
 
