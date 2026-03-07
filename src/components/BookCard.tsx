@@ -20,7 +20,9 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
   const summaryText = b.summary ? t(b.summary) : t("ui.summaryComingSoon");
 
-  const handleOpenBook = () => {
+  const handleOpenBook = (e: any) => {
+    e?.preventDefault();
+    e?.stopPropagation();
     if (!b.isLocked) {
       navigate(`/${b.slug}/1`);
     }
@@ -35,6 +37,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
               type="button"
               $locked={b.isLocked}
               onClick={handleOpenBook}
+              onTouchEnd={handleOpenBook}
               aria-label={`Open ${titleText}`}
               disabled={b.isLocked}
             >
@@ -154,6 +157,10 @@ const OpenArea = styled.button<{ $locked?: boolean }>`
   border: none;
   background: transparent;
   cursor: ${({ $locked }) => ($locked ? "not-allowed" : "pointer")};
+
+  position: relative;
+  z-index: 3;
+
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 `;
@@ -199,7 +206,7 @@ const BookSubTitle = styled.p`
 
 const SummaryLink = styled.button`
   position: relative;
-  z-index: 2;
+  z-index: 4;
   margin-top: 8px;
   padding: 0;
   border: none;
@@ -302,12 +309,14 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
     transform: rotateY(0deg);
     -webkit-transform: rotateY(0deg);
     pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
+    z-index: ${({ $flipped }) => ($flipped ? 1 : 2)};
   }
 
   .back {
     transform: rotateY(180deg);
     -webkit-transform: rotateY(180deg);
     pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
+    z-index: ${({ $flipped }) => ($flipped ? 2 : 1)};
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -326,13 +335,15 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
     }
 
     .front {
-      opacity: ${({ $flipped }) => ($flipped ? 0 : 1)};
+      transform: rotateY(0deg);
+      -webkit-transform: rotateY(0deg);
       pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
       z-index: ${({ $flipped }) => ($flipped ? 1 : 2)};
     }
 
     .back {
-      opacity: ${({ $flipped }) => ($flipped ? 1 : 0)};
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
       pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
       z-index: ${({ $flipped }) => ($flipped ? 2 : 1)};
     }
@@ -479,6 +490,8 @@ const BackBtn = styled.button`
   padding: 0;
   border: none;
   background: transparent;
+  position: relative;
+  z-index: 4;
   cursor: pointer;
 
   font-size: 0;
