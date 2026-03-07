@@ -12,7 +12,7 @@ type MessageButtonProps = {
   childFirstName: string | null;
 };
 
-const FADE_MS = 2000;
+const FADE_MS = 1000;
 
 export const MessageButton = ({
   videoSrc,
@@ -30,7 +30,6 @@ export const MessageButton = ({
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
   console.log("childFirstName:", childFirstName);
   const { t } = useTranslation();
-
 
   const handleSubmit = async () => {
     if (!firstName.trim()) return;
