@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 import type { Book } from "../data/books/books";
 import { useNavigate } from "react-router-dom";
@@ -20,9 +21,10 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
   const summaryText = b.summary ? t(b.summary) : t("ui.summaryComingSoon");
 
-  const handleOpenBook = (e: any) => {
-    e?.preventDefault();
-    e?.stopPropagation();
+  const handleOpenBook = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (!b.isLocked) {
       navigate(`/${b.slug}/1`);
     }
@@ -37,7 +39,6 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
               type="button"
               $locked={b.isLocked}
               onClick={handleOpenBook}
-              onTouchEnd={handleOpenBook}
               aria-label={`Open ${titleText}`}
               disabled={b.isLocked}
             >
@@ -58,6 +59,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
             <CenterWrapper>
               <SummaryLink
                 type="button"
+                aria-label={`Read summary for ${titleText}`}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -77,10 +79,15 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <BuyBtn
                   type="button"
-                  onClick={() => {
-                    isLoggedIn
-                      ? alert("Payment Flow to be added")
-                      : setAuthModalOpen(true);
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (isLoggedIn) {
+                      alert("Payment Flow to be added");
+                    } else {
+                      setAuthModalOpen(true);
+                    }
                   }}
                 >
                   <img src="/ui/buybutton-3.png" alt="" aria-hidden="true" />
@@ -100,6 +107,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
               <BackRow>
                 <BackBtn
                   type="button"
+                  aria-label={`Back from summary of ${titleText}`}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -187,7 +195,7 @@ const ThumbImg = styled.img<{ $locked?: boolean }>`
 `;
 
 const CardMeta = styled.div<{ $locked?: boolean }>`
-  padding: 10px 10px 0px 10px;
+  padding: 10px 10px 0 10px;
   opacity: ${({ $locked }) => ($locked ? 0.7 : 1)};
 `;
 
@@ -291,6 +299,8 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
     transition: transform 700ms ease;
     transform: ${({ $flipped }) =>
       $flipped ? "rotateY(180deg)" : "rotateY(0deg)"};
+    -webkit-transform: ${({ $flipped }) =>
+      $flipped ? "rotateY(180deg)" : "rotateY(0deg)"};
     will-change: transform;
   }
 
@@ -303,78 +313,66 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
     -webkit-backface-visibility: hidden;
     transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
+    overflow: hidden;
   }
 
   .front {
-    transform: rotateY(0deg);
-    -webkit-transform: rotateY(0deg);
+    transform: rotateY(0deg) translateZ(0);
+    -webkit-transform: rotateY(0deg) translateZ(0);
     pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
-    z-index: ${({ $flipped }) => ($flipped ? 1 : 2)};
+    z-index: 2;
   }
 
   .back {
-    transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg) translateZ(0);
+    -webkit-transform: rotateY(180deg) translateZ(0);
     pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
-    z-index: ${({ $flipped }) => ($flipped ? 2 : 1)};
+    z-index: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .flipper {
       transition: none;
-      transform: none;
-    }
-
-    .face {
-      position: absolute;
-      inset: 0;
-      transform: none;
-      -webkit-transform: none;
-      backface-visibility: visible;
-      -webkit-backface-visibility: visible;
-    }
-
-    .front {
-      transform: rotateY(0deg);
-      -webkit-transform: rotateY(0deg);
-      pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
-      z-index: ${({ $flipped }) => ($flipped ? 1 : 2)};
-    }
-
-    .back {
-      transform: rotateY(180deg);
-      -webkit-transform: rotateY(180deg);
-      pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
-      z-index: ${({ $flipped }) => ($flipped ? 2 : 1)};
     }
   }
 
-  /* Safari iPad / touch WebKit fallback: disable 3D flip */
+  /* Safari / iPad fallback: disable 3D and do a clean opacity swap */
   @supports (-webkit-touch-callout: none) {
+    perspective: none;
+    -webkit-perspective: none;
+
     .flipper {
-      transform: none;
-      -webkit-transform: none;
+      transform: none !important;
+      -webkit-transform: none !important;
+      transform-style: flat;
+      -webkit-transform-style: flat;
       transition: none;
     }
 
     .face {
       position: absolute;
       inset: 0;
-      transform: none;
-      -webkit-transform: none;
+      transform: none !important;
+      -webkit-transform: none !important;
       backface-visibility: visible;
       -webkit-backface-visibility: visible;
-      transition: opacity 220ms ease;
+      transform-style: flat;
+      -webkit-transform-style: flat;
+      transition:
+        opacity 220ms ease,
+        visibility 220ms ease;
     }
 
     .front {
       opacity: ${({ $flipped }) => ($flipped ? 0 : 1)};
+      visibility: ${({ $flipped }) => ($flipped ? "hidden" : "visible")};
       pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
       z-index: ${({ $flipped }) => ($flipped ? 1 : 2)};
     }
 
     .back {
       opacity: ${({ $flipped }) => ($flipped ? 1 : 0)};
+      visibility: ${({ $flipped }) => ($flipped ? "visible" : "hidden")};
       pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
       z-index: ${({ $flipped }) => ($flipped ? 2 : 1)};
     }
