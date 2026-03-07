@@ -124,9 +124,9 @@ const Card = styled.div<{ $locked?: boolean }>`
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 
-  height: 440px;
-  width: 270px;
-  margin: auto;
+  height: 100%;
+  width: 100%;
+  margin: 0;
 
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.35),
@@ -267,11 +267,12 @@ const BuyBtn = styled.button`
 `;
 
 const FlipCard = styled.div<{ $flipped: boolean }>`
+  position: relative;
+  width: 270px;
+  height: 440px;
+  margin: 0 auto;
   perspective: 1000px;
   -webkit-perspective: 1000px;
-  position: relative;
-  width: 100%;
-  height: 100%;
   isolation: isolate;
 
   .flipper {
@@ -298,14 +299,14 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
   }
 
   .front {
-    transform: rotateY(0deg) translateZ(1px);
-    -webkit-transform: rotateY(0deg) translateZ(1px);
+    transform: rotateY(0deg);
+    -webkit-transform: rotateY(0deg);
     pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
   }
 
   .back {
-    transform: rotateY(180deg) translateZ(1px);
-    -webkit-transform: rotateY(180deg) translateZ(1px);
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
     pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
   }
 
@@ -314,18 +315,57 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
       transition: none;
       transform: none;
     }
+
     .face {
-      position: static;
+      position: absolute;
+      inset: 0;
       transform: none;
-      height: auto;
+      -webkit-transform: none;
+      backface-visibility: visible;
+      -webkit-backface-visibility: visible;
     }
-    .back {
-      display: ${({ $flipped }) => ($flipped ? "block" : "none")};
-      pointer-events: auto;
-    }
+
     .front {
-      display: ${({ $flipped }) => ($flipped ? "none" : "block")};
-      pointer-events: auto;
+      opacity: ${({ $flipped }) => ($flipped ? 0 : 1)};
+      pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
+      z-index: ${({ $flipped }) => ($flipped ? 1 : 2)};
+    }
+
+    .back {
+      opacity: ${({ $flipped }) => ($flipped ? 1 : 0)};
+      pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
+      z-index: ${({ $flipped }) => ($flipped ? 2 : 1)};
+    }
+  }
+
+  /* Safari iPad / touch WebKit fallback: disable 3D flip */
+  @supports (-webkit-touch-callout: none) {
+    .flipper {
+      transform: none;
+      -webkit-transform: none;
+      transition: none;
+    }
+
+    .face {
+      position: absolute;
+      inset: 0;
+      transform: none;
+      -webkit-transform: none;
+      backface-visibility: visible;
+      -webkit-backface-visibility: visible;
+      transition: opacity 220ms ease;
+    }
+
+    .front {
+      opacity: ${({ $flipped }) => ($flipped ? 0 : 1)};
+      pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
+      z-index: ${({ $flipped }) => ($flipped ? 1 : 2)};
+    }
+
+    .back {
+      opacity: ${({ $flipped }) => ($flipped ? 1 : 0)};
+      pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
+      z-index: ${({ $flipped }) => ($flipped ? 2 : 1)};
     }
   }
 `;
