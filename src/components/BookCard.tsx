@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import styled, { css } from "styled-components";
+import React from "react";
+import styled from "styled-components";
 import type { Book } from "../data/books/books";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -21,26 +21,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
   const summaryText = b.summary ? t(b.summary) : t("ui.summaryComingSoon");
 
-  const isSafariIPad = useMemo(() => {
-    if (typeof navigator === "undefined") return false;
-
-    const ua = navigator.userAgent;
-    const vendor = navigator.vendor || "";
-
-    const isAppleTouchDevice =
-      /iPad|iPhone|iPod/.test(ua) ||
-      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
-    const isSafari =
-      /Safari/.test(ua) &&
-      /Apple/.test(vendor) &&
-      !/CriOS|FxiOS|EdgiOS|OPiOS|Chrome|Firefox|Edg/.test(ua);
-
-    return isAppleTouchDevice && isSafari;
-  }, []);
-
   const handleOpenBook = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
     e.stopPropagation();
 
     if (!b.isLocked) {
@@ -49,13 +30,11 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   };
 
   const handleFlip = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
     e.stopPropagation();
     toggleFlip(b.slug);
   };
 
   const handleBuy = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
     e.stopPropagation();
 
     if (isLoggedIn) {
@@ -65,128 +44,192 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
     }
   };
 
-  const frontFace = (
-    <FaceShell>
-      <Card $locked={b.isLocked}>
-        <OpenArea
-          type="button"
-          $locked={b.isLocked}
-          onClick={handleOpenBook}
-          aria-label={`Open ${titleText}`}
-          disabled={b.isLocked}
-        >
-          <Thumb>
-            <ThumbImg
-              src={b.thumbnailSrc}
-              alt={titleText}
-              $locked={b.isLocked}
-            />
-          </Thumb>
-        </OpenArea>
-
-        <CardMeta $locked={b.isLocked}>
-          <BookTitle>{titleText}</BookTitle>
-          {b.subtitle && <BookSubTitle>{subtitleText}</BookSubTitle>}
-        </CardMeta>
-
-        <CenterWrapper>
-          <SummaryLink
-            type="button"
-            aria-label={`Read summary for ${titleText}`}
-            onClick={handleFlip}
-          >
-            <img
-              src={language === "el" ? "/ui/summary-el.png" : "/ui/summary.png"}
-              alt="Read story summary"
-            />
-          </SummaryLink>
-        </CenterWrapper>
-
-        {b.isLocked && (
-          <BuyButtonRow>
-            <BuyBtn type="button" onClick={handleBuy}>
-              <img src="/ui/buybutton-3.png" alt="" aria-hidden="true" />
-              <span>{t("bookshelf.unlock")}</span>
-            </BuyBtn>
-          </BuyButtonRow>
-        )}
-      </Card>
-    </FaceShell>
-  );
-
-  const backFace = (
-    <FaceShell>
-      <Card $locked={b.isLocked}>
-        <BackMeta>
-          <SummaryTitle>{titleText}</SummaryTitle>
-          <BackText>{summaryText}</BackText>
-
-          <BackRow>
-            <BackBtn
-              type="button"
-              aria-label={`Back from summary of ${titleText}`}
-              onClick={handleFlip}
-            >
-              <img src="/ui/back-arrow.png" alt="Back" />
-            </BackBtn>
-          </BackRow>
-        </BackMeta>
-      </Card>
-    </FaceShell>
-  );
-
-  if (isSafariIPad) {
-    return (
-      <SafariCardWrap>
-        <SafariFadeCard key={flipped ? "back" : "front"}>
-          {flipped ? backFace : frontFace}
-        </SafariFadeCard>
-      </SafariCardWrap>
-    );
-  }
-
   return (
     <FlipCard $flipped={flipped}>
       <div className="flipper">
-        <div className="face front">{frontFace}</div>
-        <div className="face back">{backFace}</div>
+        <div className="face front">
+          <FaceShell>
+            <CardFrame>
+              <CardSurface $locked={b.isLocked}>
+                <OpenArea
+                  type="button"
+                  $locked={b.isLocked}
+                  onClick={handleOpenBook}
+                  aria-label={`Open ${titleText}`}
+                  disabled={b.isLocked}
+                >
+                  <Thumb>
+                    <ThumbImg
+                      src={b.thumbnailSrc}
+                      alt={titleText}
+                      $locked={b.isLocked}
+                    />
+                  </Thumb>
+                </OpenArea>
+
+                <CardMeta $locked={b.isLocked}>
+                  <BookTitle>{titleText}</BookTitle>
+                  {b.subtitle && <BookSubTitle>{subtitleText}</BookSubTitle>}
+                </CardMeta>
+
+                <CenterWrapper>
+                  <SummaryLink
+                    type="button"
+                    aria-label={`Read summary for ${titleText}`}
+                    onClick={handleFlip}
+                  >
+                    <img
+                      src={
+                        language === "el"
+                          ? "/ui/summary-el.png"
+                          : "/ui/summary.png"
+                      }
+                      alt="Read story summary"
+                    />
+                  </SummaryLink>
+                </CenterWrapper>
+
+                {b.isLocked && (
+                  <BuyButtonRow>
+                    <BuyBtn type="button" onClick={handleBuy}>
+                      <img
+                        src="/ui/buybutton-3.png"
+                        alt=""
+                        aria-hidden="true"
+                      />
+                      <span>{t("bookshelf.unlock")}</span>
+                    </BuyBtn>
+                  </BuyButtonRow>
+                )}
+              </CardSurface>
+            </CardFrame>
+          </FaceShell>
+        </div>
+
+        <div className="face back">
+          <FaceShell>
+            <CardFrame>
+              <CardSurface $locked={b.isLocked}>
+                <BackMeta>
+                  <SummaryTitle>{titleText}</SummaryTitle>
+                  <BackText>{summaryText}</BackText>
+
+                  <BackRow>
+                    <BackBtn
+                      type="button"
+                      aria-label={`Back from summary of ${titleText}`}
+                      onClick={handleFlip}
+                    >
+                      <img src="/ui/back-arrow.png" alt="Back" />
+                    </BackBtn>
+                  </BackRow>
+                </BackMeta>
+              </CardSurface>
+            </CardFrame>
+          </FaceShell>
+        </div>
       </div>
     </FlipCard>
   );
 }
 
-const sharedCardSizing = css`
+const FlipCard = styled.div<{ $flipped: boolean }>`
+  position: relative;
   width: 270px;
   height: 440px;
   margin: 0 auto;
-`;
 
-const FaceShell = styled.div`
-  ${sharedCardSizing};
-`;
+  perspective: 1400px;
+  -webkit-perspective: 1400px;
 
-const SafariCardWrap = styled.div`
-  ${sharedCardSizing};
-  position: relative;
-`;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 
-const SafariFadeCard = styled.div`
-  width: 100%;
-  height: 100%;
-  animation: safariFaceFade 220ms ease;
+  .flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
 
-  @keyframes safariFaceFade {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform: ${({ $flipped }) =>
+      $flipped
+        ? "rotateY(180deg) translate3d(0,0,0)"
+        : "rotateY(0deg) translate3d(0,0,0)"};
+    -webkit-transform: ${({ $flipped }) =>
+      $flipped
+        ? "rotateY(180deg) translate3d(0,0,0)"
+        : "rotateY(0deg) translate3d(0,0,0)"};
+
+    will-change: transform;
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+  }
+
+  .front {
+    transform: rotateY(0deg) translate3d(0, 0, 1px);
+    -webkit-transform: rotateY(0deg) translate3d(0, 0, 1px);
+    z-index: 2;
+    pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
+  }
+
+  .back {
+    transform: rotateY(180deg) translate3d(0, 0, 1px);
+    -webkit-transform: rotateY(180deg) translate3d(0, 0, 1px);
+    z-index: 1;
+    pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flipper {
+      transition: none;
     }
   }
 `;
 
-const Card = styled.div<{ $locked?: boolean }>`
+const FaceShell = styled.div`
   position: relative;
+  width: 100%;
+  height: 100%;
+
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+`;
+
+const CardFrame = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+`;
+
+const CardSurface = styled.div<{ $locked?: boolean }>`
+  position: relative;
+  width: 100%;
+  height: 100%;
+
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -195,13 +238,15 @@ const Card = styled.div<{ $locked?: boolean }>`
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 
-  height: 100%;
-  width: 100%;
-  margin: 0;
-
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.35),
     0 0 20px rgba(120, 180, 255, 0.15);
+
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 
   animation: fadeInCard 180ms ease;
 
@@ -361,59 +406,6 @@ const BuyBtn = styled.button`
   }
 `;
 
-const FlipCard = styled.div<{ $flipped: boolean }>`
-  ${sharedCardSizing};
-  position: relative;
-  perspective: 1000px;
-  -webkit-perspective: 1000px;
-  isolation: isolate;
-
-  .flipper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    -webkit-transform-style: preserve-3d;
-    transition: transform 700ms ease;
-    transform: ${({ $flipped }) =>
-      $flipped ? "rotateY(180deg)" : "rotateY(0deg)"};
-    -webkit-transform: ${({ $flipped }) =>
-      $flipped ? "rotateY(180deg)" : "rotateY(0deg)"};
-    will-change: transform;
-  }
-
-  .face {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    transform-style: preserve-3d;
-    -webkit-transform-style: preserve-3d;
-  }
-
-  .front {
-    transform: rotateY(0deg);
-    -webkit-transform: rotateY(0deg);
-    pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
-    z-index: 2;
-  }
-
-  .back {
-    transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg);
-    pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
-    z-index: 1;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .flipper {
-      transition: none;
-    }
-  }
-`;
-
 const BackMeta = styled.div`
   padding: 10px;
   min-height: 100%;
@@ -421,8 +413,9 @@ const BackMeta = styled.div`
   flex-direction: column;
   gap: 10px;
 
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 `;
@@ -504,8 +497,9 @@ const BackText = styled.div`
   color: ${({ theme }) => theme.colors.inkBlue};
   text-align: left;
 
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 `;

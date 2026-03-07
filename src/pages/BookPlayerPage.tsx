@@ -121,7 +121,7 @@ export default function BookPlayerPage() {
       setMuted(true);
       setVolume(0);
     }
-  }, [isPlaying]);
+  }, [isPlaying, ]);
 
   const togglePlayPause = async () => {
     if (DISABLE_VIDEO) return;
