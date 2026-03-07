@@ -18,23 +18,30 @@ export function AppAudio() {
     }
 
     const audio = audioRef.current;
+    if (!audio) return;
 
-    const startMusic = async () => {
-      if (!audio || hasStartedRef.current) return;
+    const startMusic = () => {
+      if (hasStartedRef.current) return;
 
-      try {
-        await audio.play();
-        hasStartedRef.current = true;
-        console.log("Music started");
-      } catch (err) {
-        console.error("Music failed", err);
-      }
+      audio
+        .play()
+        .then(() => {
+          hasStartedRef.current = true;
+          console.log("Music started");
+        })
+        .catch((err) => {
+          console.error("Music failed", err);
+        });
     };
 
-    window.addEventListener("pointerdown", startMusic, { once: true });
+    document.addEventListener("click", startMusic, { once: true });
+    document.addEventListener("touchstart", startMusic, { once: true });
+    document.addEventListener("keydown", startMusic, { once: true });
 
     return () => {
-      window.removeEventListener("pointerdown", startMusic);
+      document.removeEventListener("click", startMusic);
+      document.removeEventListener("touchstart", startMusic);
+      document.removeEventListener("keydown", startMusic);
     };
   }, []);
 
@@ -42,6 +49,11 @@ export function AppAudio() {
     if (!audioRef.current) return;
     audioRef.current.muted = muted;
   }, [muted]);
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    audioRef.current.volume = volume * volume;
+  }, [volume]);
 
   useEffect(() => {
     return () => {
