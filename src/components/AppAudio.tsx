@@ -4,48 +4,60 @@ import guitarMp3 from "../assets/audio/guitar.mp3";
 
 export function AppAudio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const hasStartedRef = useRef(false);
   const { volume, muted } = useSound();
 
-  // create/play once
   useEffect(() => {
-    const audio = new Audio(guitarMp3);
-    audio.loop = true;
-    audio.volume = volume;
-    audio.muted = muted;
+    if (!audioRef.current) {
+      const audio = new Audio(guitarMp3);
+      audio.loop = true;
+      audio.preload = "auto";
+      audio.volume = volume * volume;
+      audio.muted = muted;
+      audioRef.current = audio;
+    }
 
-    audioRef.current = audio;
+    const audio = audioRef.current;
 
     const startMusic = async () => {
+      if (!audio || hasStartedRef.current) return;
+
       try {
         await audio.play();
+        hasStartedRef.current = true;
         console.log("Music started");
       } catch (err) {
         console.error("Music failed", err);
       }
-
-      window.removeEventListener("pointerdown", startMusic);
     };
 
-    window.addEventListener("pointerdown", startMusic);
+    window.addEventListener("pointerdown", startMusic, { once: true });
 
     return () => {
       window.removeEventListener("pointerdown", startMusic);
-      audio.pause();
     };
   }, []);
 
-  // keep audio volume in sync with context
   useEffect(() => {
     if (!audioRef.current) return;
-    console.log("setting volume to", volume, typeof volume);
-    audioRef.current.volume = volume;
+    audioRef.current.volume = volume * volume;
+    console.log("volume set to", volume, "actual", volume * volume);
   }, [volume]);
 
-  // keep audio muted in sync with context
   useEffect(() => {
     if (!audioRef.current) return;
     audioRef.current.muted = muted;
   }, [muted]);
+
+  useEffect(() => {
+    return () => {
+      if (!audioRef.current) return;
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+      hasStartedRef.current = false;
+    };
+  }, []);
 
   return null;
 }
