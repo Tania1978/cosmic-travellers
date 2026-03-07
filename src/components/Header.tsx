@@ -11,13 +11,12 @@ import ParentAuthModal from "../auth/ParentAuthModal";
 import { MessageButton } from "./MessageButton";
 import { useUserState } from "../contexts/userContext";
 
-
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const { authModalOpen, setAuthModalOpen, isLoggedIn } = useAuth();
-  const {childFirstName}= useUserState();
+  const { childFirstName } = useUserState();
 
   const inHomePage = location.pathname === "/";
 
@@ -89,7 +88,7 @@ export default function Header() {
         <Right>
           <MessageButton
             iconSrc="ui/message-button.png"
-            videoSrc="ui/sebba-msg.mp4"
+            videoSrc={`${import.meta.env.BASE_URL}ui/sebba-msg.mp4`}
             size={120}
             isLoggedIn={isLoggedIn}
             childFirstName={childFirstName}
