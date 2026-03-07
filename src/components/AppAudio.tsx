@@ -40,12 +40,6 @@ export function AppAudio() {
 
   useEffect(() => {
     if (!audioRef.current) return;
-    audioRef.current.volume = volume * volume;
-    console.log("volume set to", volume, "actual", volume * volume);
-  }, [volume]);
-
-  useEffect(() => {
-    if (!audioRef.current) return;
     audioRef.current.muted = muted;
   }, [muted]);
 

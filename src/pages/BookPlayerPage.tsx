@@ -18,7 +18,7 @@ export default function BookPlayerPage() {
   const { t } = useTranslation();
   const { earnedThisSession, isModalOpen } = useGoldenShells();
   const currentPage = Number(page);
-  const { setVolume, setMuted } = useSound();
+  // const { setVolume, setMuted } = useSound();
 
   const foundBook = useMemo(
     () => BOOKSPAGES.find((b) => b.slug === bookSlug),
@@ -114,14 +114,14 @@ export default function BookPlayerPage() {
     if (DISABLE_VIDEO) setIsPlaying(false);
   }, []);
 
-  useEffect(() => {
-    console.log("isplaying", isPlaying);
-    if (isPlaying) {
-      console.log("muting music when video starts");
-      setMuted(true);
-      setVolume(0);
-    }
-  }, [isPlaying]);
+  // useEffect(() => {
+  //   console.log("isplaying", isPlaying);
+  //   if (isPlaying) {
+  //     console.log("muting music when video starts");
+  //     setMuted(true);
+  //     setVolume(0);
+  //   }
+  // }, [isPlaying]);
 
   const togglePlayPause = async () => {
     if (DISABLE_VIDEO) return;
