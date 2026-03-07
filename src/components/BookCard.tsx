@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import type { Book } from "../data/books/books";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../auth/authContext";
 
@@ -12,7 +12,6 @@ interface IBookCardProps {
 }
 
 export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { language } = i18n;
   const { isLoggedIn, setAuthModalOpen } = useAuth();
@@ -21,21 +20,15 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
   const summaryText = b.summary ? t(b.summary) : t("ui.summaryComingSoon");
 
-  const handleOpenBook = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-
-    if (!b.isLocked) {
-      navigate(`/${b.slug}/1`);
-    }
-  };
-
   const handleFlip = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    e.preventDefault();
     toggleFlip(b.slug);
   };
 
   const handleBuy = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    e.preventDefault();
 
     if (isLoggedIn) {
       alert("Payment Flow to be added");
@@ -52,11 +45,17 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
             <CardFrame>
               <CardSurface $locked={b.isLocked}>
                 <OpenArea
-                  type="button"
+                  to={`/${b.slug}/1`}
                   $locked={b.isLocked}
-                  onClick={handleOpenBook}
                   aria-label={`Open ${titleText}`}
-                  disabled={b.isLocked}
+                  onClick={(e) => {
+                    if (b.isLocked) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
+                  tabIndex={b.isLocked ? -1 : 0}
+                  aria-disabled={b.isLocked ? true : undefined}
                 >
                   <Thumb>
                     <ThumbImg
@@ -262,7 +261,7 @@ const CardSurface = styled.div<{ $locked?: boolean }>`
   }
 `;
 
-const OpenArea = styled.button<{ $locked?: boolean }>`
+const OpenArea = styled(Link)<{ $locked?: boolean }>`
   display: block;
   width: 100%;
   padding: 0;
@@ -270,14 +269,14 @@ const OpenArea = styled.button<{ $locked?: boolean }>`
   border: none;
   background: transparent;
   cursor: ${({ $locked }) => ($locked ? "not-allowed" : "pointer")};
+  text-decoration: none;
+  color: inherit;
 
   position: relative;
   z-index: 3;
 
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  appearance: none;
-  -webkit-appearance: none;
 `;
 
 const Thumb = styled.div`

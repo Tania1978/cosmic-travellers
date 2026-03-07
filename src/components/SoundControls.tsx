@@ -45,7 +45,7 @@ export function SoundControls() {
 
 const Wrapper = styled.div`
   position: fixed;
-  top: 80px;
+  top: 78px;
   right: 30px;
   z-index: 30;
 
@@ -61,8 +61,8 @@ const Wrapper = styled.div`
 `;
 
 const ToggleButton = styled.button`
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   border: none;
   border-radius: 50%;
   cursor: pointer;

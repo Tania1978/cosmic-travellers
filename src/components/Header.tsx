@@ -11,7 +11,6 @@ import ParentAuthModal from "../auth/ParentAuthModal";
 import { MessageButton } from "./MessageButton";
 import { useUserState } from "../contexts/userContext";
 
-
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -84,23 +83,26 @@ export default function Header() {
               </ImageButton>
             )}
           </DesktopOnly>
-
         </Left>
 
         <Right>
-          <MessageButton
-            iconSrc="ui/message-button.png"
-            size={120}
-            isLoggedIn={isLoggedIn}
-            childFirstName={childFirstName}
-          />
+          {inHomePage && (
+            <MessageButton
+              iconSrc="ui/message-button.png"
+              size={120}
+              isLoggedIn={isLoggedIn}
+              childFirstName={childFirstName}
+            />
+          )}
           {/* Desktop-only language selector */}
 
           <DesktopOnly>
             <LanguageSelect value={language} onChange={changeLanguage} />
           </DesktopOnly>
 
-          <ParentLoginButton />
+          <DesktopOnly>
+            <ParentLoginButton />
+          </DesktopOnly>
 
           {/* Mobile hamburger */}
           <MobileOnly>
@@ -174,6 +176,7 @@ export default function Header() {
           <LanguageRow>
             <LanguageSelect value={language} onChange={changeLanguage} />
           </LanguageRow>
+          <ParentLoginButton />
         </DrawerContent>
       </Drawer>
       <ParentAuthModal
