@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import styled from "styled-components";
 import type { Book } from "../data/books/books";
 import { useNavigate } from "react-router-dom";
@@ -21,9 +21,74 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
   const summaryText = b.summary ? t(b.summary) : t("ui.summaryComingSoon");
 
+  const tapLockRef = useRef(false);
+
+  const isIPadSafariLike = useMemo(() => {
+    if (typeof window === "undefined") return false;
+
+    const ua = window.navigator.userAgent || "";
+    const platform = window.navigator.platform || "";
+    const maxTouchPoints = window.navigator.maxTouchPoints || 0;
+    const vendor = window.navigator.vendor || "";
+
+    const isAppleTouchDevice =
+      /iPad|iPhone|iPod/.test(ua) ||
+      (platform === "MacIntel" && maxTouchPoints > 1);
+
+    const isSafariLike =
+      /Safari/.test(ua) &&
+      /Apple/.test(vendor) &&
+      !/CriOS|FxiOS|EdgiOS|OPiOS|Chrome|Firefox|Edg/.test(ua);
+
+    return isAppleTouchDevice && isSafariLike;
+  }, []);
+
   const openBook = () => {
+    console.log("open book called");
     if (b.isLocked) return;
+
+    if (isIPadSafariLike) {
+      window.location.assign(`/${b.slug}/1`);
+      return;
+    }
+
     navigate(`/${b.slug}/1`);
+  };
+
+  const handleOpenBookClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("isIPadSafariLike", isIPadSafariLike);
+    //e.stopPropagation();
+
+    if (b.isLocked) {
+      e.preventDefault();
+      return;
+    }
+
+    // if (isIPadSafariLike) {
+    //   return;
+    // }
+
+    openBook();
+  };
+
+  const handleOpenBookTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
+    if (!isIPadSafariLike) return;
+
+    e.stopPropagation();
+
+    if (b.isLocked) {
+      e.preventDefault();
+      return;
+    }
+
+    if (tapLockRef.current) return;
+    tapLockRef.current = true;
+
+    openBook();
+
+    window.setTimeout(() => {
+      tapLockRef.current = false;
+    }, 400);
   };
 
   const handleFlip = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -50,13 +115,22 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
           <FaceShell>
             <CardFrame>
               <CardSurface $locked={b.isLocked}>
-                <Thumb>
-                  <ThumbImg
-                    src={b.thumbnailSrc}
-                    alt={titleText}
-                    $locked={b.isLocked}
-                  />
-                </Thumb>
+                <OpenArea
+                  type="button"
+                  $locked={b.isLocked}
+                  aria-label={`Open ${titleText}`}
+                  disabled={b.isLocked}
+                  onClick={handleOpenBookClick}
+                  onTouchEnd={handleOpenBookTouchEnd}
+                >
+                  <Thumb>
+                    <ThumbImg
+                      src={b.thumbnailSrc}
+                      alt={titleText}
+                      $locked={b.isLocked}
+                    />
+                  </Thumb>
+                </OpenArea>
 
                 <CardMeta $locked={b.isLocked}>
                   <BookTitle>{titleText}</BookTitle>
@@ -120,21 +194,6 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
           </FaceShell>
         </div>
       </div>
-
-      {!flipped && (
-        <FrontCoverHitArea
-          type="button"
-          aria-label={`Open ${titleText}`}
-          disabled={b.isLocked}
-          $locked={b.isLocked}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (!b.isLocked) {
-              openBook();
-            }
-          }}
-        />
-      )}
     </FlipCard>
   );
 }
@@ -206,26 +265,6 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
   }
 `;
 
-const FrontCoverHitArea = styled.button<{ $locked?: boolean }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  z-index: 100;
-
-  border: none;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  cursor: ${({ $locked }) => ($locked ? "not-allowed" : "pointer")};
-
-  appearance: none;
-  -webkit-appearance: none;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-`;
-
 const FaceShell = styled.div`
   position: relative;
   width: 100%;
@@ -288,6 +327,24 @@ const CardSurface = styled.div<{ $locked?: boolean }>`
   }
 `;
 
+const OpenArea = styled.button<{ $locked?: boolean }>`
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: ${({ $locked }) => ($locked ? "not-allowed" : "pointer")};
+
+  position: relative;
+  z-index: 3;
+
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+`;
+
 const Thumb = styled.div`
   aspect-ratio: 1 / 1;
   background: #000;
@@ -329,7 +386,7 @@ const BookSubTitle = styled.p`
 
 const SummaryLink = styled.button`
   position: relative;
-  z-index: 30;
+  z-index: 4;
   margin-top: 8px;
   padding: 0;
   border: none;
@@ -358,7 +415,7 @@ const BuyButtonRow = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  z-index: 40;
+  z-index: 5;
   pointer-events: none;
 `;
 
@@ -550,5 +607,5 @@ export const CenterWrapper = styled.div<{ book?: number }>`
   bottom: 50px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 30;
+  z-index: 4;
 `;
