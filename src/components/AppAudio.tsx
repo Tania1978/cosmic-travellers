@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useSound } from "../contexts/soundContext";
-import guitarMp3 from "../assets/audio/guitar.mp3";
+import guitarMp3 from "../assets/audio/harp.mp3";
 
 export function AppAudio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
