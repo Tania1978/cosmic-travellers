@@ -264,6 +264,7 @@ const BuyBtn = styled.button`
 
 const FlipCard = styled.div<{ $flipped: boolean }>`
   perspective: 1000px;
+  -webkit-perspective: 1000px;
   position: relative;
   width: 100%;
   height: 100%;
@@ -274,6 +275,7 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
     transition: transform 700ms ease;
     transform: ${({ $flipped }) =>
       $flipped ? "rotateY(180deg)" : "rotateY(0deg)"};
@@ -286,36 +288,21 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
   }
 
   .front {
-    transform: rotateY(0deg);
+    transform: rotateY(0deg) translateZ(0);
+    -webkit-transform: rotateY(0deg) translateZ(0);
     pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
   }
 
   .back {
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) translateZ(0);
+    -webkit-transform: rotateY(180deg) translateZ(0);
     pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .flipper {
-      transition: none;
-      transform: none;
-    }
-    .face {
-      position: static;
-      transform: none;
-      height: auto;
-    }
-    .back {
-      display: ${({ $flipped }) => ($flipped ? "block" : "none")};
-      pointer-events: auto;
-    }
-    .front {
-      display: ${({ $flipped }) => ($flipped ? "none" : "block")};
-      pointer-events: auto;
-    }
   }
 `;
 
