@@ -18,7 +18,7 @@ export default function BookPlayerPage() {
   const { t } = useTranslation();
   const { earnedThisSession, isModalOpen } = useGoldenShells();
   const currentPage = Number(page);
-  const { volume, setVolume, muted, setMuted } = useSound();
+  const { setVolume, setMuted } = useSound();
 
   const foundBook = useMemo(
     () => BOOKSPAGES.find((b) => b.slug === bookSlug),
