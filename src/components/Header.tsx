@@ -88,7 +88,6 @@ export default function Header() {
         <Right>
           <MessageButton
             iconSrc="ui/message-button.png"
-            videoSrc={`${import.meta.env.BASE_URL}ui/sebba-msg.mp4`}
             size={120}
             isLoggedIn={isLoggedIn}
             childFirstName={childFirstName}

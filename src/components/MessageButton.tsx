@@ -5,7 +5,6 @@ import { useUserState } from "../contexts/userContext";
 import { useTranslation } from "react-i18next";
 
 type MessageButtonProps = {
-  videoSrc: string;
   iconSrc?: string;
   size?: number;
   isLoggedIn: boolean;
@@ -15,7 +14,6 @@ type MessageButtonProps = {
 const FADE_MS = 1000;
 
 export const MessageButton = ({
-  videoSrc,
   iconSrc = "ui/message-button.png",
   size = 120,
   isLoggedIn,
@@ -100,7 +98,7 @@ export const MessageButton = ({
               >
                 <Video
                   ref={videoRef}
-                  src={videoSrc}
+                  src={`${import.meta.env.BASE_URL}ui/sebba-msg.mp4`}
                   playsInline
                   preload="auto"
                   //onEnded={closeModal}
