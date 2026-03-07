@@ -57,7 +57,6 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
 
   const handleOpenBookClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log("isIPadSafariLike", isIPadSafariLike);
-    //e.stopPropagation();
 
     if (b.isLocked) {
       e.preventDefault();
@@ -114,7 +113,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
         <div className="face front">
           <FaceShell>
             <CardFrame>
-              <CardSurface $locked={b.isLocked}>
+              <CardSurface $locked={b.isLocked} onClick={openBook}>
                 <OpenArea
                   type="button"
                   $locked={b.isLocked}
@@ -290,7 +289,7 @@ const CardFrame = styled.div`
   -webkit-backface-visibility: hidden;
 `;
 
-const CardSurface = styled.div<{ $locked?: boolean }>`
+const CardSurface = styled.div<{ $locked?: boolean; $onClick?: any }>`
   position: relative;
   width: 100%;
   height: 100%;
@@ -337,7 +336,7 @@ const OpenArea = styled.button<{ $locked?: boolean }>`
   cursor: ${({ $locked }) => ($locked ? "not-allowed" : "pointer")};
 
   position: relative;
-  z-index: 3;
+  z-index: 100;
 
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
