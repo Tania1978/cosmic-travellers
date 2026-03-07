@@ -1,3 +1,4 @@
+import React, { useMemo, useRef } from "react";
 import styled from "styled-components";
 import type { Book } from "../data/books/books";
 import { useNavigate } from "react-router-dom";
@@ -20,127 +21,300 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
   const summaryText = b.summary ? t(b.summary) : t("ui.summaryComingSoon");
 
+  const tapLockRef = useRef(false);
+
+  const isIPadSafariLike = useMemo(() => {
+    if (typeof window === "undefined") return false;
+
+    const ua = window.navigator.userAgent || "";
+    const platform = window.navigator.platform || "";
+    const maxTouchPoints = window.navigator.maxTouchPoints || 0;
+    const vendor = window.navigator.vendor || "";
+
+    const isAppleTouchDevice =
+      /iPad|iPhone|iPod/.test(ua) ||
+      (platform === "MacIntel" && maxTouchPoints > 1);
+
+    const isSafariLike =
+      /Safari/.test(ua) &&
+      /Apple/.test(vendor) &&
+      !/CriOS|FxiOS|EdgiOS|OPiOS|Chrome|Firefox|Edg/.test(ua);
+
+    return isAppleTouchDevice && isSafariLike;
+  }, []);
+
+  const openBook = () => {
+    console.log("open book called");
+    if (b.isLocked) return;
+
+    if (isIPadSafariLike) {
+      window.location.assign(`/${b.slug}/1`);
+      return;
+    }
+
+    navigate(`/${b.slug}/1`);
+  };
+
+  const handleOpenBookClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("isIPadSafariLike", isIPadSafariLike);
+
+    if (b.isLocked) {
+      e.preventDefault();
+      return;
+    }
+
+    // if (isIPadSafariLike) {
+    //   return;
+    // }
+
+    openBook();
+  };
+
+  const handleOpenBookTouchEnd = (e: React.TouchEvent<HTMLButtonElement>) => {
+    if (!isIPadSafariLike) return;
+
+    e.stopPropagation();
+
+    if (b.isLocked) {
+      e.preventDefault();
+      return;
+    }
+
+    if (tapLockRef.current) return;
+    tapLockRef.current = true;
+
+    openBook();
+
+    window.setTimeout(() => {
+      tapLockRef.current = false;
+    }, 400);
+  };
+
+  const handleFlip = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    toggleFlip(b.slug);
+  };
+
+  const handleBuy = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (isLoggedIn) {
+      alert("Payment Flow to be added");
+    } else {
+      setAuthModalOpen(true);
+    }
+  };
+
   return (
-    <FlipCard key={b.slug} $flipped={flipped}>
+    <FlipCard $flipped={flipped}>
       <div className="flipper">
-        {/* FRONT */}
-        <div className="face front" style={{ textAlign: "center" }}>
-          <Card $locked={b.isLocked}>
-            <OpenArea
-              $locked={b.isLocked}
-              onClick={() => {
-                console.log("onclick called, b", b);
-                if (!b.isLocked) {
-                  navigate(`/${b.slug}/1`);
-                }
-              }}
-              role="button"
-              tabIndex={b.isLocked ? -1 : 0}
-              onKeyDown={(e) => {
-                if (b.isLocked) return;
-                if (e.key === "Enter" || e.key === " ") {
-                  navigate(`/${b.slug}/1`);
-                }
-              }}
-              aria-label={`Open ${titleText}`}
-            >
-              <Thumb>
-                <ThumbImg
-                  src={b.thumbnailSrc}
-                  alt={titleText}
-                  $locked={b.isLocked}
-                />
-              </Thumb>
-            </OpenArea>
-
-            <CardMeta $locked={b.isLocked}>
-              <BookTitle>{titleText}</BookTitle>
-              {b.subtitle && <BookSubTitle>{subtitleText}</BookSubTitle>}
-            </CardMeta>
-
-            <CenterWrapper book={b.number}>
-              <SummaryLink
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  toggleFlip(b.slug);
-                }}
-              >
-                <img
-                  src={
-                    language === "el" ? "/ui/summary-el.png" : "/ui/summary.png"
-                  }
-                  alt="Read story summary"
-                />
-              </SummaryLink>
-            </CenterWrapper>
-
-            {b.isLocked && (
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <BuyBtn
+        <div className="face front">
+          <FaceShell>
+            <CardFrame>
+              <CardSurface $locked={b.isLocked} onClick={openBook}>
+                <OpenArea
                   type="button"
-                  onClick={() => {
-                    isLoggedIn
-                      ? alert("Payment Flow to be added")
-                      : setAuthModalOpen(true);
-                  }}
+                  $locked={b.isLocked}
+                  aria-label={`Open ${titleText}`}
+                  disabled={b.isLocked}
+                  onClick={handleOpenBookClick}
+                  onTouchEnd={handleOpenBookTouchEnd}
                 >
-                  <img src="/ui/buybutton-3.png" alt="" aria-hidden="true" />
-                  <span>{t("bookshelf.unlock")}</span>
-                </BuyBtn>
-              </div>
-            )}
-          </Card>
+                  <Thumb>
+                    <ThumbImg
+                      src={b.thumbnailSrc}
+                      alt={titleText}
+                      $locked={b.isLocked}
+                    />
+                  </Thumb>
+                </OpenArea>
+
+                <CardMeta $locked={b.isLocked}>
+                  <BookTitle>{titleText}</BookTitle>
+                  {b.subtitle && <BookSubTitle>{subtitleText}</BookSubTitle>}
+                </CardMeta>
+
+                <CenterWrapper>
+                  <SummaryLink
+                    type="button"
+                    aria-label={`Read summary for ${titleText}`}
+                    onClick={handleFlip}
+                  >
+                    <img
+                      src={
+                        language === "el"
+                          ? "/ui/summary-el.png"
+                          : "/ui/summary.png"
+                      }
+                      alt="Read story summary"
+                    />
+                  </SummaryLink>
+                </CenterWrapper>
+
+                {b.isLocked && (
+                  <BuyButtonRow>
+                    <BuyBtn type="button" onClick={handleBuy}>
+                      <img
+                        src="/ui/buybutton-3.png"
+                        alt=""
+                        aria-hidden="true"
+                      />
+                      <span>{t("bookshelf.unlock")}</span>
+                    </BuyBtn>
+                  </BuyButtonRow>
+                )}
+              </CardSurface>
+            </CardFrame>
+          </FaceShell>
         </div>
 
-        {/* BACK */}
-        <div className="face back" style={{ textAlign: "center" }}>
-          <Card $locked={b.isLocked}>
-            <BackMeta>
-              <SummaryTitle>{titleText}</SummaryTitle>
-              <BackText>{summaryText}</BackText>
+        <div className="face back">
+          <FaceShell>
+            <CardFrame>
+              <CardSurface $locked={b.isLocked}>
+                <BackMeta>
+                  <SummaryTitle>{titleText}</SummaryTitle>
+                  <BackText>{summaryText}</BackText>
 
-              <BackRow>
-                <BackBtn
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleFlip(b.slug);
-                  }}
-                >
-                  <img src="/ui/back-arrow.png" alt="Back" />
-                </BackBtn>
-              </BackRow>
-            </BackMeta>
-          </Card>
+                  <BackRow>
+                    <BackBtn
+                      type="button"
+                      aria-label={`Back from summary of ${titleText}`}
+                      onClick={handleFlip}
+                    >
+                      <img src="/ui/back-arrow.png" alt="Back" />
+                    </BackBtn>
+                  </BackRow>
+                </BackMeta>
+              </CardSurface>
+            </CardFrame>
+          </FaceShell>
         </div>
       </div>
     </FlipCard>
   );
 }
 
-const Card = styled.div<{ $locked?: boolean }>`
+const FlipCard = styled.div<{ $flipped: boolean }>`
   position: relative;
+  width: 270px;
+  height: 440px;
+  margin: 0 auto;
+
+  perspective: 1400px;
+  -webkit-perspective: 1400px;
+
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+
+  .flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform: ${({ $flipped }) =>
+      $flipped
+        ? "rotateY(180deg) translate3d(0,0,0)"
+        : "rotateY(0deg) translate3d(0,0,0)"};
+    -webkit-transform: ${({ $flipped }) =>
+      $flipped
+        ? "rotateY(180deg) translate3d(0,0,0)"
+        : "rotateY(0deg) translate3d(0,0,0)"};
+
+    will-change: transform;
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+  }
+
+  .front {
+    transform: rotateY(0deg) translate3d(0, 0, 1px);
+    -webkit-transform: rotateY(0deg) translate3d(0, 0, 1px);
+    z-index: 2;
+    pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
+  }
+
+  .back {
+    transform: rotateY(180deg) translate3d(0, 0, 1px);
+    -webkit-transform: rotateY(180deg) translate3d(0, 0, 1px);
+    z-index: 1;
+    pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flipper {
+      transition: none;
+    }
+  }
+`;
+
+const FaceShell = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+`;
+
+const CardFrame = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+`;
+
+const CardSurface = styled.div<{ $locked?: boolean; $onClick?: any }>`
+  position: relative;
+  width: 100%;
+  height: 100%;
+
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(0, 0, 0, 0.05);
 
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(14px);
-
-  height: 440px;
-  width: 270px;
-  margin: auto;
+  -webkit-backdrop-filter: blur(14px);
 
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.35),
     0 0 20px rgba(120, 180, 255, 0.15);
 
-  animation: fadeIn 180ms ease;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
 
-  @keyframes fadeIn {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  animation: fadeInCard 180ms ease;
+
+  @keyframes fadeInCard {
     from {
       opacity: 0;
       transform: translateY(-4px);
@@ -152,12 +326,26 @@ const Card = styled.div<{ $locked?: boolean }>`
   }
 `;
 
-const OpenArea = styled.div<{ $locked?: boolean }>`
+const OpenArea = styled.button<{ $locked?: boolean }>`
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
   cursor: ${({ $locked }) => ($locked ? "not-allowed" : "pointer")};
+
+  position: relative;
+  z-index: 100;
+
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
 `;
 
 const Thumb = styled.div`
-  aspect-ratio: 1/1;
+  aspect-ratio: 1 / 1;
   background: #000;
 `;
 
@@ -178,7 +366,7 @@ const ThumbImg = styled.img<{ $locked?: boolean }>`
 `;
 
 const CardMeta = styled.div<{ $locked?: boolean }>`
-  padding: 10px 10px 0px 10px;
+  padding: 10px 10px 0 10px;
   opacity: ${({ $locked }) => ($locked ? 0.7 : 1)};
 `;
 
@@ -196,6 +384,8 @@ const BookSubTitle = styled.p`
 `;
 
 const SummaryLink = styled.button`
+  position: relative;
+  z-index: 4;
   margin-top: 8px;
   padding: 0;
   border: none;
@@ -205,6 +395,10 @@ const SummaryLink = styled.button`
 
   font-size: 0;
   line-height: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   img {
     height: 28px;
@@ -213,15 +407,30 @@ const SummaryLink = styled.button`
   }
 `;
 
+const BuyButtonRow = styled.div`
+  position: absolute;
+  top: 100px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none;
+`;
+
 const BuyBtn = styled.button`
   border: none;
   background: transparent;
   padding: 0;
   cursor: pointer;
-  margin: 10px auto 6px auto;
   display: block;
-  position: absolute;
-  top: 100px;
+  position: relative;
+  pointer-events: auto;
+
+  appearance: none;
+  -webkit-appearance: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   img {
     width: 135px;
@@ -261,73 +470,18 @@ const BuyBtn = styled.button`
   }
 `;
 
-/* ---------- Flip ---------- */
-
-const FlipCard = styled.div<{ $flipped: boolean }>`
-  perspective: 1000px;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  isolation: isolate;
-
-  .flipper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transition: transform 700ms ease;
-    transform: ${({ $flipped }) =>
-      $flipped ? "rotateY(180deg)" : "rotateY(0deg)"};
-    will-change: transform;
-  }
-
-  .face {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-  }
-
-  .front {
-    transform: rotateY(0deg);
-    pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
-  }
-
-  .back {
-    transform: rotateY(180deg);
-    pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .flipper {
-      transition: none;
-      transform: none;
-    }
-    .face {
-      position: static;
-      transform: none;
-      height: auto;
-    }
-    .back {
-      display: ${({ $flipped }) => ($flipped ? "block" : "none")};
-      pointer-events: auto;
-    }
-    .front {
-      display: ${({ $flipped }) => ($flipped ? "none" : "block")};
-      pointer-events: auto;
-    }
-  }
-`;
-
-/* ---------- Back content ---------- */
-
 const BackMeta = styled.div`
   padding: 10px;
   min-height: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 `;
 
 const SummaryTitle = styled.h3`
@@ -406,6 +560,12 @@ const BackText = styled.div`
   white-space: pre-line;
   color: ${({ theme }) => theme.colors.inkBlue};
   text-align: left;
+
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 `;
 
 const BackRow = styled.div`
@@ -421,10 +581,16 @@ const BackBtn = styled.button`
   padding: 0;
   border: none;
   background: transparent;
+  position: relative;
+  z-index: 4;
   cursor: pointer;
 
   font-size: 0;
   line-height: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   img {
     height: 28px;
@@ -437,7 +603,8 @@ export const CenterWrapper = styled.div<{ book?: number }>`
   position: absolute;
   display: flex;
   justify-content: center;
-  bottom: calc(50px);
+  bottom: 50px;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 4;
 `;
