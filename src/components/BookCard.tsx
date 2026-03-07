@@ -291,18 +291,22 @@ const FlipCard = styled.div<{ $flipped: boolean }>`
     -webkit-backface-visibility: hidden;
     transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
+    overflow: hidden;
   }
-
   .front {
-    transform: rotateY(0deg) translateZ(0);
-    -webkit-transform: rotateY(0deg) translateZ(0);
+    transform: rotateY(0deg) translateZ(1px);
+    -webkit-transform: rotateY(0deg) translateZ(1px);
     pointer-events: ${({ $flipped }) => ($flipped ? "none" : "auto")};
+    opacity: ${({ $flipped }) => ($flipped ? 0 : 1)};
+    transition: opacity 180ms ease;
   }
 
   .back {
-    transform: rotateY(180deg) translateZ(0);
-    -webkit-transform: rotateY(180deg) translateZ(0);
+    transform: rotateY(180deg) translateZ(1px);
+    -webkit-transform: rotateY(180deg) translateZ(1px);
     pointer-events: ${({ $flipped }) => ($flipped ? "auto" : "none")};
+    opacity: ${({ $flipped }) => ($flipped ? 1 : 0)};
+    transition: opacity 180ms ease;
   }
 `;
 
@@ -314,6 +318,11 @@ const BackMeta = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 `;
 
 const SummaryTitle = styled.h3`
@@ -392,6 +401,11 @@ const BackText = styled.div`
   white-space: pre-line;
   color: ${({ theme }) => theme.colors.inkBlue};
   text-align: left;
+
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 `;
 
 const BackRow = styled.div`

@@ -10,7 +10,7 @@ type SoundContextType = {
 const SoundContext = createContext<SoundContextType | undefined>(undefined);
 
 export function SoundProvider({ children }: { children: ReactNode }) {
-  const [volume, setVolume] = useState(0.1);
+  const [volume, setVolume] = useState(0.2);
   const [muted, setMuted] = useState(false);
 
   return (

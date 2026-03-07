@@ -11,7 +11,7 @@ import { useUserState } from "../contexts/userContext";
 const Page = styled.div`
   padding: 24px;
   max-width: 1400px;
-  margin: 70px auto;
+  margin: 90px auto;
   color: #0b1220;
 `;
 
