@@ -1,14 +1,13 @@
 import { useEffect, useRef } from "react";
 import { useSound } from "../contexts/soundContext";
 
-
 export function AppAudio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { volume, muted } = useSound();
 
   // create/play once
   useEffect(() => {
-    const audio = new Audio('/ui/harp.mp3');
+    const audio = new Audio(`${import.meta.env.BASE_URL}ui/guitar.mp3`);
     audio.loop = true;
     audio.volume = volume;
     audio.muted = muted;
