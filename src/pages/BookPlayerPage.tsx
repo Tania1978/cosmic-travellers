@@ -141,16 +141,30 @@ export default function BookPlayerPage() {
   };
 
   const toggleFullscreen = async () => {
-    window.alert("toggleFullscreen");
-    const el = frameRef.current;
-    if (!el) return;
+    const frame = frameRef.current;
+    const video = videoRef.current;
 
     try {
-      if (!document.fullscreenElement) {
-        await el.requestFullscreen();
-      } else {
+      if (document.fullscreenElement) {
         await document.exitFullscreen();
+        return;
       }
+
+      // Standard path first
+      if (frame?.requestFullscreen) {
+        await frame.requestFullscreen();
+        return;
+      }
+
+      // iPad Safari fallback for video
+      if (video && "webkitEnterFullscreen" in video) {
+        (
+          video as HTMLVideoElement & { webkitEnterFullscreen?: () => void }
+        ).webkitEnterFullscreen?.();
+        return;
+      }
+
+      console.log("Fullscreen not supported for this element/browser");
     } catch (e) {
       console.log("fullscreen error", e);
     }
