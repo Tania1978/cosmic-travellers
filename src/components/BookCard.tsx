@@ -44,6 +44,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   }, []);
 
   const openBook = () => {
+    window.alert("OPEN BOOK CALLED");
     console.log("open book called");
     if (b.isLocked) return;
 
@@ -109,6 +110,9 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
 
   return (
     <FlipCard $flipped={flipped}>
+      <div id="test" onClick={openBook}>
+        DIV TO TEST
+      </div>
       <div className="flipper">
         <div className="face front">
           <FaceShell>
