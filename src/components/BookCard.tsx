@@ -156,7 +156,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
                 </CenterWrapper>
 
                 {b.isLocked && (
-                  <BuyButtonRow>
+                  <BuyButtonRow id="BUY BUTTON ROW">
                     <BuyBtn type="button" onClick={handleBuy}>
                       <img
                         src="/ui/buybutton-3.png"
@@ -416,7 +416,7 @@ const BuyButtonRow = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  z-index: 5;
+  z-index: 100;
   pointer-events: none;
 `;
 
