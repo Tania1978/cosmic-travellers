@@ -270,42 +270,6 @@ export default function BookPlayerPage() {
 
 /* ---------- styles ---------- */
 
-// const Wrap = styled.div`
-//   width: 60%;
-//   height: 100%;
-//   margin: 80px auto;
-// `;
-
-// const Stage = styled.div`
-//   width: 100%;
-//   height: 100vh;
-
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// `;
-
-// const VideoFrame = styled.div`
-//   position: relative;
-//   border:'2px solid red'
-
-//   width: 950px;
-//   height:80%;
-//   max-width: 90vw;
-//   aspect-ratio: 16 / 9;
-
-//   border-radius: 14px;
-//   overflow: hidden;
-
-//   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-//   background: #000;
-
-//   /* Hover controls */
-//   &:hover .controlsLayer {
-//     opacity: 1;
-//   }
-// `;
-
 const Wrap = styled.div`
   width: min(60%, 1100px);
   margin: 80px auto 0;
@@ -314,7 +278,7 @@ const Wrap = styled.div`
 const Stage = styled.div`
   width: 100%;
   min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 90dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -388,25 +352,6 @@ const IconButton = styled.button`
   place-items: center;
   font-size: 1.125rem;
 `;
-
-// const ControlsLayer = styled.div.attrs({ className: "controlsLayer" })`
-//   position: absolute;
-//   inset: 0;
-//   z-index: 10;
-
-//   opacity: 0;
-//   transition: opacity 0.25s ease;
-
-//   pointer-events: none; /* layer doesn't block video; buttons re-enable */
-// `;
-
-// const CenterControls = styled.div`
-//   position: absolute;
-//   inset: 0;
-//   display: grid;
-//   place-items: center;
-//   pointer-events: none;
-// `;
 
 const BigButton = styled.button`
   pointer-events: auto;

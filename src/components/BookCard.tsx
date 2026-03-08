@@ -55,17 +55,10 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   };
 
   const handleOpenBookClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("isIPadSafariLike", isIPadSafariLike);
-
     if (b.isLocked) {
       e.preventDefault();
       return;
     }
-
-    // if (isIPadSafariLike) {
-    //   return;
-    // }
-
     openBook();
   };
 
@@ -108,14 +101,11 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
 
   return (
     <FlipCard $flipped={flipped}>
-      <div id="test" onClick={openBook}>
-        DIV TO TEST
-      </div>
       <div className="flipper">
         <div className="face front">
           <FaceShell>
             <CardFrame>
-              <CardSurface $locked={b.isLocked} onClick={openBook}>
+              <CardSurface $locked={b.isLocked}>
                 <OpenArea
                   type="button"
                   $locked={b.isLocked}
