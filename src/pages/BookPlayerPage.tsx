@@ -168,8 +168,8 @@ export default function BookPlayerPage() {
     <>
       <PageBackground src="/ui/bg5.jpg" overlay />
       <Wrap>
-        <Stage>
-          <VideoFrame ref={frameRef}>
+        <Stage id="Stage">
+          <VideoFrame ref={frameRef} id="VIDEO FRAME">
             {/* ✅ Shell opportunity binding for current page */}
             <ShellOpportunityBinder
               page={Number(page)}
@@ -180,9 +180,9 @@ export default function BookPlayerPage() {
 
             {/* Media area: either video, or a calm placeholder (no MP4 mode) */}
             {DISABLE_VIDEO ? (
-              <Placeholder>
-                <CalmBackground />
-                <ComingSoonText>
+              <Placeholder id="Placeholder">
+                <CalmBackground id="CalmBackground" />
+                <ComingSoonText id="ComingSoonText">
                   ✨ {t("ui.storyAnimationComingSoon")} ✨
                 </ComingSoonText>
               </Placeholder>
@@ -200,8 +200,8 @@ export default function BookPlayerPage() {
             )}
 
             {/* Controls: visible ONLY on hover of the frame */}
-            <ControlsLayer>
-              <TopBar>
+            <ControlsLayer id="ControlsLayer">
+              <TopBar id="TopBar">
                 <Meta />
 
                 <IconButton
