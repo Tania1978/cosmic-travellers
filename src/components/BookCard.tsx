@@ -44,12 +44,9 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   }, []);
 
   const openBook = () => {
-    window.alert("OPEN BOOK CALLED");
-    console.log("open book called");
     if (b.isLocked) return;
 
     if (isIPadSafariLike) {
-      window.alert(isIPadSafariLike);
       navigate(`/${b.slug}/1`);
       return;
     }
