@@ -322,9 +322,9 @@ const Stage = styled.div`
 
 const VideoFrame = styled.div`
   position: relative;
-  width: min(950px, 90vw);
+  width: min(950px, 92vw);
   aspect-ratio: 16 / 9;
-  min-height: 240px;
+  min-height: 360px;
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
@@ -334,6 +334,21 @@ const VideoFrame = styled.div`
     opacity: 1;
   }
 `;
+
+// const VideoFrame = styled.div`
+//   position: relative;
+//   width: min(950px, 90vw);
+//   aspect-ratio: 16 / 9;
+//   min-height: 240px;
+//   border-radius: 14px;
+//   overflow: hidden;
+//   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+//   background: #000;
+
+//   &:hover .controlsLayer {
+//     opacity: 1;
+//   }
+// `;
 
 const Video = styled.video`
   width: 100%;
