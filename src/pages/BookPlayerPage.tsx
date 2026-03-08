@@ -19,7 +19,7 @@ export default function BookPlayerPage() {
   const { earnedThisSession, isModalOpen } = useGoldenShells();
   const currentPage = Number(page);
   // const { setVolume, setMuted } = useSound();
-  window.alert({ bookSlug, page });
+  window.alert(JSON.stringify({ bookSlug, page }));
   const foundBook = useMemo(
     () => BOOKSPAGES.find((b) => b.slug === bookSlug),
     [bookSlug],
