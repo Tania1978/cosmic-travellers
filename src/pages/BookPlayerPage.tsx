@@ -290,6 +290,7 @@ const VideoFrame = styled.div`
   border:'2px solid red'
 
   width: 950px;
+  height:80%;
   max-width: 90vw;
   aspect-ratio: 16 / 9;
 
