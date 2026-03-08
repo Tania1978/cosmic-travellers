@@ -343,17 +343,6 @@ const Video = styled.video`
   background: #000;
 `;
 
-const ControlsLayer = styled.div.attrs({ className: "controlsLayer" })`
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-
-  opacity: 0;
-  transition: opacity 0.25s ease;
-
-  pointer-events: none; /* layer doesn't block video; buttons re-enable */
-`;
-
 const TopBar = styled.div`
   position: absolute;
   top: 10px;
@@ -400,13 +389,24 @@ const IconButton = styled.button`
   font-size: 1.125rem;
 `;
 
-const CenterControls = styled.div`
-  position: absolute !important;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  pointer-events: none;
-`;
+// const ControlsLayer = styled.div.attrs({ className: "controlsLayer" })`
+//   position: absolute;
+//   inset: 0;
+//   z-index: 10;
+
+//   opacity: 0;
+//   transition: opacity 0.25s ease;
+
+//   pointer-events: none; /* layer doesn't block video; buttons re-enable */
+// `;
+
+// const CenterControls = styled.div`
+//   position: absolute;
+//   inset: 0;
+//   display: grid;
+//   place-items: center;
+//   pointer-events: none;
+// `;
 
 const BigButton = styled.button`
   pointer-events: auto;
@@ -425,6 +425,30 @@ const BigButton = styled.button`
   place-items: center;
   ont-size: 1.75rem;
 `;
+
+const ControlsLayer = styled.div.attrs({ className: "controlsLayer" })`
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+
+  opacity: 0;
+  transition: opacity 0.25s ease;
+
+  pointer-events: none; /* layer doesn't block video; buttons re-enable */
+`;
+
+const CenterControls = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 21;
+`;
+
+// const BigButton = styled.button`
+//   pointer-events: auto;
+// `;
 
 const BottomLeft = styled.div`
   position: absolute;
