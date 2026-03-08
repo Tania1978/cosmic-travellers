@@ -270,16 +270,50 @@ export default function BookPlayerPage() {
 
 /* ---------- styles ---------- */
 
+// const Wrap = styled.div`
+//   width: 60%;
+//   height: 100%;
+//   margin: 80px auto;
+// `;
+
+// const Stage = styled.div`
+//   width: 100%;
+//   height: 100vh;
+
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// `;
+
+// const VideoFrame = styled.div`
+//   position: relative;
+//   border:'2px solid red'
+
+//   width: 950px;
+//   height:80%;
+//   max-width: 90vw;
+//   aspect-ratio: 16 / 9;
+
+//   border-radius: 14px;
+//   overflow: hidden;
+
+//   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+//   background: #000;
+
+//   /* Hover controls */
+//   &:hover .controlsLayer {
+//     opacity: 1;
+//   }
+// `;
+
 const Wrap = styled.div`
-  width: 60%;
-  height: 100%;
-  margin: 80px auto;
+  width: min(60%, 1100px);
+  margin: 80px auto 0;
 `;
 
 const Stage = styled.div`
   width: 100%;
-  height: 100vh;
-
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -287,20 +321,14 @@ const Stage = styled.div`
 
 const VideoFrame = styled.div`
   position: relative;
-  border:'2px solid red'
-
-  width: 950px;
-  height:80%;
-  max-width: 90vw;
+  width: min(950px, 90vw);
   aspect-ratio: 16 / 9;
-
+  min-height: 240px;
   border-radius: 14px;
   overflow: hidden;
-
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   background: #000;
 
-  /* Hover controls */
   &:hover .controlsLayer {
     opacity: 1;
   }
@@ -420,29 +448,68 @@ const Fallback = styled.div`
   font-size: 1rem;
 `;
 
-/** Placeholder fills the same exact space as the video */
+// /** Placeholder fills the same exact space as the video */
+// const Placeholder = styled.div`
+//   width: 100%;
+//   height: 100%;
+//   position: relative;
+// `;
+
+// /** Replace this with your calm still (or gentle gradient / stars) */
+// const CalmBackground = styled.div`
+//   position: absolute;
+//   inset: 0;
+
+//   /* Example gentle background */
+//   background:
+//     radial-gradient(
+//       circle at 30% 30%,
+//       rgba(255, 255, 255, 0.12),
+//       rgba(255, 255, 255, 0) 45%
+//     ),
+//     radial-gradient(
+//       circle at 70% 60%,
+//       rgba(255, 255, 255, 0.1),
+//       rgba(255, 255, 255, 0) 45%
+//     ),
+//     linear-gradient(180deg, rgba(10, 14, 30, 0.9), rgba(5, 8, 18, 0.95));
+// `;
+
+// const ComingSoonText = styled.p`
+//   position: absolute;
+//   left: 50%;
+//   bottom: 18px;
+//   transform: translateX(-50%);
+//   margin: 0;
+//   padding: 10px 14px;
+//   border-radius: 999px;
+//   font-size: 0.875rem;
+//   letter-spacing: 0.2px;
+//   color: rgba(255, 255, 255, 0.92);
+//   background: rgba(0, 0, 0, 0.35);
+//   backdrop-filter: blur(6px);
+// `;
+
 const Placeholder = styled.div`
-  width: 100%;
-  height: 100%;
-  position: relative;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 `;
 
-/** Replace this with your calm still (or gentle gradient / stars) */
 const CalmBackground = styled.div`
   position: absolute;
   inset: 0;
-
-  /* Example gentle background */
+  z-index: 0;
   background:
     radial-gradient(
       circle at 30% 30%,
       rgba(255, 255, 255, 0.12),
-      rgba(255, 255, 255, 0) 45%
+      transparent 45%
     ),
     radial-gradient(
       circle at 70% 60%,
       rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0) 45%
+      transparent 45%
     ),
     linear-gradient(180deg, rgba(10, 14, 30, 0.9), rgba(5, 8, 18, 0.95));
 `;
@@ -452,12 +519,12 @@ const ComingSoonText = styled.p`
   left: 50%;
   bottom: 18px;
   transform: translateX(-50%);
+  z-index: 2;
   margin: 0;
   padding: 10px 14px;
   border-radius: 999px;
-  font-size: 0.875rem;
-  letter-spacing: 0.2px;
   color: rgba(255, 255, 255, 0.92);
   background: rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 `;
