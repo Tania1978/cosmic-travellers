@@ -169,7 +169,7 @@ export default function BookPlayerPage() {
       <PageBackground src="/ui/bg5.jpg" overlay />
       <Wrap>
         <Stage>
-          <VideoFrame ref={frameRef}>
+          <VideoFrame ref={frameRef} key={`${bookSlug}-${page}`}>
             {/* ✅ Shell opportunity binding for current page */}
             <ShellOpportunityBinder
               page={Number(page)}
@@ -287,6 +287,7 @@ const Stage = styled.div`
 
 const VideoFrame = styled.div`
   position: relative;
+  border:'2px solid red'
 
   width: 950px;
   max-width: 90vw;
