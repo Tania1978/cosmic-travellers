@@ -165,7 +165,7 @@ export default function BookPlayerPage() {
   }
 
   return (
-    <>
+    <div style={{ border: "2px solid blue" }}>
       <PageBackground src="/ui/bg5.jpg" overlay />
       <Wrap>
         <Stage>
@@ -264,7 +264,7 @@ export default function BookPlayerPage() {
           </VideoFrame>
         </Stage>
       </Wrap>
-    </>
+    </div>
   );
 }
 
