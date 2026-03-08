@@ -313,6 +313,7 @@ const Wrap = styled.div`
 
 const Stage = styled.div`
   width: 100%;
+  min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   align-items: center;
