@@ -141,6 +141,7 @@ export default function BookPlayerPage() {
   };
 
   const toggleFullscreen = async () => {
+    window.alert("toggleFullscreen");
     const el = frameRef.current;
     if (!el) return;
 
@@ -278,7 +279,7 @@ const Wrap = styled.div`
 const Stage = styled.div`
   width: 100%;
   min-height: 100vh;
-  min-height: 90dvh;
+  min-height: 80dvh;
   display: flex;
   align-items: center;
   justify-content: center;
