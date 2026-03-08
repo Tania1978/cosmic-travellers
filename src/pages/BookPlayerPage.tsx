@@ -141,32 +141,37 @@ export default function BookPlayerPage() {
   };
 
   const toggleFullscreen = async () => {
+    window.alert("toggleFullscreen called");
+
     const frame = frameRef.current;
     const video = videoRef.current;
 
+    window.alert(`frame exists: ${!!frame}\nvideo exists: ${!!video}`);
+
     try {
-      if (document.fullscreenElement) {
+      // iPad Safari video fullscreen
+      if (video && (video as any).webkitEnterFullscreen) {
+        window.alert("Using webkitEnterFullscreen()");
+        (video as any).webkitEnterFullscreen();
+        return;
+      }
+
+      // Standard Fullscreen API
+      if (!document.fullscreenElement) {
+        window.alert("Trying requestFullscreen()");
+        if (frame?.requestFullscreen) {
+          await frame.requestFullscreen();
+          window.alert("requestFullscreen resolved");
+        } else {
+          window.alert("requestFullscreen not supported on frame");
+        }
+      } else {
+        window.alert("Trying exitFullscreen()");
         await document.exitFullscreen();
-        return;
+        window.alert("exitFullscreen resolved");
       }
-
-      // Standard path first
-      if (frame?.requestFullscreen) {
-        await frame.requestFullscreen();
-        return;
-      }
-
-      // iPad Safari fallback for video
-      if (video && "webkitEnterFullscreen" in video) {
-        (
-          video as HTMLVideoElement & { webkitEnterFullscreen?: () => void }
-        ).webkitEnterFullscreen?.();
-        return;
-      }
-
-      console.log("Fullscreen not supported for this element/browser");
-    } catch (e) {
-      console.log("fullscreen error", e);
+    } catch (e: any) {
+      window.alert(`Fullscreen error: ${e?.message || e}`);
     }
   };
 
