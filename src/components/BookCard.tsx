@@ -49,7 +49,9 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
     if (b.isLocked) return;
 
     if (isIPadSafariLike) {
+      window.alert(isIPadSafariLike);
       window.location.assign(`/${b.slug}/1`);
+      navigate(`/${b.slug}/1`);
       return;
     }
 
