@@ -169,7 +169,7 @@ export default function BookPlayerPage() {
       <PageBackground src="/ui/bg5.jpg" overlay />
       <Wrap>
         <Stage>
-          <VideoFrame ref={frameRef} key={`${bookSlug}-${page}`}>
+          <VideoFrame ref={frameRef}>
             {/* ✅ Shell opportunity binding for current page */}
             <ShellOpportunityBinder
               page={Number(page)}
