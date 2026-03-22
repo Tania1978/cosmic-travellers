@@ -26,3 +26,59 @@ export const BOOKLET2_SHELLS: ShellOpportunity[] = [
     correctChoiceId: "b",
   },
 ];
+
+export const BOOKLET3_SHELLS: ShellOpportunity[] = [
+  {
+    bookletId: "booklet-3",
+    id: "stars-are-suns",
+    page: 3,
+    question: "What are the stars we see in the night sky?",
+    choices: [
+      { id: "a", label: "✨ Tiny lights" },
+      { id: "b", label: "☀️ Suns far away" },
+      { id: "c", label: "🪐 Planets" },
+    ],
+    correctChoiceId: "b",
+  },
+  {
+    bookletId: "booklet-3",
+    id: "solar-system",
+    page: 4,
+    question: "What is our Solar System?",
+    choices: [
+      { id: "a", label: "🌌 A group of stars" },
+      { id: "b", label: "☀️ The Sun and the planets around it" },
+      { id: "c", label: "🌙 Just the Moon and Earth" },
+    ],
+    correctChoiceId: "b",
+  },
+  {
+    bookletId: "booklet-3",
+    id: "galaxy-home",
+    page: 6,
+    question: "Where do we live in space?",
+    choices: [
+      { id: "a", label: "🌌 In a galaxy called the Milky Way" },
+      { id: "b", label: "☁️ In the clouds" },
+      { id: "c", label: "🔥 Inside the Sun" },
+    ],
+    correctChoiceId: "a",
+  },
+  {
+    bookletId: "booklet-3",
+    id: "life-water",
+    page: 9,
+    question: "What makes life possible on Earth?",
+    choices: [
+      { id: "a", label: "💧 Water" },
+      { id: "b", label: "🪨 Rocks" },
+      { id: "c", label: "🌫️ Air only" },
+    ],
+    correctChoiceId: "a",
+  },
+];
+
+export const ALL_SHELL_OPPORTUNITIES: ShellOpportunity[] = [
+  ...BOOKLET2_SHELLS,
+  ...BOOKLET3_SHELLS,
+];

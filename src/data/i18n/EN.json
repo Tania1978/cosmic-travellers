@@ -13,11 +13,15 @@
   "book.theMissionBegins.title": "How the Mission Began",
   "book.theMissionBegins.subtitle": "A Series Introduction Booklet",
   "book.theMissionBegins.summary": "Four young travellers from the Great School of the Universe receive a mysterious glowing scroll and a pair of Magical Glasses that reveal the hidden language of nature. \n\n Chosen for their very first journey, they set course for Earth to observe, learn, and discover how life works — together with the children reading their story. \n\n A magical introduction to the Cosmic Travellers series, where future adventures gently explore science, nature, and the wonders of our world.",
-  "book.booklet_2.title": "Our Place in Space & Life’s Magical Ingredient",
-  "book.booklet_2.subtitle": "Landing on Earth",
-  "book.booklet_2.summary": "The Travellers land on Earth and meet their wise teacher, Mr. Polychronis, who welcomes them with a magical lakeside picnic. \n\n As they watch the evening sky, they learn about our planet’s place in the universe and the origins of life on Earth. \n\nTogether, they discover the quiet secret that connects every living being and makes life possible..",
-  "book.landingOnEarth.title": "Landing on Earth",
-  "book.landingOnEarth.subtitle": "The First Adventure",
+
+  "book.booklet_2.title": "Landing on Earth",
+  "book.booklet_2.subtitle": "How life begun",
+  "book.booklet_2.summary": "The Travellers land on Earth and meet their wise teacher, Mr. Amber, who welcomes them with a magical lakeside picnic. \n\n As they watch the evening sky, they learn about  the origins of life on Earth.",
+
+  "book.booklet_3.title": "Our Place in the Universe",
+  "book.booklet_3.subtitle": "From Stars and Galaxies to the Magic of Life on Earth",
+  "book.booklet_3.summary": "By a quiet lakeside, the children explore the night sky with Mr Amber and learn that stars are distant suns, each with planets traveling around them. \n\n They discover our Solar System, the Milky Way Galaxy, and the vast universe beyond, feeling smaller and more amazed with every new idea.\n\n A shooting star sparks their imagination and quiet wishes. As the night gently comes to a close, they settle in, wrapped in warmth and wonder, ready for whatever tomorrow’s adventure will bring.",
+
   "ui.storyAnimationComingSoon": "Story animation coming soon",
   "ui.summaryComingSoon": "Summary coming soon",
   "ui.bookshelf": "Bookshelf",

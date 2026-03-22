@@ -31,12 +31,13 @@ export const BOOKS: Book[] = [
     number: 2,
   },
   {
-    slug: "landing-on-earth",
-    title: "book.landingOnEarth.title",
-    subtitle: "book.landingOnEarth.subtitle",
-    thumbnailSrc: "/books/intro/cover.jpg",
+    slug: "booklet-3",
+    title: "book.booklet_3.title",
+    subtitle: "book.booklet_3.subtitle",
+    summary: "book.booklet_3.summary",
+    thumbnailSrc: "/books/chapter/cover_3.png",
     pagesCount: 10,
-    isLocked: true,
+    isLocked: false,
     number: 3,
   },
 ];
@@ -53,7 +54,6 @@ export const INTRO_STAGE = {
 } as const;
 
 export type IntroStage = (typeof INTRO_STAGE)[keyof typeof INTRO_STAGE];
-
 
 export const INTRO_VIDEO_MAP = {
   [INTRO_STAGE.ASK_NAME]: {

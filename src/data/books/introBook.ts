@@ -76,4 +76,32 @@ export const SECOND_BOOK: BookConfig = {
   ],
 };
 
-export const BOOKSPAGES: BookConfig[] = [INTRO_BOOK, SECOND_BOOK];
+export const THIRD_BOOK: BookConfig = {
+  slug: "booklet-3",
+  title: "Third Booklet",
+  subtitle: "Cosmic Travellers",
+  videoSrc: "/books/chapter/final-music-2.mp4",
+  requiredShellIds: [
+    "stars-are-suns",
+    "solar-system",
+    "galaxy-home",
+    "life-water",
+  ],
+  chapters: [
+    { page: 1, start: 0, end: 5 },
+
+    { page: 2, start: 5, end: 41 },
+    { page: 3, start: 41, end: 78 },
+    { page: 4, start: 78, end: 104 },
+    { page: 5, start: 104, end: 139 },
+    { page: 6, start: 139, end: 163 },
+    { page: 7, start: 163, end: 193 },
+    { page: 8, start: 193, end: 211 },
+    { page: 9, start: 211, end: 231 },
+
+    { page: 10, start: 231, end: 279 },
+    { page: 11, start: 279, end: 313 },
+    { page: 12, start: 313, end: 322, hidden: true },
+  ],
+};
+export const BOOKSPAGES: BookConfig[] = [INTRO_BOOK, SECOND_BOOK, THIRD_BOOK];

@@ -3,14 +3,16 @@ import { Navigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { DISABLE_VIDEO } from "../config/features";
 import { useChapterVideoPlayer } from "../hooks/useChapterVideoPlayer";
-import { BOOKS } from "../data/books";
 import { CustomIconButton } from "../components/CustomIconButton";
 import PageBackground from "../components/PageBackground";
 import { useTranslation } from "react-i18next";
 import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { ShellOpportunityBinder } from "../GoldenShells/utils";
 import { GoldenShellOverlay } from "../GoldenShells/GoldenShellOverlay";
+
+import { BOOKS as BOOK_CONFIGS } from "../data/books";
 import { BOOKSPAGES } from "../data/books/introBook";
+import { ALL_SHELL_OPPORTUNITIES } from "../data/shells/shells_opportunitites";
 //import { useSound } from "../contexts/soundContext";
 
 export default function BookPlayerPage() {
@@ -24,6 +26,16 @@ export default function BookPlayerPage() {
     () => BOOKSPAGES.find((b) => b.slug === bookSlug),
     [bookSlug],
   );
+
+  const shellOpportunities = useMemo(() => {
+    if (!foundBook?.requiredShellIds?.length) return [];
+
+    return ALL_SHELL_OPPORTUNITIES.filter((shell: any) =>
+      foundBook.requiredShellIds?.includes(shell.id),
+    );
+  }, [foundBook]);
+
+  console.log(foundBook);
 
   // 2️⃣ Find current chapter
   const chapterNow = useMemo(
@@ -92,7 +104,7 @@ export default function BookPlayerPage() {
   }, [isModalOpen]);
 
   const isValidSlug = useMemo(() => {
-    return !!bookSlug && !!BOOKS[bookSlug];
+    return !!bookSlug && !!BOOK_CONFIGS[bookSlug];
   }, [bookSlug]);
 
   if (!isValidSlug) return <Navigate to="/" replace />;
@@ -196,6 +208,7 @@ export default function BookPlayerPage() {
               videoRef={videoRef}
               chapterEnd={currentChapter.end}
               buffer={2.5} // ✅ reveal 2–3 seconds earlier
+              opportunities={shellOpportunities}
             />
 
             {/* Media area: either video, or a calm placeholder (no MP4 mode) */}
