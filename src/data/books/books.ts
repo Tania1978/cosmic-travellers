@@ -37,7 +37,7 @@ export const BOOKS: Book[] = [
     summary: "book.booklet_3.summary",
     thumbnailSrc: "/books/chapter/cover_3.png",
     pagesCount: 10,
-    isLocked: false,
+    isLocked: true,
     number: 3,
   },
 ];
