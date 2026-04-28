@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
  * Sacred / cinematic modal styling
  * Matches: warm gold frame, frosted glass, soft bloom, cosmic calm.
  */
-
 export function GoldenShellModal() {
   const {
     activeOpportunity,
@@ -16,31 +15,55 @@ export function GoldenShellModal() {
     closeModal,
     submitAnswer,
     isShellEarned,
+    shellCompletionVideoSrc,
+    hasEarnedAllBookletShells,
   } = useGoldenShells();
 
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [showCompletionVideo, setShowCompletionVideo] = useState(false);
+
   const { t } = useTranslation();
   const opp = activeOpportunity;
-  const visible = isModalOpen && opp && !isShellEarned(opp.id);
+
+  const canShowQuestion = opp && !isShellEarned(opp.id);
+  const canShowCompletionVideo =
+    hasEarnedAllBookletShells && !!shellCompletionVideoSrc;
+  const shouldShowCompletionVideo =
+    showCompletionVideo || (!canShowQuestion && canShowCompletionVideo);
+
+  const visible = isModalOpen && (canShowQuestion || canShowCompletionVideo);
   if (!visible) return null;
+
+  const handleClose = () => {
+    setFeedback(null);
+    setShowCompletionVideo(false);
+    closeModal();
+  };
 
   const onPick = (choiceId: string) => {
     const res = submitAnswer(choiceId);
 
     if (res.correct) {
+      if (res.completedBooklet && shellCompletionVideoSrc) {
+        setShowCompletionVideo(true);
+        return;
+      }
+
       setFeedback("Golden Shell recorded.");
       window.setTimeout(() => {
         setFeedback(null);
         closeModal();
       }, 650);
-    } else {
-      setFeedback("Try again.");
-      window.setTimeout(() => setFeedback(null), 900);
+
+      return;
     }
+
+    setFeedback("Try again.");
+    window.setTimeout(() => setFeedback(null), 900);
   };
 
   return (
-    <Overlay role="dialog" aria-modal="true" onClick={closeModal}>
+    <Overlay role="dialog" aria-modal="true" onClick={handleClose}>
       <CardWrap onClick={(e) => e.stopPropagation()}>
         <Medallion aria-hidden="true">
           <Img src="/ui/golden-shell.png" alt="" draggable={false} />
@@ -51,29 +74,49 @@ export function GoldenShellModal() {
           <GlassPanel>
             <Header>
               <Title>{t("ui.modalTitle")}</Title>
-              <CloseButton onClick={closeModal} aria-label="Close">
+              <CloseButton onClick={handleClose} aria-label="Close">
                 ✕
               </CloseButton>
             </Header>
 
-            <QuestionText>{opp.question}</QuestionText>
+            {shouldShowCompletionVideo ? (
+              <CompletionVideo
+                src={shellCompletionVideoSrc}
+                autoPlay
+                playsInline
+                controls={false}
+                onEnded={handleClose}
+              />
+            ) : opp ? (
+              <>
+                <QuestionText>{opp.question}</QuestionText>
 
-            <ChoicesGrid>
-              {opp.choices.map((c) => (
-                <ChoiceRow key={c.id} onClick={() => onPick(c.id)}>
-                  <ChoiceLabel>{c.label}</ChoiceLabel>
-                  <ChoiceArrow aria-hidden="true">›</ChoiceArrow>
-                </ChoiceRow>
-              ))}
-            </ChoicesGrid>
+                <ChoicesGrid>
+                  {opp.choices.map((c) => (
+                    <ChoiceRow key={c.id} onClick={() => onPick(c.id)}>
+                      <ChoiceLabel>{c.label}</ChoiceLabel>
+                      <ChoiceArrow aria-hidden="true">›</ChoiceArrow>
+                    </ChoiceRow>
+                  ))}
+                </ChoicesGrid>
 
-            {feedback && <FeedbackText>{feedback}</FeedbackText>}
+                {feedback && <FeedbackText>{feedback}</FeedbackText>}
+              </>
+            ) : null}
           </GlassPanel>
         </LuminousFrame>
       </CardWrap>
     </Overlay>
   );
 }
+
+const CompletionVideo = styled.video`
+  width: 100%;
+  max-height: 60vh;
+  display: block;
+  border-radius: 18px;
+  background: black;
+`;
 
 const breathe = keyframes`
   0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 10px rgba(255,190,120,.25)); }

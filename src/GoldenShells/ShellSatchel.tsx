@@ -4,21 +4,14 @@ import { useGoldenShells } from "./GoldenShellsProvider";
 import { pulseGlow } from "./GoldenShellIcon";
 
 export function ShellSatchel() {
-  const { totalEarned, lastEvent, clearLastEvent, setSatchelEl } =
-    useGoldenShells();
+  const { earnedThisSession } = useGoldenShells();
 
   const [pulse, setPulse] = useState(false);
   const [visible, setVisible] = useState(false);
-  const satchelRef = useRef<HTMLDivElement | null>(null);
+  const previousEarnedRef = useRef(earnedThisSession);
 
   useEffect(() => {
-    if (visible) {
-      setSatchelEl(satchelRef.current);
-    }
-  }, [visible, setSatchelEl]);
-
-  useEffect(() => {
-    if (lastEvent?.type === "shellEarned") {
+    if (earnedThisSession > previousEarnedRef.current) {
       setVisible(true);
       setPulse(true);
 
@@ -27,24 +20,26 @@ export function ShellSatchel() {
       }, 4000);
 
       const hideTimer = window.setTimeout(() => {
-        setVisible(false); // 👈 fully remove from DOM
-        clearLastEvent();
-      }, 4000); // calm cinematic timing
+        setVisible(false);
+      }, 4000);
+
+      previousEarnedRef.current = earnedThisSession;
 
       return () => {
         window.clearTimeout(pulseTimer);
         window.clearTimeout(hideTimer);
       };
     }
-  }, [lastEvent, clearLastEvent]);
 
-  // 👇 THIS is the key change — removes EVERYTHING (icon, container, count)
+    previousEarnedRef.current = earnedThisSession;
+  }, [earnedThisSession]);
+
   if (!visible) return null;
 
   return (
-    <SatchelContainer ref={satchelRef} $pulse={pulse}>
-      <SatchelIcon src={"/ui/saschet.png"} alt="" draggable={false} />
-      <Count>{totalEarned}</Count>
+    <SatchelContainer $pulse={pulse}>
+      <SatchelIcon src="/ui/saschet.png" alt="" draggable={false} />
+      <Count>{earnedThisSession}</Count>
     </SatchelContainer>
   );
 }

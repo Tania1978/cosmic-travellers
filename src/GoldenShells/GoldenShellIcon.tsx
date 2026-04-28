@@ -2,10 +2,21 @@ import styled, { keyframes } from "styled-components";
 import { useGoldenShells } from "./GoldenShellsProvider";
 
 export function GoldenShellIcon() {
-  const { activeOpportunity, isShellEarned, openModal } = useGoldenShells();
+  const {
+    activeOpportunity,
+    isShellEarned,
+    openModal,
+    hasEarnedAllBookletShells,
+    shellCompletionVideoSrc,
+  } = useGoldenShells();
 
-  if (!activeOpportunity) return null;
-  if (isShellEarned(activeOpportunity.id)) return null;
+  const hasQuestionAvailable =
+    activeOpportunity && !isShellEarned(activeOpportunity.id);
+
+  const hasCompletionVideoAvailable =
+    hasEarnedAllBookletShells && !!shellCompletionVideoSrc;
+
+  if (!hasQuestionAvailable && !hasCompletionVideoAvailable) return null;
 
   return (
     <ShellButton
@@ -48,14 +59,10 @@ export const Img = styled.img`
 `;
 
 const ShellButton = styled.button`
-  position: absolute;
-  z-index: 210;
   pointer-events: auto; /* because parent is pointerEvents none */
-  top: 16px;
-  left: 50%;
   transform: translateX(-50%); /* 🔥 true horizontal center */
-  width: 56px;
-  height: 56px;
+  width: 50px;
+  height: 50px;
   border-radius: 999px;
   border: none;
   background: rgba(255, 255, 255, 0.12);

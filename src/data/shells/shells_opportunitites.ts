@@ -31,7 +31,7 @@ export const BOOKLET3_SHELLS: ShellOpportunity[] = [
   {
     bookletId: "booklet-3",
     id: "stars-are-suns",
-    page: 3,
+    page: 4,
     question: "What are the stars we see in the night sky?",
     choices: [
       { id: "a", label: "✨ Tiny lights" },
@@ -43,7 +43,7 @@ export const BOOKLET3_SHELLS: ShellOpportunity[] = [
   {
     bookletId: "booklet-3",
     id: "solar-system",
-    page: 4,
+    page: 5,
     question: "What is our Solar System?",
     choices: [
       { id: "a", label: "🌌 A group of stars" },
@@ -55,7 +55,7 @@ export const BOOKLET3_SHELLS: ShellOpportunity[] = [
   {
     bookletId: "booklet-3",
     id: "galaxy-home",
-    page: 6,
+    page: 7,
     question: "Where do we live in space?",
     choices: [
       { id: "a", label: "🌌 In a galaxy called the Milky Way" },
@@ -67,7 +67,7 @@ export const BOOKLET3_SHELLS: ShellOpportunity[] = [
   {
     bookletId: "booklet-3",
     id: "life-water",
-    page: 9,
+    page: 11,
     question: "What makes life possible on Earth?",
     choices: [
       { id: "a", label: "💧 Water" },
@@ -78,7 +78,59 @@ export const BOOKLET3_SHELLS: ShellOpportunity[] = [
   },
 ];
 
+export const BOOKLET4_SHELLS: ShellOpportunity[] = [
+  {
+    bookletId: "booklet-4",
+    id: "water-evaporation",
+    page: 3,
+    question: "What happens when water warms up?",
+    choices: [
+      { id: "a", label: "💨 It evaporates and rises into the air" },
+      { id: "b", label: "🪨 It turns into stone" },
+      { id: "c", label: "❌ It disappears" },
+    ],
+    correctChoiceId: "a",
+  },
+  {
+    bookletId: "booklet-4",
+    id: "cloud-formation",
+    page: 6,
+    question: "What happens high up in the sky when it gets cold?",
+    choices: [
+      { id: "a", label: "☁️ Water condenses and forms clouds" },
+      { id: "b", label: "🔥 The air turns into fire" },
+      { id: "c", label: "❌ Everything disappears" },
+    ],
+    correctChoiceId: "a",
+  },
+  {
+    bookletId: "booklet-4",
+    id: "water-travel",
+    page: 7,
+    question: "How does water travel to help plants grow?",
+    choices: [
+      { id: "a", label: "☁️ Clouds carry it and bring rain" },
+      { id: "b", label: "🪨 It stays in one place" },
+      { id: "c", label: "🌊 It only lives in rivers" },
+    ],
+    correctChoiceId: "a",
+  },
+  {
+    bookletId: "booklet-4",
+    id: "rain-paths",
+    page: 8,
+    question: "When rain falls, where can the water go?",
+    choices: [
+      { id: "a", label: "💧 Into rivers, the ground, or onto plants" },
+      { id: "b", label: "☀️ Only back into the sky" },
+      { id: "c", label: "❌ It disappears" },
+    ],
+    correctChoiceId: "a",
+  },
+];
+
 export const ALL_SHELL_OPPORTUNITIES: ShellOpportunity[] = [
   ...BOOKLET2_SHELLS,
   ...BOOKLET3_SHELLS,
+  ...BOOKLET4_SHELLS,
 ];

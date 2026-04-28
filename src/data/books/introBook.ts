@@ -13,6 +13,7 @@ export type BookConfig = {
   videoSrc: string;
   chapters: Chapter[];
   requiredShellIds?: string[]; // ✅ NEW (for hidden chapters)
+  shellCompletionVideoSrc?: string;
 };
 
 export const INTRO_BOOK: BookConfig = {
@@ -20,6 +21,7 @@ export const INTRO_BOOK: BookConfig = {
   title: "The Mission Begins",
   subtitle: "A Series Introduction Booklet",
   videoSrc: "/books/intro/final-intro-music.mp4",
+
   chapters: [
     { page: 1, start: 0, end: 6 },
     { page: 2, start: 6, end: 19 },
@@ -50,7 +52,8 @@ export const SECOND_BOOK: BookConfig = {
   slug: "booklet-2",
   title: "Second Booklet",
   subtitle: "Cosmic Travellers",
-  videoSrc: "/books/chapter/final-1-music.mp4",
+  videoSrc: "/books/chapter/booklet-2-music.mp4",
+  shellCompletionVideoSrc: "/books/chapter/booklet-2-message.mp4",
   requiredShellIds: ["first-life", "origin-life"],
   chapters: [
     { page: 1, start: 0, end: 5 },
@@ -72,7 +75,6 @@ export const SECOND_BOOK: BookConfig = {
 
     // +3 from page 13 onwards
     { page: 13, start: 344, end: 382 },
-    { page: 14, start: 383, end: 395, hidden: true },
   ],
 };
 
@@ -80,7 +82,7 @@ export const THIRD_BOOK: BookConfig = {
   slug: "booklet-3",
   title: "Third Booklet",
   subtitle: "Cosmic Travellers",
-  videoSrc: "/books/chapter/final-music-2.mp4",
+  videoSrc: "/books/chapter/booklet-3-music.mp4",
   requiredShellIds: [
     "stars-are-suns",
     "solar-system",
@@ -88,20 +90,17 @@ export const THIRD_BOOK: BookConfig = {
     "life-water",
   ],
   chapters: [
-    { page: 1, start: 0, end: 5 },
-
-    { page: 2, start: 5, end: 41 },
-    { page: 3, start: 41, end: 78 },
-    { page: 4, start: 78, end: 104 },
-    { page: 5, start: 104, end: 139 },
-    { page: 6, start: 139, end: 163 },
-    { page: 7, start: 163, end: 193 },
-    { page: 8, start: 193, end: 211 },
-    { page: 9, start: 211, end: 231 },
-
-    { page: 10, start: 231, end: 279 },
-    { page: 11, start: 279, end: 313 },
-    { page: 12, start: 313, end: 322, hidden: true },
+    { page: 1, start: 0, end: 4 }, // 1A.mp4 (5s)
+    { page: 2, start: 4, end: 35.5 }, // 1B.mp4 (32s)
+    { page: 3, start: 35.5, end: 73 }, // 2.mp4 (37s)
+    { page: 4, start: 73, end: 99 }, // 3.mp4 (25s)
+    { page: 5, start: 99, end: 130 }, // 4.mp4 (31s)
+    { page: 6, start: 130, end: 154 }, // 5.mp4 (23s)
+    { page: 7, start: 154, end: 182.5 }, // 6.mp4 (28s)
+    { page: 8, start: 182.5, end: 199.5 }, // 7.mp4 (17s)
+    { page: 9, start: 199.7, end: 217.32 }, // 7b.mp4 (17s)
+    { page: 10, start: 217.32, end: 262.6 }, // 8.mp4 (45s)
+    { page: 11, start: 262.6, end: 293.5 }, // 9.mp4 (31s)
   ],
 };
 export const BOOKSPAGES: BookConfig[] = [INTRO_BOOK, SECOND_BOOK, THIRD_BOOK];

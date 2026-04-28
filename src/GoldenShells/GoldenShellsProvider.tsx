@@ -1,20 +1,13 @@
-import React, {
+import {
   createContext,
   useContext,
   useEffect,
   useMemo,
   useState,
+  type ReactNode,
 } from "react";
-import type { GoldenShellsStore, ShellId, ShellOpportunity } from "./types";
+import type { GoldenShellsStore, ShellOpportunity } from "./types";
 import { loadShellsStore, saveShellsStore } from "./storage";
-
-type ShellEarnedEvent = {
-  type: "shellEarned";
-  bookletId: string;
-  shellId: ShellId;
-  totalEarned: number;
-  earnedThisSession: number;
-};
 
 type GoldenShellsContextValue = {
   bookletId: string;
@@ -23,148 +16,123 @@ type GoldenShellsContextValue = {
   earnedThisSession: number;
   activeOpportunity: ShellOpportunity | null;
   isModalOpen: boolean;
-
-  isShellEarned: (shellId: ShellId) => boolean;
-  setActiveOpportunity: (opp: ShellOpportunity | null) => void;
+  isShellEarned: (shellId: string) => boolean;
+  setActiveOpportunity: (opportunity: ShellOpportunity | null) => void;
   openModal: () => void;
   closeModal: () => void;
-
-  submitAnswer: (choiceId: string) => { correct: boolean };
-
-  lastEvent: ShellEarnedEvent | null;
-  clearLastEvent: () => void;
-  resetSessionEarned: () => void;
-  fxPlayId: number;
-  satchelEl: HTMLElement | null;
-  setSatchelEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
+  submitAnswer: (choiceId: string) => {
+    correct: boolean;
+    completedBooklet: boolean;
+  };
+  hasEarnedAllBookletShells: boolean;
+  shellCompletionVideoSrc?: string;
 };
 
 const GoldenShellsContext = createContext<GoldenShellsContextValue | null>(
   null,
 );
 
-export function useGoldenShells() {
-  const ctx = useContext(GoldenShellsContext);
-  if (!ctx)
-    throw new Error("useGoldenShells must be used within GoldenShellsProvider");
-  return ctx;
-}
-
-type Props = {
+type GoldenShellsProviderProps = {
   bookletId: string;
-  children: React.ReactNode;
+  children: ReactNode;
+  requiredShellIds: string[];
+  shellCompletionVideoSrc?: string;
 };
 
-export function GoldenShellsProvider({ bookletId, children }: Props) {
+export function GoldenShellsProvider({
+  bookletId,
+  children,
+  requiredShellIds,
+  shellCompletionVideoSrc,
+}: GoldenShellsProviderProps) {
+  console.log("shellCompletionVideoSrc", shellCompletionVideoSrc);
+  console.log("requiredShellIds", requiredShellIds);
   const [store, setStore] = useState<GoldenShellsStore>(() =>
     loadShellsStore(),
   );
   const [activeOpportunity, setActiveOpportunity] =
     useState<ShellOpportunity | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const suppressNextOpportunityRef = React.useRef(false);
-  const [lastEvent, setLastEvent] = useState<ShellEarnedEvent | null>(null);
-  const [fxPlayId, setFxPlayId] = useState(0);
-  const [satchelEl, setSatchelEl] = useState<HTMLElement | null>(null);
 
-  const triggerMagicFx = () => setFxPlayId((n) => n + 1);
-
-  // Keep store in sync with localStorage
   useEffect(() => {
     saveShellsStore(store);
   }, [store]);
 
-  // If booklet changes, close modal + clear active opportunity
-  useEffect(() => {
-    setIsModalOpen(false);
-    setActiveOpportunity(null);
-    setLastEvent(null);
-  }, [bookletId]);
-
   const totalEarned = store.totalEarned;
-
   const earnedThisSession = store.sessionEarnedByBooklet[bookletId] ?? 0;
 
-  const isShellEarned = (shellId: ShellId) => {
-    return Boolean(store.byBooklet[bookletId]?.[shellId]);
+  const isShellEarned = (shellId: string) => {
+    return store.byBooklet[bookletId]?.[shellId] ?? false;
   };
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModal = () => {
+    if (
+      !activeOpportunity &&
+      !(hasEarnedAllBookletShells && shellCompletionVideoSrc)
+    ) {
+      return;
+    }
 
-  const clearLastEvent = () => setLastEvent(null);
+    setIsModalOpen(true);
+  };
 
-  const resetSessionEarned = () => {
-    setStore((prev) => {
-      const next: GoldenShellsStore = {
-        ...prev,
-        sessionEarnedByBooklet: {
-          ...prev.sessionEarnedByBooklet,
-          [bookletId]: 0,
-        },
-      };
-      return next;
-    });
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   const submitAnswer = (choiceId: string) => {
-    const opp = activeOpportunity;
-    if (!opp) return { correct: false };
-
-    const correct = choiceId === opp.correctChoiceId;
-    if (!correct) return { correct: false };
-
-    if (isShellEarned(opp.id)) {
-      return { correct: true };
+    if (!activeOpportunity) {
+      return { correct: false, completedBooklet: false };
     }
 
-    // 🔥 Suppress binder BEFORE store updates (prevents instant second modal)
-    suppressNextOpportunityRef.current = true;
+    const isCorrect = choiceId === activeOpportunity.correctChoiceId;
+
+    if (!isCorrect) {
+      return { correct: false, completedBooklet: false };
+    }
+
+    // 👇 compute BEFORE updating store
+    const completedBooklet =
+      requiredShellIds.length > 0 &&
+      requiredShellIds.every((id) => {
+        if (id === activeOpportunity.id) return true;
+        return store.byBooklet[bookletId]?.[id] ?? false;
+      });
+
+    console.log("completedBooklet", completedBooklet);
 
     setStore((prev) => {
-      const prevBooklet = prev.byBooklet[bookletId] ?? {};
-      const nextBooklet = { ...prevBooklet, [opp.id]: true };
+      const alreadyEarned = prev.byBooklet[bookletId]?.[activeOpportunity.id];
 
-      const nextSessionCount =
-        (prev.sessionEarnedByBooklet[bookletId] ?? 0) + 1;
+      if (alreadyEarned) {
+        return prev;
+      }
 
       return {
         ...prev,
-        byBooklet: { ...prev.byBooklet, [bookletId]: nextBooklet },
+        byBooklet: {
+          ...prev.byBooklet,
+          [bookletId]: {
+            ...prev.byBooklet[bookletId],
+            [activeOpportunity.id]: true,
+          },
+        },
         totalEarned: prev.totalEarned + 1,
         sessionEarnedByBooklet: {
           ...prev.sessionEarnedByBooklet,
-          [bookletId]: nextSessionCount,
+          [bookletId]: (prev.sessionEarnedByBooklet[bookletId] ?? 0) + 1,
         },
       };
     });
 
-    // Clear immediately (good UX)
-    setActiveOpportunity(null);
-
-    // ✅ THIS is the “timeout until state settles” — but done correctly
-    setTimeout(() => {
-      suppressNextOpportunityRef.current = false;
-    }, 300); // one tick, not arbitrary delay
-
-    queueMicrotask(() => {
-      const latest = loadShellsStore();
-      const earnedNow = latest.sessionEarnedByBooklet[bookletId] ?? 0;
-      setLastEvent({
-        type: "shellEarned",
-        bookletId,
-        shellId: opp.id,
-        totalEarned: latest.totalEarned,
-        earnedThisSession: earnedNow,
-      });
-    });
-
-    triggerMagicFx();
-
-    return { correct: true };
+    return { correct: true, completedBooklet };
   };
 
-  const value: GoldenShellsContextValue = useMemo(
+  const hasEarnedAllBookletShells =
+    requiredShellIds.length > 0 &&
+    requiredShellIds.every((id) => isShellEarned(id));
+
+  const value = useMemo(
     () => ({
       bookletId,
       store,
@@ -177,12 +145,8 @@ export function GoldenShellsProvider({ bookletId, children }: Props) {
       openModal,
       closeModal,
       submitAnswer,
-      lastEvent,
-      clearLastEvent,
-      resetSessionEarned,
-      fxPlayId,
-      satchelEl,
-      setSatchelEl,
+      hasEarnedAllBookletShells,
+      shellCompletionVideoSrc,
     }),
     [
       bookletId,
@@ -191,10 +155,7 @@ export function GoldenShellsProvider({ bookletId, children }: Props) {
       earnedThisSession,
       activeOpportunity,
       isModalOpen,
-      lastEvent,
-      fxPlayId,
-      satchelEl,
-      setSatchelEl,
+      shellCompletionVideoSrc,
     ],
   );
 
@@ -203,4 +164,20 @@ export function GoldenShellsProvider({ bookletId, children }: Props) {
       {children}
     </GoldenShellsContext.Provider>
   );
+}
+
+export function useGoldenShells() {
+  const context = useContext(GoldenShellsContext);
+
+  if (!context) {
+    throw new Error(
+      "useGoldenShells must be used within a GoldenShellsProvider",
+    );
+  }
+
+  return context;
+}
+
+export function useOptionalGoldenShells() {
+  return useContext(GoldenShellsContext);
 }

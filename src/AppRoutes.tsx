@@ -5,6 +5,7 @@ import WriterNotes from "./pages/WriterNotes";
 import Credits from "./pages/Credits";
 import { TEXTPAGES } from "./data/books/text-pages";
 import { GoldenShellsProviderWrapper } from "./data/shells/GoldenShellsProviderWrapper";
+import Header from "./components/Header";
 
 export default function AppRoutes() {
   return (
@@ -12,7 +13,8 @@ export default function AppRoutes() {
       <Route path="/" element={<Bookshelf />} />
       <Route
         path="/writer-notes"
-        element={<WriterNotes data={TEXTPAGES["/writer-notes"]} />}
+        element={
+        <WriterNotes data={TEXTPAGES["/writer-notes"]} />}
       />
       <Route
         path="/art-credits"
@@ -22,6 +24,7 @@ export default function AppRoutes() {
         path="/:bookSlug/:page"
         element={
           <GoldenShellsProviderWrapper>
+            <Header />
             <BookPlayerPage />
           </GoldenShellsProviderWrapper>
         }

@@ -10,6 +10,8 @@ import ParentLoginButton from "../auth/ParentLoginButton";
 import ParentAuthModal from "../auth/ParentAuthModal";
 import { MessageButton } from "./MessageButton";
 import { useUserState } from "../contexts/userContext";
+import { HeaderGoldenShellIcon } from "./HeaderGoldenShellIcon";
+
 
 export default function Header() {
   const navigate = useNavigate();
@@ -94,6 +96,8 @@ export default function Header() {
               childFirstName={childFirstName}
             />
           )}
+          <HeaderGoldenShellIcon />
+
           {/* Desktop-only language selector */}
 
           <DesktopOnly>

@@ -7,12 +7,10 @@ import { CustomIconButton } from "../components/CustomIconButton";
 import PageBackground from "../components/PageBackground";
 import { useTranslation } from "react-i18next";
 import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
-import { ShellOpportunityBinder } from "../GoldenShells/utils";
-import { GoldenShellOverlay } from "../GoldenShells/GoldenShellOverlay";
-
 import { BOOKS as BOOK_CONFIGS } from "../data/books";
 import { BOOKSPAGES } from "../data/books/introBook";
 import { ALL_SHELL_OPPORTUNITIES } from "../data/shells/shells_opportunitites";
+import { GoldenShellOverlay } from "../GoldenShells/GoldenShellOverlay";
 //import { useSound } from "../contexts/soundContext";
 
 export default function BookPlayerPage() {
@@ -20,8 +18,7 @@ export default function BookPlayerPage() {
   const { t } = useTranslation();
   const { earnedThisSession, isModalOpen } = useGoldenShells();
   const currentPage = Number(page);
-  // const { setVolume, setMuted } = useSound();
-  //window.alert(JSON.stringify({ bookSlug, page }));
+
   const foundBook = useMemo(
     () => BOOKSPAGES.find((b) => b.slug === bookSlug),
     [bookSlug],
@@ -49,7 +46,7 @@ export default function BookPlayerPage() {
     return foundBook.chapters[index + 1];
   }, [foundBook, chapterNow, currentPage]);
 
-  const isNextPageHidden = Boolean(nextChapter?.hidden);
+  const isLastPage = !nextChapter;
   const wasPlayingRef = useRef(false);
 
   const {
@@ -114,6 +111,25 @@ export default function BookPlayerPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  const { setActiveOpportunity, isShellEarned, store } = useGoldenShells();
+
+  useEffect(() => {
+    const nextOpportunity =
+      shellOpportunities.find((shell) => {
+        if (shell.page !== currentPage) return false;
+        if (isShellEarned(shell.id)) return false;
+        return true;
+      }) ?? null;
+
+    setActiveOpportunity(nextOpportunity);
+  }, [
+    currentPage,
+    shellOpportunities,
+    isShellEarned,
+    setActiveOpportunity,
+    store,
+  ]);
+
   // Keep fullscreen state in sync (and clean up listeners).
   useEffect(() => {
     const onFsChange = () => setIsFullscreen(!!document.fullscreenElement);
@@ -125,15 +141,6 @@ export default function BookPlayerPage() {
   useEffect(() => {
     if (DISABLE_VIDEO) setIsPlaying(false);
   }, []);
-
-  // useEffect(() => {
-  //   console.log("isplaying", isPlaying);
-  //   if (isPlaying) {
-  //     console.log("muting music when video starts");
-  //     setMuted(true);
-  //     setVolume(0);
-  //   }
-  // }, [isPlaying]);
 
   const togglePlayPause = async () => {
     if (DISABLE_VIDEO) return;
@@ -153,37 +160,25 @@ export default function BookPlayerPage() {
   };
 
   const toggleFullscreen = async () => {
-    window.alert("toggleFullscreen called");
-
     const frame = frameRef.current;
     const video = videoRef.current;
-
-    window.alert(`frame exists: ${!!frame}\nvideo exists: ${!!video}`);
-
     try {
       // iPad Safari video fullscreen
       if (video && (video as any).webkitEnterFullscreen) {
-        window.alert("Using webkitEnterFullscreen()");
         (video as any).webkitEnterFullscreen();
         return;
       }
 
       // Standard Fullscreen API
       if (!document.fullscreenElement) {
-        window.alert("Trying requestFullscreen()");
         if (frame?.requestFullscreen) {
           await frame.requestFullscreen();
-          window.alert("requestFullscreen resolved");
-        } else {
-          window.alert("requestFullscreen not supported on frame");
         }
       } else {
-        window.alert("Trying exitFullscreen()");
         await document.exitFullscreen();
-        window.alert("exitFullscreen resolved");
       }
     } catch (e: any) {
-      window.alert(`Fullscreen error: ${e?.message || e}`);
+      console.log(`Fullscreen error: ${e?.message || e}`);
     }
   };
 
@@ -202,15 +197,6 @@ export default function BookPlayerPage() {
       <Wrap>
         <Stage id="Stage">
           <VideoFrame ref={frameRef} id="VIDEO FRAME">
-            {/* ✅ Shell opportunity binding for current page */}
-            <ShellOpportunityBinder
-              page={Number(page)}
-              videoRef={videoRef}
-              chapterEnd={currentChapter.end}
-              buffer={2.5} // ✅ reveal 2–3 seconds earlier
-              opportunities={shellOpportunities}
-            />
-
             {/* Media area: either video, or a calm placeholder (no MP4 mode) */}
             {DISABLE_VIDEO ? (
               <Placeholder id="Placeholder">
@@ -220,16 +206,20 @@ export default function BookPlayerPage() {
                 </ComingSoonText>
               </Placeholder>
             ) : (
-              <Video
-                ref={videoRef}
-                src={book.videoSrc}
-                preload="auto"
-                playsInline
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                onLoadedMetadata={onLoadedMetadata}
-                onTimeUpdate={onTimeUpdate}
-              />
+              <>
+                {!!foundBook?.videoSrc && (
+                  <Video
+                    ref={videoRef}
+                    src={foundBook.videoSrc}
+                    preload="auto"
+                    playsInline
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onLoadedMetadata={onLoadedMetadata}
+                    onTimeUpdate={onTimeUpdate}
+                  />
+                )}
+              </>
             )}
 
             {/* Controls: visible ONLY on hover of the frame */}
@@ -248,7 +238,7 @@ export default function BookPlayerPage() {
                 </IconButton>
               </TopBar>
 
-              {!isNextPageHidden && (
+              {!isLastPage && (
                 <CenterControls>
                   <BigButton
                     type="button"
