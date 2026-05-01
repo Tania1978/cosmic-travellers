@@ -3,7 +3,7 @@ type BookEndingVideo = {
   requiresAllShells: boolean;
 };
 
-type Book = {
+export type Book = {
   slug: string;
   title: string;
   subtitle: string;

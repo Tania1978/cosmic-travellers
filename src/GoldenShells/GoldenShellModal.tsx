@@ -13,7 +13,6 @@ export function GoldenShellModal() {
     isModalOpen,
     closeModal,
     submitAnswer,
-    shellCompletionVideoSrc,
   } = useGoldenShells();
 
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -345,19 +344,6 @@ const ChoiceLabel = styled.div`
   color: rgba(255, 255, 255, 0.92);
 `;
 
-const ChoiceArrow = styled.div`
-  width: 26px;
-  height: 26px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-
-  background: rgba(255, 210, 150, 0.08);
-  box-shadow: 0 0 0 1px rgba(255, 220, 170, 0.12) inset;
-
-  color: rgba(255, 220, 170, 0.85);
-  font-size: 16px;
-`;
 
 const FeedbackText = styled.div`
   margin-top: 12px;
