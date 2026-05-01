@@ -3,7 +3,7 @@ import styled, { css, keyframes } from "styled-components";
 import { CustomIconButton } from "./CustomIconButton";
 import { useUserState } from "../contexts/userContext";
 import { useOptionalGoldenShells } from "../GoldenShells/GoldenShellsProvider";
-import { t } from "i18next";
+
 
 type MessageButtonProps = {
   iconSrc?: string;

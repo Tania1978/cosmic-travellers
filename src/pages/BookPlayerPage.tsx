@@ -17,7 +17,7 @@ import { GoldenShellModal } from "../GoldenShells/GoldenShellModal";
 export default function BookPlayerPage() {
   const { bookSlug, page } = useParams();
   const { t } = useTranslation();
-  const { earnedThisSession, isModalOpen, correctSoundRef } = useGoldenShells();
+  const { isModalOpen, correctSoundRef } = useGoldenShells();
   const navigate = useNavigate();
   const [videoTime, setVideoTime] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
