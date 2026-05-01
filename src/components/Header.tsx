@@ -10,6 +10,7 @@ import ParentLoginButton from "../auth/ParentLoginButton";
 import ParentAuthModal from "../auth/ParentAuthModal";
 import { MessageButton } from "./MessageButton";
 import { useUserState } from "../contexts/userContext";
+import { InfoButton } from "./InfoButton";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -93,6 +94,7 @@ export default function Header() {
           isLoggedIn={isLoggedIn}
           childFirstName={childFirstName}
         />
+        {!inHomePage && <InfoButton />}
 
         <Right>
           {/* Desktop-only language selector */}
