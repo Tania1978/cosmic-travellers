@@ -10,8 +10,6 @@ import ParentLoginButton from "../auth/ParentLoginButton";
 import ParentAuthModal from "../auth/ParentAuthModal";
 import { MessageButton } from "./MessageButton";
 import { useUserState } from "../contexts/userContext";
-import { HeaderGoldenShellIcon } from "./HeaderGoldenShellIcon";
-
 
 export default function Header() {
   const navigate = useNavigate();
@@ -87,17 +85,16 @@ export default function Header() {
           </DesktopOnly>
         </Left>
 
-        <Right>
-          {inHomePage && (
-            <MessageButton
-              iconSrc="ui/message-button.png"
-              size={120}
-              isLoggedIn={isLoggedIn}
-              childFirstName={childFirstName}
-            />
-          )}
-          <HeaderGoldenShellIcon />
+        <MessageButton
+          iconSrc={
+            inHomePage ? "/ui/message-button1.png" : "/ui/message-button.png"
+          }
+          size={150}
+          isLoggedIn={isLoggedIn}
+          childFirstName={childFirstName}
+        />
 
+        <Right>
           {/* Desktop-only language selector */}
 
           <DesktopOnly>

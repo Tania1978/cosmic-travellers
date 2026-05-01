@@ -4,54 +4,47 @@ import { useGoldenShells } from "./GoldenShellsProvider";
 import { Img } from "./GoldenShellIcon";
 import { useTranslation } from "react-i18next";
 
-/**
- * Sacred / cinematic modal styling
- * Matches: warm gold frame, frosted glass, soft bloom, cosmic calm.
- */
+const FADE_MS = 1000;
+const CLOSE_MS = 2000;
+
 export function GoldenShellModal() {
   const {
     activeOpportunity,
     isModalOpen,
     closeModal,
     submitAnswer,
-    isShellEarned,
     shellCompletionVideoSrc,
-    hasEarnedAllBookletShells,
   } = useGoldenShells();
 
   const [feedback, setFeedback] = useState<string | null>(null);
-  const [showCompletionVideo, setShowCompletionVideo] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  console.log("isModalOpen", isModalOpen);
 
   const { t } = useTranslation();
   const opp = activeOpportunity;
 
-  const canShowQuestion = opp && !isShellEarned(opp.id);
-  const canShowCompletionVideo =
-    hasEarnedAllBookletShells && !!shellCompletionVideoSrc;
-  const shouldShowCompletionVideo =
-    showCompletionVideo || (!canShowQuestion && canShowCompletionVideo);
-
-  const visible = isModalOpen && (canShowQuestion || canShowCompletionVideo);
+  const visible = isModalOpen;
   if (!visible) return null;
 
   const handleClose = () => {
     setFeedback(null);
-    setShowCompletionVideo(false);
+    if (isClosing) return;
+
+    setIsClosing(true);
+    window.setTimeout(() => {
+      setIsClosing(false);
+    }, CLOSE_MS);
     closeModal();
   };
 
   const onPick = (choiceId: string) => {
+    console.log("ON P[ICK");
     const res = submitAnswer(choiceId);
 
     if (res.correct) {
-      if (res.completedBooklet && shellCompletionVideoSrc) {
-        setShowCompletionVideo(true);
-        return;
-      }
-
-      setFeedback("Golden Shell recorded.");
       window.setTimeout(() => {
         setFeedback(null);
+        console.log("closgin modal");
         closeModal();
       }, 650);
 
@@ -63,15 +56,28 @@ export function GoldenShellModal() {
   };
 
   return (
-    <Overlay role="dialog" aria-modal="true" onClick={handleClose}>
+    <Overlay
+      $closing={isClosing}
+      id="overlay"
+      role="dialog"
+      aria-modal="true"
+      onClick={handleClose}
+    >
       <CardWrap onClick={(e) => e.stopPropagation()}>
         <Medallion aria-hidden="true">
           <Img src="/ui/golden-shell.png" alt="" draggable={false} />
         </Medallion>
 
-        <LuminousFrame>
-          <Dust />
-          <GlassPanel>
+        <LuminousFrame id="LuminousFrame">
+          <Dust id="Dust" />
+          <VideoBg
+            src="/ui/magic-library.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+          <GlassPanel id="GlassPanel">
             <Header>
               <Title>{t("ui.modalTitle")}</Title>
               <CloseButton onClick={handleClose} aria-label="Close">
@@ -79,15 +85,7 @@ export function GoldenShellModal() {
               </CloseButton>
             </Header>
 
-            {shouldShowCompletionVideo ? (
-              <CompletionVideo
-                src={shellCompletionVideoSrc}
-                autoPlay
-                playsInline
-                controls={false}
-                onEnded={handleClose}
-              />
-            ) : opp ? (
+            {opp && (
               <>
                 <QuestionText>{opp.question}</QuestionText>
 
@@ -95,14 +93,14 @@ export function GoldenShellModal() {
                   {opp.choices.map((c) => (
                     <ChoiceRow key={c.id} onClick={() => onPick(c.id)}>
                       <ChoiceLabel>{c.label}</ChoiceLabel>
-                      <ChoiceArrow aria-hidden="true">›</ChoiceArrow>
+                      {/* <ChoiceArrow aria-hidden="true">›</ChoiceArrow> */}
                     </ChoiceRow>
                   ))}
                 </ChoicesGrid>
 
                 {feedback && <FeedbackText>{feedback}</FeedbackText>}
               </>
-            ) : null}
+            )}
           </GlassPanel>
         </LuminousFrame>
       </CardWrap>
@@ -110,12 +108,14 @@ export function GoldenShellModal() {
   );
 }
 
-const CompletionVideo = styled.video`
-  width: 100%;
-  max-height: 60vh;
-  display: block;
-  border-radius: 18px;
-  background: black;
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const fadeOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
 `;
 
 const breathe = keyframes`
@@ -123,35 +123,38 @@ const breathe = keyframes`
   50% { transform: translateY(-1px); filter: drop-shadow(0 0 16px rgba(255,190,120,.35)); }
 `;
 
-const Overlay = styled.div`
-  position: absolute;
-  inset: 0;
+const Overlay = styled.div<{ $closing: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 5000;
+
   display: grid;
   place-items: center;
-  pointer-events: auto;
-  z-index: 1000;
+  outline: 5px solid red;
 
-  /* cinematic dim + subtle vignette */
-  background:
-    radial-gradient(
-      1200px 700px at 50% 35%,
-      rgba(0, 0, 0, 0.3),
-      rgba(0, 0, 0, 0.62) 70%
-    ),
-    rgba(0, 0, 0, 0.18);
+  background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(6px);
-`;
 
+  animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${FADE_MS}ms
+    ease forwards;
+`;
 const CardWrap = styled.div`
   width: min(720px, calc(100vw - 48px));
+
   position: relative;
-  padding-top: 28px; /* space for the medallion overlap */
+  padding-top: 70px; /* space for the medallion overlap */
+  margin-top: 50px;
 `;
 
 const LuminousFrame = styled.div`
   position: relative;
   border-radius: 30px;
   padding: 14px;
+  min-height: 420px;
 
   /* STRONG radiant gold frame */
   background: linear-gradient(
@@ -181,17 +184,12 @@ const LuminousFrame = styled.div`
 const GlassPanel = styled.div`
   border-radius: 20px;
   padding: 24px 24px 20px;
-
   /* SPACE BLUE core (not grey) */
-  background: radial-gradient(
-    120% 100% at 50% 0%,
-    rgba(35, 60, 110, 0.85) 0%,
-    rgba(18, 30, 65, 0.92) 50%,
-    rgba(10, 18, 45, 0.96) 100%
-  );
-
+  background: transparent;
+  width: 90%;
   /* subtle cosmic depth */
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(1.5px);
+  margin: 10px auto;
 
   box-shadow:
     inset 0 0 60px rgba(120, 160, 255, 0.08),
@@ -201,10 +199,27 @@ const GlassPanel = styled.div`
   color: rgba(255, 245, 225, 0.95);
 `;
 
+const VideoBg = styled.video`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 95%;
+  height: 93%;
+
+  transform: translate(-50%, -50%);
+
+  object-fit: cover;
+  border-radius: 22px;
+
+  z-index: 0;
+`;
 const Medallion = styled.div`
   position: absolute;
   top: 0;
-  left: 50%;
+  left: 45%;
+  transform: translateX(-45%); // 👈 fix
+
   z-index: 5;
 
   width: 70px;
@@ -241,7 +256,7 @@ const Header = styled.div`
 const Title = styled.div`
   font-weight: 650;
   letter-spacing: 0.2px;
-  font-size: 16px;
+  font-size: 20px;
   color: rgba(255, 235, 215, 0.92);
 `;
 
@@ -263,7 +278,7 @@ const CloseButton = styled.button`
 
 const QuestionText = styled.div`
   margin-top: 14px;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.35;
   color: rgba(255, 255, 255, 0.92);
 `;
@@ -276,16 +291,18 @@ const ChoicesGrid = styled.div`
 
 const ChoiceRow = styled.button`
   width: 100%;
+  font-family: "Fredoka", sans-serif !important;
   border: none;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
+  pointer-events: auto;
 
   padding: 14px 14px;
   border-radius: 999px;
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
 
   /* pill line look */
@@ -297,9 +314,6 @@ const ChoiceRow = styled.button`
   box-shadow:
     0 0 0 1px rgba(255, 220, 170, 0.12) inset,
     0 10px 26px rgba(0, 0, 0, 0.2);
-
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 16px;
 
   transition:
     transform 0.12s ease,
@@ -324,7 +338,11 @@ const ChoiceRow = styled.button`
 `;
 
 const ChoiceLabel = styled.div`
+  font-family: "Fredoka", sans-serif !important;
   padding-left: 6px;
+  font-size: 20px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.92);
 `;
 
 const ChoiceArrow = styled.div`

@@ -89,7 +89,6 @@ export function Bookshelf() {
   const lang = i18n.language;
   const isMobile = window.innerWidth <= 768;
   const { unlockedBooks } = useUserState();
-  console.log("Unlocked books in Bookshelf:", unlockedBooks);
 
   const toggleFlip = (slug: string) => {
     setFlippedSlug((cur) => (cur === slug ? null : slug));

@@ -2,30 +2,26 @@ import styled, { keyframes } from "styled-components";
 import { useGoldenShells } from "./GoldenShellsProvider";
 
 export function GoldenShellIcon() {
-  const {
-    activeOpportunity,
-    isShellEarned,
-    openModal,
-    hasEarnedAllBookletShells,
-    shellCompletionVideoSrc,
-  } = useGoldenShells();
+  const { activeOpportunity, isShellEarned, openModal, isModalOpen } =
+    useGoldenShells();
 
   const hasQuestionAvailable =
     activeOpportunity && !isShellEarned(activeOpportunity.id);
 
-  const hasCompletionVideoAvailable =
-    hasEarnedAllBookletShells && !!shellCompletionVideoSrc;
-
-  if (!hasQuestionAvailable && !hasCompletionVideoAvailable) return null;
+  if (!hasQuestionAvailable) return null;
 
   return (
-    <ShellButton
-      onClick={openModal}
-      aria-label="Golden Shell"
-      title="Golden Shell"
-    >
-      <Img src="/ui/golden-shell.png" alt="" draggable={false} />
-    </ShellButton>
+    <>
+      {!isModalOpen && (
+        <ShellButton
+          onClick={openModal}
+          aria-label="Golden Shell"
+          title="Golden Shell"
+        >
+          <Img src="/ui/golden-shell.png" alt="" draggable={false} />
+        </ShellButton>
+      )}
+    </>
   );
 }
 
@@ -59,10 +55,11 @@ export const Img = styled.img`
 `;
 
 const ShellButton = styled.button`
-  pointer-events: auto; /* because parent is pointerEvents none */
-  transform: translateX(-50%); /* 🔥 true horizontal center */
-  width: 50px;
-  height: 50px;
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: 90px;
+  height: 90px;
   border-radius: 999px;
   border: none;
   background: rgba(255, 255, 255, 0.12);

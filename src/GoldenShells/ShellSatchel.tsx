@@ -4,7 +4,7 @@ import { useGoldenShells } from "./GoldenShellsProvider";
 import { pulseGlow } from "./GoldenShellIcon";
 
 export function ShellSatchel() {
-  const { earnedThisSession } = useGoldenShells();
+  const { earnedThisSession, isModalOpen } = useGoldenShells();
 
   const [pulse, setPulse] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -37,18 +37,23 @@ export function ShellSatchel() {
   if (!visible) return null;
 
   return (
-    <SatchelContainer $pulse={pulse}>
-      <SatchelIcon src="/ui/saschet.png" alt="" draggable={false} />
-      <Count>{earnedThisSession}</Count>
-    </SatchelContainer>
+    <>
+      {!isModalOpen && (
+        <SatchelContainer $pulse={pulse}>
+          <SatchelIcon src="/ui/saschet.png" alt="" draggable={false} />
+          <Count>{earnedThisSession}</Count>
+        </SatchelContainer>
+      )}
+    </>
   );
 }
 
 const SatchelContainer = styled.div<{ $pulse: boolean }>`
   position: absolute;
-  left: 16px;
+  left: 10px;
   top: 10px;
   margin-bottom: 20px;
+  z-index: 999;
 
   display: flex;
   align-items: center;
@@ -73,8 +78,8 @@ const SatchelContainer = styled.div<{ $pulse: boolean }>`
 `;
 
 const SatchelIcon = styled.img`
-  width: 60px;
-  height: 60px;
+  width: 90px;
+  height: 90px;
   object-fit: contain;
   pointer-events: none;
   user-select: none;
@@ -82,8 +87,11 @@ const SatchelIcon = styled.img`
 `;
 
 const Count = styled.span`
-  font-size: 16px;
-  font-weight: 600;
+  position: absolute;
+  bottom: 25px;
+
+  font-size: 18px;
+  font-weight: 650;
   line-height: 1;
   pointer-events: none;
 `;

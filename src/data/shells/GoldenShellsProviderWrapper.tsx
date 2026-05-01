@@ -9,12 +9,12 @@ export function GoldenShellsProviderWrapper({
   children: React.ReactNode;
 }) {
   const { bookSlug } = useParams();
+  console.log("bookSlug", bookSlug);
 
   const foundBook = useMemo(
     () => BOOKSPAGES.find((b) => b.slug === bookSlug),
     [bookSlug],
   );
-  console.log("foundBook", foundBook);
 
   if (!bookSlug || !foundBook) return null;
 

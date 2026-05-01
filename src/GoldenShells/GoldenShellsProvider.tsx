@@ -3,8 +3,10 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
+  type RefObject,
 } from "react";
 import type { GoldenShellsStore, ShellOpportunity } from "./types";
 import { loadShellsStore, saveShellsStore } from "./storage";
@@ -26,6 +28,7 @@ type GoldenShellsContextValue = {
   };
   hasEarnedAllBookletShells: boolean;
   shellCompletionVideoSrc?: string;
+  correctSoundRef: RefObject<HTMLAudioElement | null>;
 };
 
 const GoldenShellsContext = createContext<GoldenShellsContextValue | null>(
@@ -45,14 +48,13 @@ export function GoldenShellsProvider({
   requiredShellIds,
   shellCompletionVideoSrc,
 }: GoldenShellsProviderProps) {
-  console.log("shellCompletionVideoSrc", shellCompletionVideoSrc);
-  console.log("requiredShellIds", requiredShellIds);
   const [store, setStore] = useState<GoldenShellsStore>(() =>
     loadShellsStore(),
   );
   const [activeOpportunity, setActiveOpportunity] =
     useState<ShellOpportunity | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const correctSoundRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     saveShellsStore(store);
@@ -63,6 +65,15 @@ export function GoldenShellsProvider({
 
   const isShellEarned = (shellId: string) => {
     return store.byBooklet[bookletId]?.[shellId] ?? false;
+  };
+
+  const playCorrectSound = () => {
+    const sound = correctSoundRef.current;
+    if (!sound) return;
+
+    sound.currentTime = 0;
+    sound.volume = 0.45;
+    sound.play().catch(() => {});
   };
 
   const openModal = () => {
@@ -86,6 +97,9 @@ export function GoldenShellsProvider({
     }
 
     const isCorrect = choiceId === activeOpportunity.correctChoiceId;
+    if (isCorrect) {
+      playCorrectSound();
+    }
 
     if (!isCorrect) {
       return { correct: false, completedBooklet: false };
@@ -98,8 +112,6 @@ export function GoldenShellsProvider({
         if (id === activeOpportunity.id) return true;
         return store.byBooklet[bookletId]?.[id] ?? false;
       });
-
-    console.log("completedBooklet", completedBooklet);
 
     setStore((prev) => {
       const alreadyEarned = prev.byBooklet[bookletId]?.[activeOpportunity.id];
@@ -147,6 +159,7 @@ export function GoldenShellsProvider({
       submitAnswer,
       hasEarnedAllBookletShells,
       shellCompletionVideoSrc,
+      correctSoundRef,
     }),
     [
       bookletId,
@@ -156,6 +169,7 @@ export function GoldenShellsProvider({
       activeOpportunity,
       isModalOpen,
       shellCompletionVideoSrc,
+      correctSoundRef,
     ],
   );
 
