@@ -1,9 +1,9 @@
 import React, { useMemo, useRef } from "react";
 import styled from "styled-components";
-import type { Book } from "../data/books/books";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../auth/authContext";
+import type { Book } from "../data/books/books";
 
 interface IBookCardProps {
   b: Book;
