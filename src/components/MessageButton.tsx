@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ModalIconButton } from "./ModalIconButton";
 import { useUserState } from "../contexts/userContext";
 import { useOptionalGoldenShells } from "../GoldenShells/GoldenShellsProvider";
+import { useLocation } from "react-router-dom";
 
 type MessageButtonProps = {
   iconSrc?: string;
@@ -18,7 +19,9 @@ export const MessageButton = (props: MessageButtonProps) => {
     isLoggedIn,
     childFirstName,
   } = props;
+  const location = useLocation();
 
+  const inHomePage = location.pathname === "/";
   const goldenShells = useOptionalGoldenShells();
   const isModalOpen = goldenShells?.isModalOpen;
 
@@ -80,7 +83,7 @@ export const MessageButton = (props: MessageButtonProps) => {
   return (
     <>
       {/* 👋 Greeting replaces button */}
-      {childFirstName && !shouldShowCompletionVideo ? (
+      {childFirstName && !shouldShowCompletionVideo && inHomePage ? (
         <Greeting>{`Hi ${childFirstName}!`}</Greeting>
       ) : (
         <ModalIconButton

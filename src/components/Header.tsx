@@ -94,7 +94,7 @@ export default function Header() {
           isLoggedIn={isLoggedIn}
           childFirstName={childFirstName}
         />
-        {!inHomePage && <InfoButton />}
+        {!inHomePage && isLoggedIn && <InfoButton />}
 
         <Right>
           {/* Desktop-only language selector */}
