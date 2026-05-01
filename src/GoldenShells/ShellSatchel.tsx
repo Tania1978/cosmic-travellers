@@ -4,21 +4,14 @@ import { useGoldenShells } from "./GoldenShellsProvider";
 import { pulseGlow } from "./GoldenShellIcon";
 
 export function ShellSatchel() {
-  const { totalEarned, lastEvent, clearLastEvent, setSatchelEl } =
-    useGoldenShells();
+  const { earnedThisSession, isModalOpen } = useGoldenShells();
 
   const [pulse, setPulse] = useState(false);
   const [visible, setVisible] = useState(false);
-  const satchelRef = useRef<HTMLDivElement | null>(null);
+  const previousEarnedRef = useRef(earnedThisSession);
 
   useEffect(() => {
-    if (visible) {
-      setSatchelEl(satchelRef.current);
-    }
-  }, [visible, setSatchelEl]);
-
-  useEffect(() => {
-    if (lastEvent?.type === "shellEarned") {
+    if (earnedThisSession > previousEarnedRef.current) {
       setVisible(true);
       setPulse(true);
 
@@ -27,33 +20,40 @@ export function ShellSatchel() {
       }, 4000);
 
       const hideTimer = window.setTimeout(() => {
-        setVisible(false); // 👈 fully remove from DOM
-        clearLastEvent();
-      }, 4000); // calm cinematic timing
+        setVisible(false);
+      }, 4000);
+
+      previousEarnedRef.current = earnedThisSession;
 
       return () => {
         window.clearTimeout(pulseTimer);
         window.clearTimeout(hideTimer);
       };
     }
-  }, [lastEvent, clearLastEvent]);
 
-  // 👇 THIS is the key change — removes EVERYTHING (icon, container, count)
+    previousEarnedRef.current = earnedThisSession;
+  }, [earnedThisSession]);
+
   if (!visible) return null;
 
   return (
-    <SatchelContainer ref={satchelRef} $pulse={pulse}>
-      <SatchelIcon src={"/ui/saschet.png"} alt="" draggable={false} />
-      <Count>{totalEarned}</Count>
-    </SatchelContainer>
+    <>
+      {!isModalOpen && (
+        <SatchelContainer $pulse={pulse}>
+          <SatchelIcon src="/ui/saschet.png" alt="" draggable={false} />
+          <Count>{earnedThisSession}</Count>
+        </SatchelContainer>
+      )}
+    </>
   );
 }
 
 const SatchelContainer = styled.div<{ $pulse: boolean }>`
   position: absolute;
-  left: 16px;
+  left: 10px;
   top: 10px;
   margin-bottom: 20px;
+  z-index: 999;
 
   display: flex;
   align-items: center;
@@ -78,8 +78,8 @@ const SatchelContainer = styled.div<{ $pulse: boolean }>`
 `;
 
 const SatchelIcon = styled.img`
-  width: 60px;
-  height: 60px;
+  width: 90px;
+  height: 90px;
   object-fit: contain;
   pointer-events: none;
   user-select: none;
@@ -87,8 +87,11 @@ const SatchelIcon = styled.img`
 `;
 
 const Count = styled.span`
-  font-size: 16px;
-  font-weight: 600;
+  position: absolute;
+  bottom: 25px;
+
+  font-size: 18px;
+  font-weight: 650;
   line-height: 1;
   pointer-events: none;
 `;

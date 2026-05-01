@@ -1,12 +1,19 @@
-export type Book = {
+type BookEndingVideo = {
+  src: string;
+  requiresAllShells: boolean;
+};
+
+type Book = {
   slug: string;
   title: string;
-  subtitle?: string;
+  subtitle: string;
+  summary: string;
   thumbnailSrc: string;
   pagesCount: number;
-  isLocked?: boolean;
-  summary?: string;
+  isLocked: boolean;
   number: number;
+  requiredShellIds?: string[];
+  endingVideo?: BookEndingVideo;
 };
 
 export const BOOKS: Book[] = [
@@ -26,9 +33,13 @@ export const BOOKS: Book[] = [
     subtitle: "book.booklet_2.subtitle",
     summary: "book.booklet_2.summary",
     thumbnailSrc: "/books/chapter/cover_2.png",
-    pagesCount: 14,
-    isLocked: true,
+    pagesCount: 13,
+    isLocked: false,
     number: 2,
+    endingVideo: {
+      src: "/books/booklet-2-message.mp4",
+      requiresAllShells: true,
+    },
   },
   {
     slug: "booklet-3",
@@ -37,7 +48,7 @@ export const BOOKS: Book[] = [
     summary: "book.booklet_3.summary",
     thumbnailSrc: "/books/chapter/cover_3.png",
     pagesCount: 10,
-    isLocked: true,
+    isLocked: false,
     number: 3,
   },
 ];

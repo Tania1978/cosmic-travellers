@@ -6,11 +6,14 @@ const LS_KEY = "cosmicTravellers.goldenShells";
 export function loadShellsStore(): GoldenShellsStore {
   try {
     const raw = localStorage.getItem(LS_KEY);
+    console.log("raw", raw);
+    console.log("DEFAULT_STORE", DEFAULT_STORE);
     if (!raw) {
       return DEFAULT_STORE;
     }
-    const parsed = JSON.parse(raw) as GoldenShellsStore;
 
+    const parsed = JSON.parse(raw) as GoldenShellsStore;
+    console.log("parsed", parsed);
     if (typeof parsed?.version !== "number") {
       return DEFAULT_STORE;
     }

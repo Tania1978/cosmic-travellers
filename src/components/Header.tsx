@@ -85,15 +85,16 @@ export default function Header() {
           </DesktopOnly>
         </Left>
 
+        <MessageButton
+          iconSrc={
+            inHomePage ? "/ui/message-button1.png" : "/ui/message-button.png"
+          }
+          size={150}
+          isLoggedIn={isLoggedIn}
+          childFirstName={childFirstName}
+        />
+
         <Right>
-          {inHomePage && (
-            <MessageButton
-              iconSrc="ui/message-button.png"
-              size={120}
-              isLoggedIn={isLoggedIn}
-              childFirstName={childFirstName}
-            />
-          )}
           {/* Desktop-only language selector */}
 
           <DesktopOnly>

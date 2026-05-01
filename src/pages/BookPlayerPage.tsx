@@ -1,41 +1,38 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { DISABLE_VIDEO } from "../config/features";
-import { useChapterVideoPlayer } from "../hooks/useChapterVideoPlayer";
+
 import { CustomIconButton } from "../components/CustomIconButton";
 import PageBackground from "../components/PageBackground";
 import { useTranslation } from "react-i18next";
 import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
-import { ShellOpportunityBinder } from "../GoldenShells/utils";
-import { GoldenShellOverlay } from "../GoldenShells/GoldenShellOverlay";
-
 import { BOOKS as BOOK_CONFIGS } from "../data/books";
 import { BOOKSPAGES } from "../data/books/introBook";
 import { ALL_SHELL_OPPORTUNITIES } from "../data/shells/shells_opportunitites";
-//import { useSound } from "../contexts/soundContext";
+
+import { GoldenShellIcon } from "../GoldenShells/GoldenShellIcon";
+import { GoldenShellModal } from "../GoldenShells/GoldenShellModal";
 
 export default function BookPlayerPage() {
   const { bookSlug, page } = useParams();
   const { t } = useTranslation();
-  const { earnedThisSession, isModalOpen } = useGoldenShells();
-  const currentPage = Number(page);
-  // const { setVolume, setMuted } = useSound();
-  //window.alert(JSON.stringify({ bookSlug, page }));
+  const { earnedThisSession, isModalOpen, correctSoundRef } = useGoldenShells();
+  const navigate = useNavigate();
+  const [videoTime, setVideoTime] = useState(0);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
   const foundBook = useMemo(
     () => BOOKSPAGES.find((b) => b.slug === bookSlug),
     [bookSlug],
   );
+  if (!foundBook) {
+    return;
+  }
 
-  const shellOpportunities = useMemo(() => {
-    if (!foundBook?.requiredShellIds?.length) return [];
-
-    return ALL_SHELL_OPPORTUNITIES.filter((shell: any) =>
-      foundBook.requiredShellIds?.includes(shell.id),
-    );
-  }, [foundBook]);
-
-  console.log(foundBook);
+  const currentPage = Number(page);
 
   // 2️⃣ Find current chapter
   const chapterNow = useMemo(
@@ -49,21 +46,31 @@ export default function BookPlayerPage() {
     return foundBook.chapters[index + 1];
   }, [foundBook, chapterNow, currentPage]);
 
-  const isNextPageHidden = Boolean(nextChapter?.hidden);
-  const wasPlayingRef = useRef(false);
+  const goToChapter = (targetPage: number) => {
+    navigate(`/${bookSlug}/${targetPage}`);
+  };
 
-  const {
-    book,
-    videoRef,
-    currentChapter,
-    onTimeUpdate,
-    onLoadedMetadata,
-    goNext,
-    goPrev,
-  } = useChapterVideoPlayer({
-    pauseAtChapterEnd: false,
-    earnedThisSession,
-  });
+  const goNext = () => {
+    if (!nextChapter) return;
+    goToChapter(nextChapter.page);
+  };
+
+  const goPrev = () => {
+    const index = foundBook.chapters.findIndex((c) => c.page === currentPage);
+    const prev = foundBook.chapters[index - 1];
+    if (!prev) return;
+    goToChapter(prev.page);
+  };
+
+  const shellOpportunities = useMemo(() => {
+    if (!foundBook?.requiredShellIds?.length) return [];
+
+    return ALL_SHELL_OPPORTUNITIES.filter((shell: any) =>
+      foundBook.requiredShellIds?.includes(shell.id),
+    );
+  }, [foundBook]);
+
+  const wasPlayingRef = useRef(false);
 
   async function fadeTo(video: HTMLVideoElement, target: number, ms = 250) {
     const start = video.volume;
@@ -111,8 +118,49 @@ export default function BookPlayerPage() {
 
   const frameRef = useRef<HTMLDivElement | null>(null);
 
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const { setActiveOpportunity, isShellEarned, store } = useGoldenShells();
+
+  useEffect(() => {
+    console.log("USE EFFECT IN BOOKPLAYER PAGE", isModalOpen);
+    if (isModalOpen) return;
+    const nextOpportunity =
+      shellOpportunities.find((shell) => {
+        if (shell.page !== currentPage) return false;
+        if (isShellEarned(shell.id)) return false;
+        return true;
+      }) ?? null;
+    console.log("nextOpportunity", nextOpportunity);
+    console.log("currentChapter", chapterNow);
+
+    setActiveOpportunity(null);
+
+    if (!nextOpportunity || !chapterNow) return;
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    const delayMs = Math.max(
+      0,
+      (chapterNow?.end - video.currentTime - 1) * 1000,
+    );
+
+    const timeoutId = window.setTimeout(() => {
+      setActiveOpportunity(nextOpportunity);
+    }, delayMs);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [
+    currentPage,
+    chapterNow,
+    shellOpportunities,
+    isShellEarned,
+    setActiveOpportunity,
+    store,
+  ]);
 
   // Keep fullscreen state in sync (and clean up listeners).
   useEffect(() => {
@@ -125,15 +173,6 @@ export default function BookPlayerPage() {
   useEffect(() => {
     if (DISABLE_VIDEO) setIsPlaying(false);
   }, []);
-
-  // useEffect(() => {
-  //   console.log("isplaying", isPlaying);
-  //   if (isPlaying) {
-  //     console.log("muting music when video starts");
-  //     setMuted(true);
-  //     setVolume(0);
-  //   }
-  // }, [isPlaying]);
 
   const togglePlayPause = async () => {
     if (DISABLE_VIDEO) return;
@@ -153,41 +192,29 @@ export default function BookPlayerPage() {
   };
 
   const toggleFullscreen = async () => {
-    window.alert("toggleFullscreen called");
-
     const frame = frameRef.current;
     const video = videoRef.current;
-
-    window.alert(`frame exists: ${!!frame}\nvideo exists: ${!!video}`);
-
     try {
       // iPad Safari video fullscreen
       if (video && (video as any).webkitEnterFullscreen) {
-        window.alert("Using webkitEnterFullscreen()");
         (video as any).webkitEnterFullscreen();
         return;
       }
 
       // Standard Fullscreen API
       if (!document.fullscreenElement) {
-        window.alert("Trying requestFullscreen()");
         if (frame?.requestFullscreen) {
           await frame.requestFullscreen();
-          window.alert("requestFullscreen resolved");
-        } else {
-          window.alert("requestFullscreen not supported on frame");
         }
       } else {
-        window.alert("Trying exitFullscreen()");
         await document.exitFullscreen();
-        window.alert("exitFullscreen resolved");
       }
     } catch (e: any) {
-      window.alert(`Fullscreen error: ${e?.message || e}`);
+      console.log(`Fullscreen error: ${e?.message || e}`);
     }
   };
 
-  if (!book || !currentChapter) {
+  if (!foundBook || !chapterNow) {
     return (
       <Fallback>
         <div>{t("ui.loadingBook")}</div>
@@ -202,15 +229,9 @@ export default function BookPlayerPage() {
       <Wrap>
         <Stage id="Stage">
           <VideoFrame ref={frameRef} id="VIDEO FRAME">
-            {/* ✅ Shell opportunity binding for current page */}
-            <ShellOpportunityBinder
-              page={Number(page)}
-              videoRef={videoRef}
-              chapterEnd={currentChapter.end}
-              buffer={2.5} // ✅ reveal 2–3 seconds earlier
-              opportunities={shellOpportunities}
-            />
-
+            {/* <ShellSatchel /> */}
+            <GoldenShellIcon />
+            <GoldenShellModal />
             {/* Media area: either video, or a calm placeholder (no MP4 mode) */}
             {DISABLE_VIDEO ? (
               <Placeholder id="Placeholder">
@@ -220,16 +241,55 @@ export default function BookPlayerPage() {
                 </ComingSoonText>
               </Placeholder>
             ) : (
-              <Video
-                ref={videoRef}
-                src={book.videoSrc}
-                preload="auto"
-                playsInline
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                onLoadedMetadata={onLoadedMetadata}
-                onTimeUpdate={onTimeUpdate}
-              />
+              <>
+                {!!foundBook?.videoSrc && (
+                  <Video
+                    ref={videoRef}
+                    src={foundBook.videoSrc}
+                    preload="auto"
+                    playsInline
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onLoadedMetadata={(e) => {
+                      const video = e.currentTarget;
+                      setVideoDuration(video.duration);
+
+                      if (chapterNow) {
+                        video.currentTime = chapterNow.start;
+                      }
+                    }}
+                    onTimeUpdate={(e) => {
+                      const video = e.currentTarget;
+                      setVideoTime(video.currentTime);
+
+                      if (!chapterNow) return;
+
+                      const shellMoment = chapterNow.end - 1;
+
+                      if (video.currentTime >= shellMoment && !isModalOpen) {
+                        const nextOpportunity =
+                          shellOpportunities.find((shell) => {
+                            if (shell.page !== currentPage) return false;
+                            if (isShellEarned(shell.id)) return false;
+                            return true;
+                          }) ?? null;
+
+                        setActiveOpportunity(nextOpportunity);
+                      }
+
+                      if (video.currentTime >= chapterNow.end) {
+                        video.pause();
+
+                        if (nextChapter) {
+                          navigate(`/${bookSlug}/${nextChapter.page}`, {
+                            replace: true,
+                          });
+                        }
+                      }
+                    }}
+                  />
+                )}
+              </>
             )}
 
             {/* Controls: visible ONLY on hover of the frame */}
@@ -248,31 +308,25 @@ export default function BookPlayerPage() {
                 </IconButton>
               </TopBar>
 
-              {!isNextPageHidden && (
-                <CenterControls>
-                  <BigButton
-                    type="button"
-                    onClick={DISABLE_VIDEO ? undefined : togglePlayPause}
-                    aria-label={
-                      DISABLE_VIDEO
-                        ? "Story video not available yet"
-                        : isPlaying
-                          ? "Pause story"
-                          : "Play story"
-                    }
-                    title={
-                      DISABLE_VIDEO
-                        ? "Coming soon"
-                        : isPlaying
-                          ? "Pause"
-                          : "Play"
-                    }
-                    disabled={DISABLE_VIDEO}
-                  >
-                    {DISABLE_VIDEO ? "✨" : isPlaying ? "❚❚" : "▶"}
-                  </BigButton>
-                </CenterControls>
-              )}
+              <CenterControls>
+                <BigButton
+                  type="button"
+                  onClick={DISABLE_VIDEO ? undefined : togglePlayPause}
+                  aria-label={
+                    DISABLE_VIDEO
+                      ? "Story video not available yet"
+                      : isPlaying
+                        ? "Pause story"
+                        : "Play story"
+                  }
+                  title={
+                    DISABLE_VIDEO ? "Coming soon" : isPlaying ? "Pause" : "Play"
+                  }
+                  disabled={DISABLE_VIDEO}
+                >
+                  {DISABLE_VIDEO ? "✨" : isPlaying ? "❚❚" : "▶"}
+                </BigButton>
+              </CenterControls>
 
               <BottomLeft>
                 <CustomIconButton
@@ -282,6 +336,21 @@ export default function BookPlayerPage() {
                   size={120}
                 />
               </BottomLeft>
+              <ProgressBar
+                type="range"
+                min={0}
+                max={videoDuration || 0}
+                step={0.1}
+                value={videoTime}
+                onChange={(e) => {
+                  const nextTime = Number(e.target.value);
+                  setVideoTime(nextTime);
+
+                  if (videoRef.current) {
+                    videoRef.current.currentTime = nextTime;
+                  }
+                }}
+              />
 
               <BottomRight>
                 <CustomIconButton
@@ -292,16 +361,72 @@ export default function BookPlayerPage() {
                 />
               </BottomRight>
             </ControlsLayer>
-
-            <GoldenShellOverlay />
           </VideoFrame>
         </Stage>
       </Wrap>
+      <audio
+        ref={correctSoundRef}
+        src="/ui/golden-shell-correct.mp3"
+        preload="auto"
+      />
     </>
   );
 }
 
 /* ---------- styles ---------- */
+
+const ProgressBar = styled.input`
+  position: absolute;
+  left: 140px;
+  right: 140px;
+  bottom: 28px;
+  z-index: 30;
+
+  pointer-events: auto;
+  cursor: pointer;
+
+  -webkit-appearance: none;
+  appearance: none;
+  height: 15px;
+  border-radius: 999px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255, 210, 120, 0.8),
+    rgba(255, 170, 80, 0.6)
+  );
+
+  outline: none;
+
+  /* Track */
+  &::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Thumb (the handle) */
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+
+    background: radial-gradient(
+      circle,
+      rgba(255, 240, 200, 1),
+      rgba(255, 190, 120, 0.9)
+    );
+
+    box-shadow:
+      0 0 10px rgba(255, 200, 120, 0.8),
+      0 0 20px rgba(255, 170, 80, 0.4);
+
+    margin-top: -6px;
+  }
+`;
 
 const Wrap = styled.div`
   width: min(60%, 1100px);
@@ -326,6 +451,8 @@ const VideoFrame = styled.div`
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   background: #000;
+  pointer-events: none;
+  z-index: 21;
 
   &:hover .controlsLayer {
     opacity: 1;

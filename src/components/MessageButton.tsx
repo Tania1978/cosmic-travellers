@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { CustomIconButton } from "./CustomIconButton";
 import { useUserState } from "../contexts/userContext";
-import { useTranslation } from "react-i18next";
+import { useOptionalGoldenShells } from "../GoldenShells/GoldenShellsProvider";
+import { t } from "i18next";
 
 type MessageButtonProps = {
   iconSrc?: string;
@@ -14,12 +15,18 @@ type MessageButtonProps = {
 const FADE_MS = 1000;
 const CLOSE_MS = 2000;
 
-export const MessageButton = ({
-  iconSrc = "ui/message-button.png",
-  size = 120,
-  isLoggedIn,
-  childFirstName,
-}: MessageButtonProps) => {
+export const MessageButton = (props: MessageButtonProps) => {
+  const {
+    iconSrc = "/ui/message-button.png",
+    size = 150,
+    isLoggedIn,
+    childFirstName,
+  } = props;
+
+  const goldenShells = useOptionalGoldenShells();
+  const isModalOpen = goldenShells?.isModalOpen;
+  const { setChildFirstName } = useUserState();
+
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -27,25 +34,13 @@ export const MessageButton = ({
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const completionVideoRef = useRef<HTMLVideoElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
-  const { setChildFirstName } = useUserState();
-  const { t } = useTranslation();
-
-  const handleSubmit = async () => {
-    if (!firstName.trim()) return;
-    setIsSaving(true);
-    try {
-      await setChildFirstName(firstName);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const open = () => {
-    setHasBeenOpened(true);
-    setIsVisible(true);
-  };
+  const shouldShowCompletionVideo =
+    !!childFirstName &&
+    !!goldenShells?.hasEarnedAllBookletShells &&
+    !!goldenShells?.shellCompletionVideoSrc;
 
   const close = () => {
     if (isClosing) return;
@@ -58,40 +53,51 @@ export const MessageButton = ({
   };
 
   useEffect(() => {
-    if (!childFirstName || !isVisible) return;
+    if (!childFirstName || !isVisible || shouldShowCompletionVideo) return;
 
     const timeoutId = window.setTimeout(() => {
       close();
     }, 4000);
 
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [childFirstName, isVisible]);
+    return () => window.clearTimeout(timeoutId);
+  }, [childFirstName, isVisible, shouldShowCompletionVideo]);
 
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
 
-    if (isVisible && !isClosing) {
+    if (isVisible && !isClosing && !shouldShowCompletionVideo) {
       v.currentTime = 0;
       v.volume = 0.5;
+
       if (!childFirstName) {
         v.play().catch(() => {});
       }
     } else {
       v.pause();
     }
-  }, [isVisible, isClosing, childFirstName]);
+  }, [isVisible, isClosing, childFirstName, shouldShowCompletionVideo]);
+
+  useEffect(() => {
+    const v = completionVideoRef.current;
+    if (!v) return;
+
+    if (isVisible && !isClosing && shouldShowCompletionVideo) {
+      v.currentTime = 0;
+      v.volume = 0.6;
+      v.play().catch(() => {});
+    } else {
+      v.pause();
+    }
+  }, [isVisible, isClosing, shouldShowCompletionVideo]);
 
   useEffect(() => {
     if (!isVisible || isClosing) return;
 
     const handlePointerDown = (event: MouseEvent) => {
       const target = event.target as Node | null;
-      if (!target) return;
 
-      if (modalRef.current && !modalRef.current.contains(target)) {
+      if (target && modalRef.current && !modalRef.current.contains(target)) {
         close();
       }
     };
@@ -103,69 +109,133 @@ export const MessageButton = ({
     };
   }, [isVisible, isClosing]);
 
+  if (!isLoggedIn) return null;
+
+  const open = () => {
+    setHasBeenOpened(true);
+    setIsVisible(true);
+  };
+
+  const handleSubmit = async () => {
+    if (!firstName.trim()) return;
+
+    setIsSaving(true);
+    try {
+      await setChildFirstName(firstName);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (isModalOpen) {
+    return null;
+  }
+
   return (
     <>
-      {isLoggedIn && (
-        <>
-          <PulseWrapper $shouldPulse={!hasBeenOpened}>
-            <CustomIconButton
-              src={iconSrc}
-              onClick={open}
-              ariaLabel="message-button"
-              size={size}
-            />
-          </PulseWrapper>
+      {childFirstName && !shouldShowCompletionVideo ? (
+        <p
+          style={{
+            margin: 0,
+            padding: "6px 12px",
+            textAlign: "center",
+            fontFamily: "Fredoka, sans-serif !important",
+            paddingLeft: "6px",
+            fontSize: "20px",
+            lineHeight: "1.5",
+            color: "white",
+            whiteSpace: "nowrap",
+            position: "relative",
+            letterSpacing: "2px",
+            zIndex: 2,
+          }}
+        >
+          {`Hi ${childFirstName}!`}
+        </p>
+      ) : (
+        <PulseWrapper $shouldPulse={!hasBeenOpened}>
+          <CustomIconButton
+            src={iconSrc}
+            onClick={open}
+            ariaLabel="message-button"
+            size={size}
+          />
+        </PulseWrapper>
+      )}
 
-          {isVisible && (
-            <Overlay $closing={isClosing} id="overlay">
-              <Modal ref={modalRef} $closing={isClosing} id="modal">
-                <Video
-                  ref={videoRef}
-                  src={`${import.meta.env.BASE_URL}ui/sebba-msg.mp4`}
+      {isVisible && (
+        <Overlay $closing={isClosing} id="overlay">
+          <Modal ref={modalRef} $closing={isClosing} id="modal">
+            {shouldShowCompletionVideo ? (
+              <VideoShell>
+                <CompletionVideo
+                  ref={completionVideoRef}
+                  src={goldenShells?.shellCompletionVideoSrc}
                   playsInline
                   preload="auto"
+                  controls={false}
+                  onEnded={close}
+                />
+              </VideoShell>
+            ) : (
+              <Video
+                ref={videoRef}
+                src={`${import.meta.env.BASE_URL}ui/sebba-msg.mp4`}
+                playsInline
+                preload="auto"
+              />
+            )}
+
+            {!childFirstName && (
+              <FormSection>
+                <NameInput
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Your first name"
+                  maxLength={20}
                 />
 
-                {!childFirstName && (
-                  <FormSection>
-                    <NameInput
-                      type="text"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="Your first name"
-                      maxLength={20}
-                    />
-
-                    <SubmitButton
-                      disabled={!firstName.trim() || isSaving}
-                      onClick={handleSubmit}
-                    >
-                      {isSaving ? "Saving..." : "Begin Adventure"}
-                    </SubmitButton>
-                  </FormSection>
-                )}
-
-                {childFirstName && (
-                  <p
-                    style={{
-                      marginTop: "20px",
-                      textAlign: "center",
-                      fontSize: "20px",
-                      fontWeight: "600",
-                      color: "#431d84ff",
-                    }}
-                  >
-                    {t("ui.welcomeAdventure", { name: childFirstName })}
-                  </p>
-                )}
-              </Modal>
-            </Overlay>
-          )}
-        </>
+                <SubmitButton
+                  disabled={!firstName.trim() || isSaving}
+                  onClick={handleSubmit}
+                >
+                  {isSaving ? "Saving..." : "Begin Adventure"}
+                </SubmitButton>
+              </FormSection>
+            )}
+          </Modal>
+        </Overlay>
       )}
     </>
   );
 };
+
+const Modal = styled.div<{ $closing: boolean }>`
+  width: min(90vw, 720px);
+  max-height: 90vh;
+  padding: 70px;
+  border-radius: 28px;
+  overflow: hidden;
+  place-items: center;
+  background: rgba(180, 175, 175, 0.55);
+  backdrop-filter: blur(100px);
+  animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${FADE_MS}ms
+    ease forwards;
+`;
+
+const VideoShell = styled.div`
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+`;
+
+const CompletionVideo = styled.video`
+  width: 100%;
+  height: auto;
+  display: block;
+  transform: scale(1.03);
+`;
 
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -179,26 +249,17 @@ const fadeOut = keyframes`
 
 const Overlay = styled.div<{ $closing: boolean }>`
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
   z-index: 5000;
   display: grid;
   place-items: center;
-  background: rgba(180, 175, 175, 0.55);
-  backdrop-filter: blur(100px);
-  animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${FADE_MS}ms
-    ease forwards;
-`;
 
-const Modal = styled.div<{ $closing: boolean }>`
-  width: min(500px, calc(100vw - 50px));
-  height: 550px;
-  padding: 20px;
-  border-radius: 22px;
-  overflow: hidden;
-  background: rgba(202, 202, 217, 0.9);
-  box-shadow:
-    0 30px 90px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  background: rgba(180, 175, 175, 0.55);
+
   animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${FADE_MS}ms
     ease forwards;
 `;

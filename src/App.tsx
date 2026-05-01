@@ -1,8 +1,6 @@
-import Header from "./components/Header";
 import AppRoutes from "./AppRoutes";
-import Footer from "./components/Footer";
-import { useAuth } from "./auth/authContext";
 
+import { useAuth } from "./auth/authContext";
 
 
 export default function App() {
@@ -10,11 +8,10 @@ export default function App() {
 
   if (loading) return <div>Loading…</div>;
 
+
   return (
     <>
-      <Header />
       <AppRoutes />
-      <Footer />
     </>
   );
 }
