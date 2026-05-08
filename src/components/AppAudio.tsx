@@ -10,14 +10,8 @@ export function AppAudio() {
   const hasStartedRef = useRef(false);
   const { volume, muted } = useSound();
 
-  console.log("[AppAudio render]", {
-    instanceId: instanceIdRef.current,
-  });
 
   useEffect(() => {
-    console.log("[AppAudio mounted]", {
-      instanceId: instanceIdRef.current,
-    });
 
     if (!audioRef.current) {
       const audio = new Audio(guitarMp3);
@@ -26,25 +20,10 @@ export function AppAudio() {
       audio.volume = volume * volume;
       audio.muted = muted;
       audioRef.current = audio;
-
-      console.log("[audio created]", {
-        instanceId: instanceIdRef.current,
-      });
     }
 
     const startMusic = () => {
       const audio = audioRef.current;
-
-      console.log("[startMusic fired]", {
-        instanceId: instanceIdRef.current,
-        hasStarted: hasStartedRef.current,
-        paused: audio?.paused,
-        currentTime: audio?.currentTime,
-        ts: Date.now(),
-      });
-
-      console.trace("[startMusic trace]");
-
       if (!audio) return;
       if (hasStartedRef.current || !audio.paused) return;
 
@@ -52,9 +31,6 @@ export function AppAudio() {
         .play()
         .then(() => {
           hasStartedRef.current = true;
-          console.log("[music started]", {
-            instanceId: instanceIdRef.current,
-          });
         })
         .catch((err) => {
           console.error("[music failed]", {
@@ -70,10 +46,6 @@ export function AppAudio() {
     document.addEventListener("keydown", startMusic, { once: true });
 
     return () => {
-      console.log("[AppAudio cleanup]", {
-        instanceId: instanceIdRef.current,
-      });
-
       document.removeEventListener("click", startMusic);
       document.removeEventListener("touchstart", startMusic);
       document.removeEventListener("keydown", startMusic);

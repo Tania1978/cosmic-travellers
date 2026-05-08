@@ -103,4 +103,40 @@ export const THIRD_BOOK: BookConfig = {
     { page: 11, start: 262.6, end: 293.5 }, // 9.mp4 (31s)
   ],
 };
-export const BOOKSPAGES: BookConfig[] = [INTRO_BOOK, SECOND_BOOK, THIRD_BOOK];
+
+export const FOURTH_BOOK: BookConfig = {
+  slug: "booklet-4",
+  title: "Fourth Booklet",
+  subtitle: "Cosmic Travellers",
+  videoSrc: "/books/chapter/booklet-4-music.mp4",
+  shellCompletionVideoSrc: "/books/chapter/booklet-4-message.mp4",
+  requiredShellIds: [
+    "water-evaporation",
+    "water-travel",
+    "rain-paths",
+    "water-states",
+  ],
+  chapters: [
+    { page: 1, start: 0, end: 5 },
+    { page: 2, start: 5, end: 25 },
+    { page: 3, start: 25, end: 50 },
+    { page: 4, start: 50, end: 82 },
+    { page: 5, start: 82, end: 118 },
+    { page: 6, start: 118, end: 149 },
+    { page: 7, start: 149, end: 193 },
+    { page: 8, start: 193, end: 234 },
+    { page: 9, start: 234, end: 278 },
+    { page: 10, start: 278, end: 316 },
+    { page: 11, start: 316, end: 365 },
+    { page: 12, start: 365, end: 392 },
+    { page: 13, start: 392, end: 421 },
+    { page: 14, start: 421, end: 456 },
+  ],
+};
+
+export const BOOKSPAGES: BookConfig[] = [
+  INTRO_BOOK,
+  SECOND_BOOK,
+  THIRD_BOOK,
+  FOURTH_BOOK,
+];
