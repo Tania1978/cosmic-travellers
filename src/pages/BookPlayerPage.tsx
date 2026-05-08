@@ -29,7 +29,6 @@ export default function BookPlayerPage() {
   const wasPlayingRef = useRef(false);
 
   const [videoTime, setVideoTime] = useState(0);
-  const [videoDuration, setVideoDuration] = useState(0);
   const [pendingManualPage, setPendingManualPage] = useState<number | null>(
     null,
   );
@@ -354,7 +353,6 @@ export default function BookPlayerPage() {
                     onPlay={() => setIsPlaying(true)}
                     onPause={() => setIsPlaying(false)}
                     onLoadedMetadata={(e) => {
-                      setVideoDuration(e.currentTarget.duration);
                       setIsVideoReady(true);
                     }}
                     onTimeUpdate={handleTimeUpdate}
