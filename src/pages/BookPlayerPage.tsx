@@ -352,7 +352,7 @@ export default function BookPlayerPage() {
                     playsInline
                     onPlay={() => setIsPlaying(true)}
                     onPause={() => setIsPlaying(false)}
-                    onLoadedMetadata={(e) => {
+                    onLoadedMetadata={() => {
                       setIsVideoReady(true);
                     }}
                     onTimeUpdate={handleTimeUpdate}
