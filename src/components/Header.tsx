@@ -94,6 +94,7 @@ export default function Header() {
           isLoggedIn={isLoggedIn}
           childFirstName={childFirstName}
         />
+
         {!inHomePage && isLoggedIn && <InfoButton />}
 
         <Right>
@@ -174,12 +175,12 @@ export default function Header() {
           </MenuItemButton>
 
           <Divider />
+          <ParentLoginButton />
 
           <MenuSectionTitle>{t("ui.language")}</MenuSectionTitle>
           <LanguageRow>
             <LanguageSelect value={language} onChange={changeLanguage} />
           </LanguageRow>
-          <ParentLoginButton />
         </DrawerContent>
       </Drawer>
       <ParentAuthModal

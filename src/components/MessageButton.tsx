@@ -79,59 +79,80 @@ export const MessageButton = (props: MessageButtonProps) => {
   };
 
   if (!isLoggedIn || isModalOpen) return null;
+  const showGreeting = inHomePage && !!childFirstName;
+  const showIntroButton = inHomePage && !childFirstName;
+  const showCompletionButton =
+    !inHomePage && !!childFirstName && shouldShowCompletionVideo;
 
   return (
     <>
-      {/* 👋 Greeting replaces button */}
-      {childFirstName && !shouldShowCompletionVideo && inHomePage ? (
-        <Greeting>{`Hi ${childFirstName}!`}</Greeting>
-      ) : (
+      {showGreeting && <Greeting>{`Hi ${childFirstName}!`}</Greeting>}
+
+      {showIntroButton && (
+        <ModalIconButton
+          iconSrc={iconSrc}
+          ariaLabel="message-button"
+          size={size}
+        >
+          {() => (
+            <>
+              <Video
+                ref={videoRef}
+                src={`${import.meta.env.BASE_URL}ui/sebba-msg.mp4`}
+                playsInline
+                preload="auto"
+                onLoadedData={(e) => {
+                  const v = e.currentTarget;
+                  v.currentTime = 0;
+                  v.volume = 0.5;
+                  v.play().catch(() => {});
+                }}
+              />
+
+              <FormSection>
+                <NameInput
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Your first name"
+                  maxLength={20}
+                />
+
+                <SubmitButton
+                  disabled={!firstName.trim() || isSaving}
+                  onClick={handleSubmit}
+                >
+                  {isSaving ? "Saving..." : "Begin Adventure"}
+                </SubmitButton>
+              </FormSection>
+            </>
+          )}
+        </ModalIconButton>
+      )}
+
+      {showCompletionButton && (
         <ModalIconButton
           iconSrc={iconSrc}
           ariaLabel="message-button"
           size={size}
         >
           {({ close }) => (
-            <>
-              {shouldShowCompletionVideo ? (
-                <VideoShell>
-                  <CompletionVideo
-                    ref={completionVideoRef}
-                    src={goldenShells?.shellCompletionVideoSrc}
-                    playsInline
-                    preload="auto"
-                    controls={false}
-                    onEnded={close}
-                  />
-                </VideoShell>
-              ) : (
-                <Video
-                  ref={videoRef}
-                  src={`${import.meta.env.BASE_URL}ui/sebba-msg.mp4`}
-                  playsInline
-                  preload="auto"
-                />
-              )}
-
-              {!childFirstName && (
-                <FormSection>
-                  <NameInput
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Your first name"
-                    maxLength={20}
-                  />
-
-                  <SubmitButton
-                    disabled={!firstName.trim() || isSaving}
-                    onClick={handleSubmit}
-                  >
-                    {isSaving ? "Saving..." : "Begin Adventure"}
-                  </SubmitButton>
-                </FormSection>
-              )}
-            </>
+            <VideoShell>
+              <CompletionVideo
+                ref={completionVideoRef}
+                src={goldenShells?.shellCompletionVideoSrc}
+                playsInline
+                preload="auto"
+                controls={false}
+                onLoadedData={(e) => {
+                  const v = e.currentTarget;
+                  v.currentTime = 0;
+                  v.volume = 0.6;
+                  v.play().catch(() => {});
+                }}
+                onEnded={close}
+              />
+            </VideoShell>
           )}
         </ModalIconButton>
       )}

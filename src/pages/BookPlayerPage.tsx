@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { DISABLE_VIDEO } from "../config/features";
@@ -14,53 +14,60 @@ import { ALL_SHELL_OPPORTUNITIES } from "../data/shells/shells_opportunitites";
 import { GoldenShellIcon } from "../GoldenShells/GoldenShellIcon";
 import { GoldenShellModal } from "../GoldenShells/GoldenShellModal";
 
+const CHAPTER_PREROLL_SECONDS = 0.5;
+
 export default function BookPlayerPage() {
   const { bookSlug, page } = useParams();
   const { t } = useTranslation();
-  const { isModalOpen, correctSoundRef } = useGoldenShells();
   const navigate = useNavigate();
-  const [videoTime, setVideoTime] = useState(0);
-  const [videoDuration, setVideoDuration] = useState(0);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
 
-  const foundBook = useMemo(
-    () => BOOKSPAGES.find((b) => b.slug === bookSlug),
-    [bookSlug],
+  const { isModalOpen, correctSoundRef, setActiveOpportunity, isShellEarned } =
+    useGoldenShells();
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const frameRef = useRef<HTMLDivElement | null>(null);
+  const wasPlayingRef = useRef(false);
+
+  const [videoTime, setVideoTime] = useState(0);
+  const [pendingManualPage, setPendingManualPage] = useState<number | null>(
+    null,
   );
-  if (!foundBook) {
-    return;
-  }
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
 
   const currentPage = Number(page);
 
-  // 2️⃣ Find current chapter
-  const chapterNow = useMemo(
-    () => foundBook?.chapters.find((c) => c.page === currentPage),
-    [foundBook, currentPage],
+  const isValidSlug = !!bookSlug && !!BOOK_CONFIGS[bookSlug];
+
+  const foundBook = useMemo(
+    () => BOOKSPAGES.find((book) => book.slug === bookSlug),
+    [bookSlug],
   );
 
+  const chapterNow = useMemo(() => {
+    return foundBook?.chapters.find((chapter) => chapter.page === currentPage);
+  }, [foundBook, currentPage]);
+
+  const currentChapterIndex = useMemo(() => {
+    if (!foundBook) return -1;
+
+    return foundBook.chapters.findIndex(
+      (chapter) => chapter.page === currentPage,
+    );
+  }, [foundBook, currentPage]);
+
   const nextChapter = useMemo(() => {
-    if (!foundBook || !chapterNow) return undefined;
-    const index = foundBook.chapters.findIndex((c) => c.page === currentPage);
-    return foundBook.chapters[index + 1];
-  }, [foundBook, chapterNow, currentPage]);
+    if (!foundBook || currentChapterIndex < 0) return undefined;
 
-  const goToChapter = (targetPage: number) => {
-    navigate(`/${bookSlug}/${targetPage}`);
-  };
+    return foundBook.chapters[currentChapterIndex + 1];
+  }, [foundBook, currentChapterIndex]);
 
-  const goNext = () => {
-    if (!nextChapter) return;
-    goToChapter(nextChapter.page);
-  };
+  const prevChapter = useMemo(() => {
+    if (!foundBook || currentChapterIndex <= 0) return undefined;
 
-  const goPrev = () => {
-    const index = foundBook.chapters.findIndex((c) => c.page === currentPage);
-    const prev = foundBook.chapters[index - 1];
-    if (!prev) return;
-    goToChapter(prev.page);
-  };
+    return foundBook.chapters[currentChapterIndex - 1];
+  }, [foundBook, currentChapterIndex]);
 
   const shellOpportunities = useMemo(() => {
     if (!foundBook?.requiredShellIds?.length) return [];
@@ -70,149 +77,244 @@ export default function BookPlayerPage() {
     );
   }, [foundBook]);
 
-  const wasPlayingRef = useRef(false);
-
-  async function fadeTo(video: HTMLVideoElement, target: number, ms = 250) {
-    const start = video.volume;
-    const steps = 10;
-    for (let i = 1; i <= steps; i++) {
-      video.volume = start + (target - start) * (i / steps);
-      await new Promise((r) => setTimeout(r, ms / steps));
-    }
-  }
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    let cancelled = false;
-
-    (async () => {
-      if (isModalOpen) {
-        wasPlayingRef.current = !video.paused && !video.ended;
-        if (wasPlayingRef.current) {
-          await fadeTo(video, 0.15, 250);
-          if (!cancelled) video.pause();
-        } else {
-          video.pause();
-        }
-      } else {
-        if (wasPlayingRef.current) {
-          await video.play().catch(() => {});
-          if (!cancelled) await fadeTo(video, 1.0, 250);
-        }
-        wasPlayingRef.current = false;
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [isModalOpen]);
-
-  const isValidSlug = useMemo(() => {
-    return !!bookSlug && !!BOOK_CONFIGS[bookSlug];
-  }, [bookSlug]);
-
-  if (!isValidSlug) return <Navigate to="/" replace />;
-
-  const frameRef = useRef<HTMLDivElement | null>(null);
-
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  const { setActiveOpportunity, isShellEarned, store } = useGoldenShells();
-
-  useEffect(() => {
-    console.log("USE EFFECT IN BOOKPLAYER PAGE", isModalOpen);
-    if (isModalOpen) return;
-    const nextOpportunity =
+  const shellForCurrentPage = useMemo(() => {
+    return (
       shellOpportunities.find((shell) => {
         if (shell.page !== currentPage) return false;
         if (isShellEarned(shell.id)) return false;
+
         return true;
-      }) ?? null;
-    console.log("nextOpportunity", nextOpportunity);
-    console.log("currentChapter", chapterNow);
+      }) ?? null
+    );
+  }, [shellOpportunities, currentPage, isShellEarned]);
 
-    setActiveOpportunity(null);
+  const goToChapter = (targetPage: number) => {
+    setPendingManualPage(targetPage);
+    navigate(`/${bookSlug}/${targetPage}`);
+  };
 
-    if (!nextOpportunity || !chapterNow) return;
+  const goNext = () => {
+    if (!nextChapter) return;
 
+    goToChapter(nextChapter.page);
+  };
+
+  const goPrev = () => {
+    if (!prevChapter) return;
+
+    goToChapter(prevChapter.page);
+  };
+
+  /**
+   * Modal behavior:
+   * - opening modal pauses video
+   * - closing modal resumes only if video was playing before
+   * - never changes currentTime
+   */
+  useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const delayMs = Math.max(
-      0,
-      (chapterNow?.end - video.currentTime - 1) * 1000,
+    if (isModalOpen) {
+      wasPlayingRef.current = !video.paused && !video.ended;
+      video.pause();
+      return;
+    }
+
+    if (wasPlayingRef.current) {
+      video.play().catch(() => {});
+    }
+
+    wasPlayingRef.current = false;
+  }, [isModalOpen]);
+
+  /**
+   * Manual URL/page navigation:
+   * - refresh
+   * - typed URL
+   * - next/prev buttons
+   *
+   * In these cases, URL wins and video seeks to chapter start.
+   */
+  useEffect(() => {
+    if (!isVideoReady) {
+      return;
+    }
+
+    if (!foundBook || !bookSlug || !chapterNow) {
+      return;
+    }
+
+    const video = videoRef.current;
+
+    if (!video) {
+      return;
+    }
+
+    // MANUAL NAVIGATION
+    if (pendingManualPage === currentPage) {
+      const startTime = Math.max(0, chapterNow.start - CHAPTER_PREROLL_SECONDS);
+      video.currentTime = startTime;
+      setVideoTime(startTime);
+      setPendingManualPage(null);
+
+      return;
+    }
+
+    if (pendingManualPage !== null) {
+      return;
+    }
+
+    // PLAYBACK SYNC
+    const actualVideoTime = video.currentTime;
+    const actualTimeBelongsToCurrentUrlPage =
+      actualVideoTime >= chapterNow.start - CHAPTER_PREROLL_SECONDS &&
+      actualVideoTime < chapterNow.end;
+
+    if (actualTimeBelongsToCurrentUrlPage) {
+      return;
+    }
+
+    const chapterForVideoTime = foundBook.chapters.find(
+      (chapter) =>
+        actualVideoTime >= chapter.start && actualVideoTime < chapter.end,
     );
 
-    const timeoutId = window.setTimeout(() => {
-      setActiveOpportunity(nextOpportunity);
-    }, delayMs);
+    if (!chapterForVideoTime) {
+      return;
+    }
+
+    if (chapterForVideoTime.page === currentPage) {
+      return;
+    }
+    navigate(`/${bookSlug}/${chapterForVideoTime.page}`, {
+      replace: true,
+    });
+  }, [
+    isVideoReady,
+    foundBook,
+    bookSlug,
+    chapterNow,
+    currentPage,
+    videoTime,
+    pendingManualPage,
+    navigate,
+  ]);
+  /**
+   * Fullscreen listener.
+   */
+  useEffect(() => {
+    const onFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", onFsChange);
 
     return () => {
-      window.clearTimeout(timeoutId);
+      document.removeEventListener("fullscreenchange", onFsChange);
     };
-  }, [
-    currentPage,
-    chapterNow,
-    shellOpportunities,
-    isShellEarned,
-    setActiveOpportunity,
-    store,
-  ]);
-
-  // Keep fullscreen state in sync (and clean up listeners).
-  useEffect(() => {
-    const onFsChange = () => setIsFullscreen(!!document.fullscreenElement);
-    document.addEventListener("fullscreenchange", onFsChange);
-    return () => document.removeEventListener("fullscreenchange", onFsChange);
   }, []);
 
-  // If video is disabled, ensure play state doesn't get stuck "true".
+  /**
+   * Disabled video safety.
+   */
   useEffect(() => {
-    if (DISABLE_VIDEO) setIsPlaying(false);
+    if (DISABLE_VIDEO) {
+      setIsPlaying(false);
+    }
   }, []);
 
   const togglePlayPause = async () => {
     if (DISABLE_VIDEO) return;
 
-    const v = videoRef.current;
-    if (!v) return;
+    const video = videoRef.current;
+    if (!video) return;
 
     try {
-      if (v.paused) {
-        await v.play();
+      if (video.paused) {
+        await video.play();
       } else {
-        v.pause();
+        video.pause();
       }
-    } catch (e) {
-      console.log("play/pause error", e);
+    } catch (error) {
+      console.log("play/pause error", error);
     }
   };
 
   const toggleFullscreen = async () => {
     const frame = frameRef.current;
     const video = videoRef.current;
+
     try {
-      // iPad Safari video fullscreen
       if (video && (video as any).webkitEnterFullscreen) {
         (video as any).webkitEnterFullscreen();
         return;
       }
 
-      // Standard Fullscreen API
       if (!document.fullscreenElement) {
-        if (frame?.requestFullscreen) {
-          await frame.requestFullscreen();
-        }
+        await frame?.requestFullscreen?.();
       } else {
         await document.exitFullscreen();
       }
-    } catch (e: any) {
-      console.log(`Fullscreen error: ${e?.message || e}`);
+    } catch (error: any) {
+      console.log(`Fullscreen error: ${error?.message || error}`);
     }
   };
+
+  const maybeShowShell = useCallback(() => {
+    const video = videoRef.current;
+
+    if (!video) return;
+    if (!chapterNow) return;
+    if (isModalOpen) return;
+    if (!shellForCurrentPage) return;
+
+    const shellMoment = chapterNow.end - 1;
+
+    if (video.currentTime >= shellMoment) {
+      setActiveOpportunity(shellForCurrentPage);
+    }
+  }, [chapterNow, isModalOpen, shellForCurrentPage, setActiveOpportunity]);
+  /**
+   * Time update behavior:
+   * - keeps progress bar synced
+   * - shows shell icon when video reaches shell moment
+   * - does NOT navigate
+   * - does NOT seek
+   */
+  const handleTimeUpdate = useCallback(
+    (e: React.SyntheticEvent<HTMLVideoElement>) => {
+      const video = e.currentTarget;
+
+      setVideoTime(video.currentTime);
+
+      maybeShowShell();
+    },
+    [maybeShowShell],
+  );
+  /**
+   * Slider behavior:
+   * - seeks video to exact selected time
+   * - does NOT navigate
+   */
+  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const video = videoRef.current;
+    if (!video || !chapterNow) return;
+
+    const nextTime = Number(e.target.value);
+
+    const safeTime = Math.min(
+      Math.max(nextTime, chapterNow.start),
+      chapterNow.end - 0.05,
+    );
+
+    video.currentTime = safeTime;
+    setVideoTime(safeTime);
+  };
+
+  if (!isValidSlug) {
+    return <Navigate to="/" replace />;
+  }
 
   if (!foundBook || !chapterNow) {
     return (
@@ -226,13 +328,13 @@ export default function BookPlayerPage() {
   return (
     <>
       <PageBackground src="/ui/bg5.jpg" overlay />
+
       <Wrap>
         <Stage id="Stage">
           <VideoFrame ref={frameRef} id="VIDEO FRAME">
-            {/* <ShellSatchel /> */}
             <GoldenShellIcon />
             <GoldenShellModal />
-            {/* Media area: either video, or a calm placeholder (no MP4 mode) */}
+
             {DISABLE_VIDEO ? (
               <Placeholder id="Placeholder">
                 <CalmBackground id="CalmBackground" />
@@ -242,7 +344,7 @@ export default function BookPlayerPage() {
               </Placeholder>
             ) : (
               <>
-                {!!foundBook?.videoSrc && (
+                {!!foundBook.videoSrc && (
                   <Video
                     ref={videoRef}
                     src={foundBook.videoSrc}
@@ -250,49 +352,15 @@ export default function BookPlayerPage() {
                     playsInline
                     onPlay={() => setIsPlaying(true)}
                     onPause={() => setIsPlaying(false)}
-                    onLoadedMetadata={(e) => {
-                      const video = e.currentTarget;
-                      setVideoDuration(video.duration);
-
-                      if (chapterNow) {
-                        video.currentTime = chapterNow.start;
-                      }
+                    onLoadedMetadata={() => {
+                      setIsVideoReady(true);
                     }}
-                    onTimeUpdate={(e) => {
-                      const video = e.currentTarget;
-                      setVideoTime(video.currentTime);
-
-                      if (!chapterNow) return;
-
-                      const shellMoment = chapterNow.end - 1;
-
-                      if (video.currentTime >= shellMoment && !isModalOpen) {
-                        const nextOpportunity =
-                          shellOpportunities.find((shell) => {
-                            if (shell.page !== currentPage) return false;
-                            if (isShellEarned(shell.id)) return false;
-                            return true;
-                          }) ?? null;
-
-                        setActiveOpportunity(nextOpportunity);
-                      }
-
-                      if (video.currentTime >= chapterNow.end) {
-                        video.pause();
-
-                        if (nextChapter) {
-                          navigate(`/${bookSlug}/${nextChapter.page}`, {
-                            replace: true,
-                          });
-                        }
-                      }
-                    }}
+                    onTimeUpdate={handleTimeUpdate}
                   />
                 )}
               </>
             )}
 
-            {/* Controls: visible ONLY on hover of the frame */}
             <ControlsLayer id="ControlsLayer">
               <TopBar id="TopBar">
                 <Meta />
@@ -336,20 +404,17 @@ export default function BookPlayerPage() {
                   size={120}
                 />
               </BottomLeft>
+
               <ProgressBar
                 type="range"
-                min={0}
-                max={videoDuration || 0}
+                min={chapterNow.start}
+                max={chapterNow.end}
                 step={0.1}
-                value={videoTime}
-                onChange={(e) => {
-                  const nextTime = Number(e.target.value);
-                  setVideoTime(nextTime);
-
-                  if (videoRef.current) {
-                    videoRef.current.currentTime = nextTime;
-                  }
-                }}
+                value={Math.min(
+                  Math.max(videoTime, chapterNow.start),
+                  chapterNow.end,
+                )}
+                onChange={handleProgressChange}
               />
 
               <BottomRight>
@@ -364,6 +429,7 @@ export default function BookPlayerPage() {
           </VideoFrame>
         </Stage>
       </Wrap>
+
       <audio
         ref={correctSoundRef}
         src="/ui/golden-shell-correct.mp3"
@@ -372,7 +438,6 @@ export default function BookPlayerPage() {
     </>
   );
 }
-
 /* ---------- styles ---------- */
 
 const ProgressBar = styled.input`
@@ -485,17 +550,6 @@ const Meta = styled.div`
   pointer-events: none;
 `;
 
-// const Title = styled.div`
-//   font-size: 15px;
-//   opacity: 0.9;
-// `;
-
-// const PageInfo = styled.div`
-//   margin-top: 2px;
-//   font-size: 0.75rem;
-//   opacity: 0.75;
-// `;
-
 const IconButton = styled.button`
   pointer-events: auto;
   width: 40px;
@@ -551,10 +605,6 @@ const CenterControls = styled.div`
   z-index: 21;
 `;
 
-// const BigButton = styled.button`
-//   pointer-events: auto;
-// `;
-
 const BottomLeft = styled.div`
   position: absolute;
   bottom: -12px;
@@ -577,48 +627,6 @@ const Fallback = styled.div`
   color: white;
   font-size: 1rem;
 `;
-
-// /** Placeholder fills the same exact space as the video */
-// const Placeholder = styled.div`
-//   width: 100%;
-//   height: 100%;
-//   position: relative;
-// `;
-
-// /** Replace this with your calm still (or gentle gradient / stars) */
-// const CalmBackground = styled.div`
-//   position: absolute;
-//   inset: 0;
-
-//   /* Example gentle background */
-//   background:
-//     radial-gradient(
-//       circle at 30% 30%,
-//       rgba(255, 255, 255, 0.12),
-//       rgba(255, 255, 255, 0) 45%
-//     ),
-//     radial-gradient(
-//       circle at 70% 60%,
-//       rgba(255, 255, 255, 0.1),
-//       rgba(255, 255, 255, 0) 45%
-//     ),
-//     linear-gradient(180deg, rgba(10, 14, 30, 0.9), rgba(5, 8, 18, 0.95));
-// `;
-
-// const ComingSoonText = styled.p`
-//   position: absolute;
-//   left: 50%;
-//   bottom: 18px;
-//   transform: translateX(-50%);
-//   margin: 0;
-//   padding: 10px 14px;
-//   border-radius: 999px;
-//   font-size: 0.875rem;
-//   letter-spacing: 0.2px;
-//   color: rgba(255, 255, 255, 0.92);
-//   background: rgba(0, 0, 0, 0.35);
-//   backdrop-filter: blur(6px);
-// `;
 
 const Placeholder = styled.div`
   position: absolute;

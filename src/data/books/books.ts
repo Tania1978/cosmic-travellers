@@ -3,6 +3,17 @@ type BookEndingVideo = {
   requiresAllShells: boolean;
 };
 
+export type BookInfoItemType = "fact" | "experiment";
+
+export type BookInfoItem = {
+  id: string;
+  type: BookInfoItemType;
+  title: string;
+  text: string;
+  src?: string;
+  rewardShellId?: string; // future
+};
+
 export type Book = {
   slug: string;
   title: string;
@@ -14,6 +25,7 @@ export type Book = {
   number: number;
   requiredShellIds?: string[];
   endingVideo?: BookEndingVideo;
+  infoItems?: BookInfoItem[];
 };
 
 export const BOOKS: Book[] = [
@@ -40,6 +52,15 @@ export const BOOKS: Book[] = [
       src: "/books/booklet-2-message.mp4",
       requiresAllShells: true,
     },
+    infoItems: [
+      {
+        id: "shadow-experiment",
+        type: "experiment",
+        title: "",
+        text: "",
+        src: "/books/info/shadow-demo.mp4",
+      },
+    ],
   },
   {
     slug: "booklet-3",
@@ -50,6 +71,20 @@ export const BOOKS: Book[] = [
     pagesCount: 10,
     isLocked: false,
     number: 3,
+  },
+  {
+    slug: "booklet-4",
+    title: "book.booklet_4.title",
+    subtitle: "book.booklet_4.subtitle",
+    summary: "book.booklet_4.summary",
+    thumbnailSrc: "/books/chapter/cover_4.png",
+    pagesCount: 14,
+    isLocked: false,
+    number: 4,
+    endingVideo: {
+      src: "/books/booklet-4-message.mp4",
+      requiresAllShells: true,
+    },
   },
 ];
 

@@ -17,8 +17,6 @@ export function GoldenShellModal() {
 
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isClosing, setIsClosing] = useState(false);
-  console.log("isModalOpen", isModalOpen);
-
   const { t } = useTranslation();
   const opp = activeOpportunity;
 
@@ -37,13 +35,11 @@ export function GoldenShellModal() {
   };
 
   const onPick = (choiceId: string) => {
-    console.log("ON P[ICK");
     const res = submitAnswer(choiceId);
 
     if (res.correct) {
       window.setTimeout(() => {
         setFeedback(null);
-        console.log("closgin modal");
         closeModal();
       }, 650);
 
