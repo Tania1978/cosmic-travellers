@@ -38,6 +38,8 @@ export const MessageButton = (props: MessageButtonProps) => {
     !!goldenShells?.hasEarnedAllBookletShells &&
     !!goldenShells?.shellCompletionVideoSrc;
 
+  console.log("goldenShells", goldenShells);
+
   // 🎬 Normal video playback
   useEffect(() => {
     const v = videoRef.current;

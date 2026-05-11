@@ -7,9 +7,9 @@ export const BOOKLET2_SHELLS: ShellOpportunity[] = [
     page: 13,
     question: "What were the first living things like?",
     choices: [
-      { id: "a", label: "🦖 Small animals" },
-      { id: "b", label: "🌱 Trees and flowers" },
-      { id: "c", label: "🔬 Tiny microbes" },
+      { id: "a", label: "Small animals" },
+      { id: "b", label: "Trees and flowers" },
+      { id: "c", label: "Tiny microbes" },
     ],
     correctChoiceId: "c",
   },

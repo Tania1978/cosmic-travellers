@@ -46,21 +46,17 @@ export const BOOKS: Book[] = [
     summary: "book.booklet_2.summary",
     thumbnailSrc: "/books/chapter/cover_2.png",
     pagesCount: 13,
-    isLocked: false,
+    isLocked: true,
     number: 2,
-    endingVideo: {
-      src: "/books/booklet-2-message.mp4",
-      requiresAllShells: true,
-    },
-    infoItems: [
-      {
-        id: "shadow-experiment",
-        type: "experiment",
-        title: "",
-        text: "",
-        src: "/books/info/shadow-demo.mp4",
-      },
-    ],
+    // infoItems: [
+    //   {
+    //     id: "shadow-experiment",
+    //     type: "experiment",
+    //     title: "",
+    //     text: "",
+    //     src: "/books/info/shadow-demo.mp4",
+    //   },
+    // ],
   },
   {
     slug: "booklet-3",
@@ -69,7 +65,7 @@ export const BOOKS: Book[] = [
     summary: "book.booklet_3.summary",
     thumbnailSrc: "/books/chapter/cover_3.png",
     pagesCount: 10,
-    isLocked: false,
+    isLocked: true,
     number: 3,
   },
   {
@@ -79,12 +75,8 @@ export const BOOKS: Book[] = [
     summary: "book.booklet_4.summary",
     thumbnailSrc: "/books/chapter/cover_4.png",
     pagesCount: 14,
-    isLocked: false,
+    isLocked: true,
     number: 4,
-    endingVideo: {
-      src: "/books/booklet-4-message.mp4",
-      requiresAllShells: true,
-    },
   },
 ];
 

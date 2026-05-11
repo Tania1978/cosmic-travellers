@@ -139,7 +139,7 @@ export function GoldenShellsProvider({
 
     return { correct: true, completedBooklet };
   };
-
+  console.log("requiredShellIds", requiredShellIds);
   const hasEarnedAllBookletShells =
     requiredShellIds.length > 0 &&
     requiredShellIds.every((id) => isShellEarned(id));
