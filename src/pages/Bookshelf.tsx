@@ -125,7 +125,9 @@ export function Bookshelf() {
         <Grid>
           {BOOKS.map((b) => {
             const flipped = flippedSlug === b.slug;
-            if (b.isLocked && unlockedBooks.includes(b.slug)) {
+
+            const isUnlocked = !!unlockedBooks?.[b.slug];
+            if (isUnlocked) {
               b.isLocked = false;
             }
 

@@ -21,8 +21,13 @@ export default function BookPlayerPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { isModalOpen, correctSoundRef, setActiveOpportunity, isShellEarned } =
-    useGoldenShells();
+  const {
+    isModalOpen,
+    correctSoundRef,
+    setActiveOpportunity,
+    activeOpportunity,
+    isShellEarned,
+  } = useGoldenShells();
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
@@ -77,16 +82,28 @@ export default function BookPlayerPage() {
     );
   }, [foundBook]);
 
-  const shellForCurrentPage = useMemo(() => {
-    return (
-      shellOpportunities.find((shell) => {
-        if (shell.page !== currentPage) return false;
-        if (isShellEarned(shell.id)) return false;
+  /**
+   * All remaining unearned shells for the current page.
+   *
+   * Example:
+   * page has ["first-life", "origin-life"]
+   * before answering: both are here
+   * after answering first-life: only origin-life remains
+   */
+  const shellsForCurrentPage = useMemo(() => {
+    return shellOpportunities.filter((shell) => {
+      if (shell.page !== currentPage) return false;
+      if (isShellEarned(shell.id)) return false;
 
-        return true;
-      }) ?? null
-    );
+      return true;
+    });
   }, [shellOpportunities, currentPage, isShellEarned]);
+
+  /**
+   * Only one shell can be active/open at a time.
+   * So we take the first remaining shell as the next one to show.
+   */
+  const nextShellForCurrentPage = shellsForCurrentPage[0] ?? null;
 
   const goToChapter = (targetPage: number) => {
     setPendingManualPage(targetPage);
@@ -95,13 +112,11 @@ export default function BookPlayerPage() {
 
   const goNext = () => {
     if (!nextChapter) return;
-
     goToChapter(nextChapter.page);
   };
 
   const goPrev = () => {
     if (!prevChapter) return;
-
     goToChapter(prevChapter.page);
   };
 
@@ -129,31 +144,26 @@ export default function BookPlayerPage() {
   }, [isModalOpen]);
 
   /**
-   * Manual URL/page navigation:
-   * - refresh
-   * - typed URL
-   * - next/prev buttons
+   * Page/video sync:
    *
-   * In these cases, URL wins and video seeks to chapter start.
+   * Manual navigation:
+   * - next/prev buttons set pendingManualPage
+   * - when URL reaches that page, video seeks to chapter start
+   *
+   * Playback sync:
+   * - when video naturally progresses into another chapter,
+   *   URL updates to match video.currentTime
    */
   useEffect(() => {
-    if (!isVideoReady) {
-      return;
-    }
-
-    if (!foundBook || !bookSlug || !chapterNow) {
-      return;
-    }
+    if (!isVideoReady) return;
+    if (!foundBook || !bookSlug || !chapterNow) return;
 
     const video = videoRef.current;
+    if (!video) return;
 
-    if (!video) {
-      return;
-    }
-
-    // MANUAL NAVIGATION
     if (pendingManualPage === currentPage) {
       const startTime = Math.max(0, chapterNow.start - CHAPTER_PREROLL_SECONDS);
+
       video.currentTime = startTime;
       setVideoTime(startTime);
       setPendingManualPage(null);
@@ -161,32 +171,24 @@ export default function BookPlayerPage() {
       return;
     }
 
-    if (pendingManualPage !== null) {
-      return;
-    }
+    if (pendingManualPage !== null) return;
 
-    // PLAYBACK SYNC
     const actualVideoTime = video.currentTime;
+
     const actualTimeBelongsToCurrentUrlPage =
       actualVideoTime >= chapterNow.start - CHAPTER_PREROLL_SECONDS &&
       actualVideoTime < chapterNow.end;
 
-    if (actualTimeBelongsToCurrentUrlPage) {
-      return;
-    }
+    if (actualTimeBelongsToCurrentUrlPage) return;
 
     const chapterForVideoTime = foundBook.chapters.find(
       (chapter) =>
         actualVideoTime >= chapter.start && actualVideoTime < chapter.end,
     );
 
-    if (!chapterForVideoTime) {
-      return;
-    }
+    if (!chapterForVideoTime) return;
+    if (chapterForVideoTime.page === currentPage) return;
 
-    if (chapterForVideoTime.page === currentPage) {
-      return;
-    }
     navigate(`/${bookSlug}/${chapterForVideoTime.page}`, {
       replace: true,
     });
@@ -200,6 +202,7 @@ export default function BookPlayerPage() {
     pendingManualPage,
     navigate,
   ]);
+
   /**
    * Fullscreen listener.
    */
@@ -261,20 +264,49 @@ export default function BookPlayerPage() {
     }
   };
 
+  /**
+   * Shows the next remaining shell for the current page.
+   *
+   * Important:
+   * - `shellsForCurrentPage` can contain many shells
+   * - `nextShellForCurrentPage` is the one we show now
+   * - after it is earned, this recalculates and points to the next one
+   */
   const maybeShowShell = useCallback(() => {
     const video = videoRef.current;
 
     if (!video) return;
     if (!chapterNow) return;
     if (isModalOpen) return;
-    if (!shellForCurrentPage) return;
+    if (!nextShellForCurrentPage) return;
+
+    if (activeOpportunity?.id === nextShellForCurrentPage.id) return;
 
     const shellMoment = chapterNow.end - 1;
 
     if (video.currentTime >= shellMoment) {
-      setActiveOpportunity(shellForCurrentPage);
+      setActiveOpportunity(nextShellForCurrentPage);
     }
-  }, [chapterNow, isModalOpen, shellForCurrentPage, setActiveOpportunity]);
+  }, [
+    chapterNow,
+    isModalOpen,
+    nextShellForCurrentPage,
+    activeOpportunity?.id,
+    setActiveOpportunity,
+  ]);
+
+  /**
+   * Shell re-check:
+   * - needed when multiple shells are on the same page
+   * - after one shell is earned, nextShellForCurrentPage changes
+   * - video time may not change immediately, so onTimeUpdate may not fire
+   */
+  useEffect(() => {
+    if (isModalOpen) return;
+
+    maybeShowShell();
+  }, [isModalOpen, nextShellForCurrentPage, maybeShowShell]);
+
   /**
    * Time update behavior:
    * - keeps progress bar synced
@@ -287,14 +319,14 @@ export default function BookPlayerPage() {
       const video = e.currentTarget;
 
       setVideoTime(video.currentTime);
-
       maybeShowShell();
     },
     [maybeShowShell],
   );
+
   /**
    * Slider behavior:
-   * - seeks video to exact selected time
+   * - seeks video inside current chapter only
    * - does NOT navigate
    */
   const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {

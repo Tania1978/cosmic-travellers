@@ -56,25 +56,21 @@ export const SECOND_BOOK: BookConfig = {
   shellCompletionVideoSrc: "/books/chapter/booklet-2-message.mp4",
   requiredShellIds: ["first-life", "origin-life"],
   chapters: [
-    { page: 1, start: 0, end: 5 },
+    { page: 1, start: 0, end: 6 },
 
-    // +1 from page 2 to 9
-    { page: 2, start: 5, end: 31 },
+    { page: 2, start: 6, end: 31 },
     { page: 3, start: 31, end: 43 },
-    { page: 4, start: 43, end: 83 },
-    { page: 5, start: 83, end: 114 },
-    { page: 6, start: 114, end: 186 },
-    { page: 7, start: 186, end: 220 },
-    { page: 8, start: 220, end: 250 },
-    { page: 9, start: 250, end: 266 },
+    { page: 4, start: 43, end: 79 },
+    { page: 5, start: 79, end: 106 },
+    { page: 6, start: 106, end: 169 },
+    { page: 7, start: 169, end: 203 },
+    { page: 8, start: 203, end: 230 },
+    { page: 9, start: 231, end: 247 },
 
-    // +2 from page 10 to 12
-    { page: 10, start: 266, end: 290 },
-    { page: 11, start: 290, end: 314 },
-    { page: 12, start: 314, end: 344 },
-
-    // +3 from page 13 onwards
-    { page: 13, start: 344, end: 382 },
+    { page: 10, start: 247, end: 267 },
+    { page: 11, start: 267, end: 294 },
+    { page: 12, start: 294, end: 321 },
+    { page: 13, start: 321, end: 359 },
   ],
 };
 

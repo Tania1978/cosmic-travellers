@@ -11,6 +11,7 @@ import ParentAuthModal from "../auth/ParentAuthModal";
 import { MessageButton } from "./MessageButton";
 import { useUserState } from "../contexts/userContext";
 import { InfoButton } from "./InfoButton";
+import { PreviewAccess } from "./PreviewAccess";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ export default function Header() {
         />
 
         {!inHomePage && isLoggedIn && <InfoButton />}
+        {inHomePage && isLoggedIn && <PreviewAccess />}
 
         <Right>
           {/* Desktop-only language selector */}

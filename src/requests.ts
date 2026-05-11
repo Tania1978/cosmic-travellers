@@ -96,3 +96,18 @@ export async function setIntroStage(stage: "ask_name" | "welcome" | "done") {
 
   if (error) throw error;
 }
+
+export async function redeemPreviewCode(code: string) {
+  const { data, error } = await supabase.functions.invoke(
+    "redeem-preview-code",
+    {
+      body: { code },
+    },
+  );
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
