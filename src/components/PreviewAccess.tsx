@@ -2,7 +2,6 @@ import { useState } from "react";
 import styled from "styled-components";
 import { redeemPreviewCode } from "../requests";
 import { Trigger } from "../theme/sharedStyled";
-import { useAuth } from "../auth/authContext";
 import { useUserState } from "../contexts/userContext";
 
 export function PreviewAccess() {
