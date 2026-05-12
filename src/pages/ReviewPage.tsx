@@ -4,11 +4,13 @@ import PageBackground from "../components/PageBackground";
 import ReviewForm from "../components/ReviewForm";
 import { getReviews, type Review } from "../requests";
 import { reviewQuestionLabels } from "../data/books/reviewQuestions";
+import { useAuth } from "../auth/authContext";
 
 export function ReviewsPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [openReviewId, setOpenReviewId] = useState<string | null>(null);
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     const loadReviews = async () => {
@@ -26,14 +28,21 @@ export function ReviewsPage() {
         <HeaderSection>
           <Title>Reviews</Title>
 
-          <Subtitle>
-            Share your thoughts from the preview journey, and read what other
-            families noticed along the way.
-          </Subtitle>
+          {isLoggedIn && (
+            <>
+              <Subtitle>
+                Share your thoughts from the preview journey, and read what
+                other families noticed along the way.
+              </Subtitle>
 
-          <LeaveReviewButton type="button" onClick={() => setFormOpen(true)}>
-            Leave a Review
-          </LeaveReviewButton>
+              <LeaveReviewButton
+                type="button"
+                onClick={() => setFormOpen(true)}
+              >
+                Leave a Review
+              </LeaveReviewButton>
+            </>
+          )}
         </HeaderSection>
 
         {formOpen && (

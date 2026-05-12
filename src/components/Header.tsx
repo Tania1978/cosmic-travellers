@@ -99,7 +99,9 @@ export default function Header() {
         {!inHomePage && isLoggedIn && <InfoButton />}
         {inHomePage && isLoggedIn && <PreviewAccess />}
 
-        {isLoggedIn && (
+        <Right>
+          {/* Desktop-only language selector */}
+
           <DesktopOnly>
             <NavTab
               type="button"
@@ -109,10 +111,6 @@ export default function Header() {
               Reviews
             </NavTab>
           </DesktopOnly>
-        )}
-
-        <Right>
-          {/* Desktop-only language selector */}
 
           <DesktopOnly>
             <LanguageSelect value={language} onChange={changeLanguage} />
