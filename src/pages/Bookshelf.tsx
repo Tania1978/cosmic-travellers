@@ -89,6 +89,7 @@ export function Bookshelf() {
   const lang = i18n.language;
   const isMobile = window.innerWidth <= 768;
   const { unlockedBooks } = useUserState();
+  console.log("unlockedBooks in bookshelf", unlockedBooks);
 
   const toggleFlip = (slug: string) => {
     setFlippedSlug((cur) => (cur === slug ? null : slug));
@@ -124,16 +125,17 @@ export function Bookshelf() {
 
         <Grid>
           {BOOKS.map((b) => {
+            const isUnlocked = !!unlockedBooks[b.slug];
             const flipped = flippedSlug === b.slug;
-
-            const isUnlocked = !!unlockedBooks?.[b.slug];
-            if (isUnlocked) {
-              b.isLocked = false;
-            }
 
             return (
               <GridItem key={b.slug}>
-                <BookCard flipped={flipped} b={b} toggleFlip={toggleFlip} />
+                <BookCard
+                  flipped={flipped}
+                  b={b}
+                  toggleFlip={toggleFlip}
+                  isLocked={!isUnlocked}
+                />
               </GridItem>
             );
           })}

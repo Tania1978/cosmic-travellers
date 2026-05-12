@@ -2,12 +2,14 @@ import { useState } from "react";
 import styled from "styled-components";
 import { redeemPreviewCode } from "../requests";
 import { Trigger } from "../theme/sharedStyled";
+import { useAuth } from "../auth/authContext";
 
 export function PreviewAccess() {
   const [isOpen, setIsOpen] = useState(false);
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [isRedeeming, setIsRedeeming] = useState(false);
+  const { authUser } = useAuth();
 
   const handleClose = () => {
     setIsOpen(false);
@@ -21,6 +23,7 @@ export function PreviewAccess() {
       setIsRedeeming(true);
 
       await redeemPreviewCode(code.trim());
+      console.log("auth user", authUser);
 
       handleClose();
 

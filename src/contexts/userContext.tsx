@@ -12,6 +12,7 @@ import {
   unlockBook as unlockBookRequest,
 } from "../requests";
 import { supabase } from "../auth/supabaseClient";
+import { useAuth } from "../auth/authContext";
 
 export type UnlockedBookSource = "free" | "preview_code" | "stripe";
 
@@ -33,7 +34,7 @@ type UserState = {
   goldenShells: GoldenShellsStore | null;
   unlockedBooks: UnlockedBooks;
   isLoaded: boolean;
-  introStage?: string | null;
+  introStage: string | null;
 
   setChildFirstName: (name: string) => Promise<void>;
   setGoldenShells: (store: GoldenShellsStore) => void;
@@ -53,39 +54,58 @@ export function useUserState() {
   return value;
 }
 
-async function fetchUserStateRow() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return null;
-
-  const { data, error } = await supabase
-    .from("user_state")
-    .select("child_first_name, golden_shells, unlocked_books, intro_stage")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (error) throw error;
-
-  return data ?? null;
-}
-
 export function UserStateProvider({ children }: { children: React.ReactNode }) {
+  const { authUser } = useAuth();
+
   const [childFirstName, setChildFirstNameLocal] = useState<string | null>(
     null,
   );
-
   const [goldenShells, setGoldenShellsLocal] =
     useState<GoldenShellsStore | null>(null);
-
   const [unlockedBooks, setUnlockedBooksLocal] = useState<UnlockedBooks>({});
-
   const [introStage, setIntroStageLocal] = useState<string | null>(null);
-
   const [isLoaded, setIsLoaded] = useState(false);
 
   const saveTimer = useRef<number | null>(null);
+
+  const clearUserState = () => {
+    setChildFirstNameLocal(null);
+    setGoldenShellsLocal(null);
+    setUnlockedBooksLocal({});
+    setIntroStageLocal(null);
+    setIsLoaded(true);
+  };
+
+  const reload = async () => {
+    console.log("reload called authUser", authUser);
+    if (!authUser) {
+      clearUserState();
+      return;
+    }
+
+    setIsLoaded(false);
+
+    const { data, error } = await supabase
+      .from("user_state")
+      .select("child_first_name, golden_shells, unlocked_books, intro_stage")
+      .eq("user_id", authUser.id)
+      .maybeSingle();
+
+    if (error) throw error;
+    console.log("data after user state", data);
+
+    setChildFirstNameLocal((data?.child_first_name as string | null) ?? null);
+
+    setGoldenShellsLocal(
+      (data?.golden_shells as GoldenShellsStore | null) ?? null,
+    );
+
+    setUnlockedBooksLocal((data?.unlocked_books as UnlockedBooks | null) ?? {});
+
+    setIntroStageLocal((data?.intro_stage as string | null) ?? null);
+
+    setIsLoaded(true);
+  };
 
   const setChildFirstName = async (name: string) => {
     const trimmed = name.trim();
@@ -93,26 +113,7 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
     if (!trimmed) return;
 
     setChildFirstNameLocal(trimmed);
-
     await saveChildFirstName(trimmed);
-  };
-
-  const reload = async () => {
-    setIsLoaded(false);
-
-    const row = await fetchUserStateRow();
-
-    setChildFirstNameLocal((row?.child_first_name as string | null) ?? null);
-
-    setGoldenShellsLocal(
-      (row?.golden_shells as GoldenShellsStore | null) ?? null,
-    );
-
-    setUnlockedBooksLocal((row?.unlocked_books as UnlockedBooks | null) ?? {});
-
-    setIntroStageLocal((row?.intro_stage as string | null) ?? null);
-
-    setIsLoaded(true);
   };
 
   const scheduleSaveGoldenShells = (next: GoldenShellsStore) => {
@@ -123,15 +124,11 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
     }
 
     saveTimer.current = window.setTimeout(async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) return;
+      if (!authUser) return;
 
       await supabase.from("user_state").upsert(
         {
-          user_id: user.id,
+          user_id: authUser.id,
           golden_shells: next,
         },
         {
@@ -147,22 +144,19 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    reload().catch(() => setIsLoaded(true));
-
-    const { data: sub } = supabase.auth.onAuthStateChange(() => {
-      reload().catch(() => setIsLoaded(true));
+    reload().catch(() => {
+      setIsLoaded(true);
     });
 
     return () => {
-      sub.subscription.unsubscribe();
-
       if (saveTimer.current) {
         window.clearTimeout(saveTimer.current);
       }
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authUser?.id]);
+  console.log("unlocked books");
 
   const value = useMemo<UserState>(
     () => ({

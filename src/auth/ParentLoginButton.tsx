@@ -6,8 +6,15 @@ export default function ParentLoginButton() {
   const { setAuthModalOpen, isLoggedIn, logout } = useAuth();
   const { t } = useTranslation();
 
+  const handleLogOut = () => {
+    logout();
+    console.log("handleLogOut called");
+  };
+
   return (
-    <Trigger onClick={() => (!isLoggedIn ? setAuthModalOpen(true) : logout())}>
+    <Trigger
+      onClick={() => (!isLoggedIn ? setAuthModalOpen(true) : handleLogOut())}
+    >
       {isLoggedIn ? t("auth.parents.signOut") : t("auth.parents.signIn")}
     </Trigger>
   );

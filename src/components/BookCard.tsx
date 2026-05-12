@@ -9,13 +9,20 @@ interface IBookCardProps {
   b: Book;
   flipped: boolean;
   toggleFlip: (slug: string) => void;
+  isLocked: boolean;
 }
 
-export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
+export default function BookCard({
+  b,
+  flipped,
+  toggleFlip,
+  isLocked,
+}: IBookCardProps) {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { language } = i18n;
   const { isLoggedIn, setAuthModalOpen } = useAuth();
+  console.log("isLocked in book card", isLocked);
 
   const titleText = t(b.title);
   const subtitleText = b.subtitle ? t(b.subtitle) : "";
@@ -44,7 +51,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   }, []);
 
   const openBook = () => {
-    if (b.isLocked) return;
+    if (isLocked) return;
 
     if (isIPadSafariLike) {
       navigate(`/${b.slug}/1`);
@@ -55,7 +62,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
   };
 
   const handleOpenBookClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (b.isLocked) {
+    if (isLocked) {
       e.preventDefault();
       return;
     }
@@ -67,7 +74,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
 
     e.stopPropagation();
 
-    if (b.isLocked) {
+    if (isLocked) {
       e.preventDefault();
       return;
     }
@@ -105,12 +112,12 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
         <div className="face front">
           <FaceShell>
             <CardFrame>
-              <CardSurface $locked={b.isLocked}>
+              <CardSurface $locked={isLocked}>
                 <OpenArea
                   type="button"
-                  $locked={b.isLocked}
+                  $locked={isLocked}
                   aria-label={`Open ${titleText}`}
-                  disabled={b.isLocked}
+                  disabled={isLocked}
                   onClick={handleOpenBookClick}
                   onTouchEnd={handleOpenBookTouchEnd}
                 >
@@ -118,12 +125,12 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
                     <ThumbImg
                       src={b.thumbnailSrc}
                       alt={titleText}
-                      $locked={b.isLocked}
+                      $locked={isLocked}
                     />
                   </Thumb>
                 </OpenArea>
 
-                <CardMeta $locked={b.isLocked}>
+                <CardMeta $locked={isLocked}>
                   <BookTitle>{titleText}</BookTitle>
                   {b.subtitle && <BookSubTitle>{subtitleText}</BookSubTitle>}
                 </CardMeta>
@@ -145,7 +152,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
                   </SummaryLink>
                 </CenterWrapper>
 
-                {b.isLocked && (
+                {isLocked && (
                   <BuyButtonRow id="BUY BUTTON ROW">
                     <BuyBtn type="button" onClick={handleBuy}>
                       <img
@@ -165,7 +172,7 @@ export default function BookCard({ b, flipped, toggleFlip }: IBookCardProps) {
         <div className="face back">
           <FaceShell>
             <CardFrame>
-              <CardSurface $locked={b.isLocked}>
+              <CardSurface $locked={isLocked}>
                 <BackMeta>
                   <SummaryTitle>{titleText}</SummaryTitle>
                   <BackText>{summaryText}</BackText>
