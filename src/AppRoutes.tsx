@@ -9,7 +9,6 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { ReviewsPage } from "./pages/ReviewPage";
 
-
 export default function AppRoutes() {
   return (
     <Routes>
@@ -34,7 +33,16 @@ export default function AppRoutes() {
           </>
         }
       />
-      <Route path="/reviews" element={<ReviewsPage />} />
+      <Route
+        path="/reviews"
+        element={
+          <>
+            <Header />
+            <ReviewsPage />
+            <Footer />
+          </>
+        }
+      />
 
       <Route
         path="/art-credits"
