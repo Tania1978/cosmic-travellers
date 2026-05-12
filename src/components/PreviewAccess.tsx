@@ -10,7 +10,6 @@ export function PreviewAccess() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [isRedeeming, setIsRedeeming] = useState(false);
-  const { authUser } = useAuth();
   const { setUnlockedBooksLocal } = useUserState();
 
   const handleClose = () => {
