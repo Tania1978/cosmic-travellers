@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { redeemPreviewCode } from "../requests";
 import { Trigger } from "../theme/sharedStyled";
 import { useAuth } from "../auth/authContext";
+import { useUserState } from "../contexts/userContext";
 
 export function PreviewAccess() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,7 @@ export function PreviewAccess() {
   const [error, setError] = useState("");
   const [isRedeeming, setIsRedeeming] = useState(false);
   const { authUser } = useAuth();
+  const { setUnlockedBooksLocal } = useUserState();
 
   const handleClose = () => {
     setIsOpen(false);
@@ -22,9 +24,10 @@ export function PreviewAccess() {
       setError("");
       setIsRedeeming(true);
 
-      await redeemPreviewCode(code.trim());
-      console.log("auth user", authUser);
-
+      const data = await redeemPreviewCode(code.trim());
+      if (data?.unlockedBooks) {
+        setUnlockedBooksLocal(data?.unlockedBooks);
+      }
       handleClose();
 
       // TODO:

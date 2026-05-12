@@ -7,6 +7,8 @@ import { TEXTPAGES } from "./data/books/text-pages";
 import { GoldenShellsProviderWrapper } from "./data/shells/GoldenShellsProviderWrapper";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { ReviewsPage } from "./pages/ReviewPage";
+
 
 export default function AppRoutes() {
   return (
@@ -32,6 +34,7 @@ export default function AppRoutes() {
           </>
         }
       />
+      <Route path="/reviews" element={<ReviewsPage />} />
 
       <Route
         path="/art-credits"

@@ -125,7 +125,8 @@ export function Bookshelf() {
 
         <Grid>
           {BOOKS.map((b) => {
-            const isUnlocked = !!unlockedBooks[b.slug];
+            const firstBook = b.slug === "the-mission-begins";
+            const isUnlocked = firstBook || !!unlockedBooks[b.slug];
             const flipped = flippedSlug === b.slug;
 
             return (
