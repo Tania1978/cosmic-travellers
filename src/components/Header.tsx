@@ -99,6 +99,18 @@ export default function Header() {
         {!inHomePage && isLoggedIn && <InfoButton />}
         {inHomePage && isLoggedIn && <PreviewAccess />}
 
+        {isLoggedIn && (
+          <DesktopOnly>
+            <NavTab
+              type="button"
+              $active={location.pathname === "/reviews"}
+              onClick={() => navigate("/reviews")}
+            >
+              Reviews
+            </NavTab>
+          </DesktopOnly>
+        )}
+
         <Right>
           {/* Desktop-only language selector */}
 
@@ -217,6 +229,29 @@ const Bar = styled.header`
 
   @media (max-width: 700px) {
     padding: 0 14px;
+  }
+`;
+
+const NavTab = styled.button<{ $active: boolean }>`
+  border: 1px solid
+    ${({ $active }) =>
+      $active ? "rgba(253, 224, 71, 0.8)" : "rgba(255, 255, 255, 0.22)"};
+
+  background: ${({ $active }) =>
+    $active ? "rgba(253, 224, 71, 0.22)" : "rgba(255, 255, 255, 0.12)"};
+
+  color: ${({ $active }) =>
+    $active ? "#fde047" : "rgba(255, 255, 255, 0.94)"};
+
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+
+  font-weight: 800;
+  letter-spacing: 0.2px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
   }
 `;
 

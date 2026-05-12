@@ -106,9 +106,58 @@ export async function redeemPreviewCode(code: string) {
     },
   );
 
+  if (error) throw error;
+
+  return data;
+}
+
+export async function submitReview(answers: Record<string, string | number>) {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  const reviewer_name =
+    user.user_metadata?.full_name ?? user.user_metadata?.name ?? "Anonymous";
+
+  const { data, error } = await supabase
+    .from("reviews")
+    .insert({
+      user_id: user.id,
+      reviewer_name,
+      answers,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+  await getReviews();
+  return data;
+}
+
+export type Review = {
+  id: string;
+  user_id: string | null;
+  answers: Record<string, string | number>;
+  created_at: string;
+  reviewer_name: string;
+};
+
+export async function getReviews() {
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("id, user_id, reviewer_name, answers, created_at")
+    .order("created_at", { ascending: false });
+
   if (error) {
     throw error;
   }
 
-  return data;
+  return data as Review[];
 }

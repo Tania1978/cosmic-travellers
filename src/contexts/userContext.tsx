@@ -40,6 +40,7 @@ type UserState = {
   setGoldenShells: (store: GoldenShellsStore) => void;
   unlockBook: (bookSlug: string) => Promise<void>;
   reload: () => Promise<void>;
+  setUnlockedBooksLocal: React.Dispatch<React.SetStateAction<UnlockedBooks>>;
 };
 
 const Ctx = createContext<UserState | null>(null);
@@ -169,6 +170,7 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
       setGoldenShells: scheduleSaveGoldenShells,
       unlockBook,
       reload,
+      setUnlockedBooksLocal,
     }),
     [childFirstName, goldenShells, unlockedBooks, isLoaded, introStage],
   );
