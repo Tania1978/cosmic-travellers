@@ -9,17 +9,13 @@ import { useAuth } from "../auth/authContext";
 import ParentLoginButton from "../auth/ParentLoginButton";
 import ParentAuthModal from "../auth/ParentAuthModal";
 import { MessageButton } from "./MessageButton";
-import { useUserState } from "../contexts/userContext";
-import { InfoButton } from "./InfoButton";
 import { PreviewAccess } from "./PreviewAccess";
-import { Trigger } from "../theme/sharedStyled";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const { authModalOpen, setAuthModalOpen, isLoggedIn } = useAuth();
-  const { childFirstName } = useUserState();
 
   const inHomePage = location.pathname === "/";
 
@@ -399,8 +395,4 @@ const MenuSectionTitle = styled.div`
   letter-spacing: 0.6px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.7);
-`;
-
-const LanguageRow = styled.div`
-  width: 100%;
 `;
