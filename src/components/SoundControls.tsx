@@ -46,7 +46,7 @@ export function SoundControls() {
 const Wrapper = styled.div`
   position: fixed;
   top: 78px;
-  right: 30px;
+  right: 10px;
   z-index: 30;
 
   display: flex;

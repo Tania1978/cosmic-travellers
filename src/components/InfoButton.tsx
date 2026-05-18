@@ -2,19 +2,24 @@ import { useState } from "react";
 import styled from "styled-components";
 import { ModalIconButton } from "./ModalIconButton";
 
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { BOOKS } from "../data/books/books";
+import { useAuth } from "../auth/authContext";
 
 export function InfoButton() {
   const { bookSlug } = useParams();
   const foundBook = BOOKS.find((b) => b.slug === bookSlug);
+  const location = useLocation();
+  const { isLoggedIn } = useAuth();
 
+  const inHomePage = location.pathname === "/";
 
   const items = foundBook?.infoItems ?? [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   if (items.length === 0) return null;
+  if (inHomePage || !isLoggedIn) return null;
 
   const item = items[currentIndex];
 
@@ -64,14 +69,14 @@ const CloseButton = styled.button`
 const Title = styled.h2`
   margin: 0 0 16px;
   color: white;
-  font-family: Fredoka, sans-serif;
+  font-family: Cause, sans-serif;
 `;
 
 const Text = styled.p`
   color: white;
   font-size: 18px;
   line-height: 1.5;
-  font-family: Fredoka, sans-serif;
+  font-family: Cause, sans-serif;
 `;
 
 const Video = styled.video`
@@ -85,6 +90,6 @@ const Video = styled.video`
 const ItemTitle = styled.h3`
   margin: 0;
   color: white;
-  font-family: Fredoka, sans-serif;
+  font-family: Cause, sans-serif;
   font-size: 20px;
 `;

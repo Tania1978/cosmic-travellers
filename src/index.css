@@ -1,4 +1,17 @@
+:root {
+  --font-body: "Cause", sans-serif;
+  --font-display: "Cause", sans-serif;
+
+  color: #213547;
+  background-color: #ffffff;
+
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 * {
+  box-sizing: border-box;
   max-height: 1000000px; /* Prevents Chrome text autosizing quirk */
 }
 
@@ -8,18 +21,38 @@ body,
   height: 100%;
   width: 100%;
   margin: 0;
-
-  font-family: "Fredoka", sans-serif;
-}
-
-html {
-  font-size: 16px;
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
 }
 
 body {
   display: block;
+  font-family: var(--font-body);
+  font-size: 16px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+h1 {
+  line-height: 1.1;
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+input,
+textarea,
+select,
+button {
+  font-family: var(--font-body);
   font-size: 16px;
 }
 
@@ -28,33 +61,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
-  color: #535bf2;
-}
-
-h1 {
-  line-height: 1.1;
-}
-
-body {
-  font-size: 16px;
-}
-
-input,
-textarea,
-select {
-  font-size: 16px;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+  color: #747bff;
 }

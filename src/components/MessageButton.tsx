@@ -4,28 +4,22 @@ import { ModalIconButton } from "./ModalIconButton";
 import { useUserState } from "../contexts/userContext";
 import { useOptionalGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../auth/authContext";
 
 type MessageButtonProps = {
   iconSrc?: string;
   size?: number;
-  isLoggedIn: boolean;
-  childFirstName: string | null;
 };
 
 export const MessageButton = (props: MessageButtonProps) => {
-  const {
-    iconSrc = "/ui/message-button.png",
-    size = 150,
-    isLoggedIn,
-    childFirstName,
-  } = props;
+  const { iconSrc = "/ui/message-button.png", size = 150 } = props;
   const location = useLocation();
-
+  const { isLoggedIn } = useAuth();
   const inHomePage = location.pathname === "/";
   const goldenShells = useOptionalGoldenShells();
   const isModalOpen = goldenShells?.isModalOpen;
 
-  const { setChildFirstName } = useUserState();
+  const { setChildFirstName, childFirstName } = useUserState();
 
   const [firstName, setFirstName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -164,7 +158,7 @@ export const MessageButton = (props: MessageButtonProps) => {
 const Greeting = styled.p`
   margin: 0;
   padding: 6px 12px;
-  font-family: Fredoka, sans-serif;
+  font-family: Cause, sans-serif;
   font-size: 20px;
   letter-spacing: 2px;
   color: white;
@@ -218,6 +212,7 @@ const SubmitButton = styled.button`
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  background-color: transparent;
 
   width: 280px;
   height: 70px;

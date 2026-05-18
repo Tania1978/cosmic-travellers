@@ -11,10 +11,13 @@ import { useUserState } from "../contexts/userContext";
 const Page = styled.div`
   padding: 24px;
   max-width: 1400px;
-  margin: 90px auto;
+  margin: 10px auto;
   color: #0b1220;
-`;
 
+  @media (max-width: 700px) {
+    margin-top: 90px;
+  }
+`;
 const TitleWrap = styled.div`
   text-align: center;
 `;

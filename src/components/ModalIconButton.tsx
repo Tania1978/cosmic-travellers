@@ -113,12 +113,13 @@ const pulseGlow = keyframes`
 
 const Overlay = styled.div<{ $closing: boolean }>`
   position: fixed;
+  inset: 0;
+  z-index: 9999;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
 
-  z-index: 5000;
   display: grid;
   place-items: center;
 
@@ -130,8 +131,11 @@ const Overlay = styled.div<{ $closing: boolean }>`
 
 const Modal = styled.div<{ $closing: boolean }>`
   width: min(90vw, 720px);
+  position: relative;
+  top: 40px;
+  z-index: 10000;
   min-height: 400px;
-  padding: 40px;
+  padding: 20px;
   border-radius: 28px;
   overflow: hidden;
   place-items: center;

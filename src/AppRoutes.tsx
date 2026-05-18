@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { Bookshelf } from "./pages/Bookshelf";
 import BookPlayerPage from "./pages/BookPlayerPage";
 import WriterNotes from "./pages/WriterNotes";
@@ -8,8 +8,20 @@ import { GoldenShellsProviderWrapper } from "./data/shells/GoldenShellsProviderW
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { ReviewsPage } from "./pages/ReviewPage";
+import { JourneyActions } from "./components/JourneyActions";
+import { PreviewAccess } from "./components/PreviewAccess";
+import { Trigger } from "./theme/sharedStyled";
+import { InfoButton } from "./components/InfoButton";
+import { MessageButton } from "./components/MessageButton";
+import styled from "styled-components";
+import { useAuth } from "./auth/authContext";
 
 export default function AppRoutes() {
+  const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
+
+  const inHomePage = location.pathname === "/";
+
   return (
     <Routes>
       <Route
@@ -17,7 +29,22 @@ export default function AppRoutes() {
         element={
           <>
             <Header />
+
+            <JourneyActions>
+              <MessageButton iconSrc={"/ui/message-button1.png"} size={150} />
+              <InfoButton />
+              {inHomePage && isLoggedIn && (
+                <ButtonSlot id="button slot">
+                  <PreviewAccess />
+                </ButtonSlot>
+              )}
+              <ButtonSlot>
+                <Trigger onClick={() => navigate("/reviews")}>Reviews</Trigger>
+              </ButtonSlot>
+            </JourneyActions>
+
             <Bookshelf />
+
             <Footer />
           </>
         }
@@ -43,7 +70,6 @@ export default function AppRoutes() {
           </>
         }
       />
-
       <Route
         path="/art-credits"
         element={
@@ -54,7 +80,6 @@ export default function AppRoutes() {
           </>
         }
       />
-
       <Route
         path="/:bookSlug/:page"
         element={
@@ -65,8 +90,14 @@ export default function AppRoutes() {
           </GoldenShellsProviderWrapper>
         }
       />
-
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
+
+const ButtonSlot = styled.div`
+  width: 180px;
+
+  display: flex;
+  align-items: center;
+`;
