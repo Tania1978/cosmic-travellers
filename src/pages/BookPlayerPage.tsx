@@ -283,6 +283,7 @@ export default function BookPlayerPage() {
     if (activeOpportunity?.id === nextShellForCurrentPage.id) return;
 
     const shellMoment = chapterNow.end - 1;
+    console.log("shellMoment", shellMoment);
 
     if (video.currentTime >= shellMoment) {
       setActiveOpportunity(nextShellForCurrentPage);
@@ -302,10 +303,11 @@ export default function BookPlayerPage() {
    * - video time may not change immediately, so onTimeUpdate may not fire
    */
   useEffect(() => {
+    console.log("chapterNow", chapterNow);
     if (isModalOpen) return;
 
     maybeShowShell();
-  }, [isModalOpen, nextShellForCurrentPage, maybeShowShell]);
+  }, [isModalOpen, nextShellForCurrentPage, maybeShowShell, chapterNow]);
 
   /**
    * Time update behavior:
@@ -366,7 +368,6 @@ export default function BookPlayerPage() {
           <VideoFrame ref={frameRef} id="VIDEO FRAME">
             <GoldenShellIcon />
             <GoldenShellModal />
-
             {DISABLE_VIDEO ? (
               <Placeholder id="Placeholder">
                 <CalmBackground id="CalmBackground" />
@@ -528,6 +529,7 @@ const ProgressBar = styled.input`
 const Wrap = styled.div`
   width: min(60%, 1100px);
   margin: 80px auto 0;
+  z-index: 10;
 `;
 
 const Stage = styled.div`
@@ -548,8 +550,7 @@ const VideoFrame = styled.div`
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   background: #000;
-  pointer-events: none;
-  z-index: 21;
+  z-index: 2;
 
   &:hover .controlsLayer {
     opacity: 1;
@@ -557,6 +558,10 @@ const VideoFrame = styled.div`
 `;
 
 const Video = styled.video`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -614,7 +619,7 @@ const BigButton = styled.button`
 
   display: grid;
   place-items: center;
-  ont-size: 1.75rem;
+  font-size: 1.75rem;
 `;
 
 const ControlsLayer = styled.div.attrs({ className: "controlsLayer" })`

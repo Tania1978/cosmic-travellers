@@ -1,27 +1,37 @@
 import styled from "styled-components";
 import { DesktopOnly } from "./Header";
+import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
+import { useLocation } from "react-router-dom";
 
 type JourneyActionsProps = {
   children: React.ReactNode;
 };
 
 export function JourneyActions({ children }: JourneyActionsProps) {
+  const location = useLocation();
+  console.log(location.pathname);
+  const inHomePage = location.pathname === "/";
+  const shouldShowJourneyActions = !inHomePage
+    ? useGoldenShells().shouldShowCompletionVideo
+    : true;
   return (
     <DesktopOnly>
-      <Wrapper>
-        <Glow />
+      {shouldShowJourneyActions && (
+        <Wrapper>
+          <Glow />
 
-        <Inner>
-          <ButtonsRow>{children}</ButtonsRow>
-        </Inner>
-      </Wrapper>
+          <Inner>
+            <ButtonsRow>{children}</ButtonsRow>
+          </Inner>
+        </Wrapper>
+      )}
     </DesktopOnly>
   );
 }
 
 const Wrapper = styled.section`
   position: relative;
-  z-index: 2;
+  z-index: 10000;
   justify-content: center;
 
   width: min(1100px, calc(100% - 32px));

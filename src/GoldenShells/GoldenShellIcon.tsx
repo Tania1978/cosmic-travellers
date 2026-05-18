@@ -4,10 +4,12 @@ import { useGoldenShells } from "./GoldenShellsProvider";
 export function GoldenShellIcon() {
   const { activeOpportunity, isShellEarned, openModal, isModalOpen } =
     useGoldenShells();
+  console.log("activeOpportunity", activeOpportunity);
 
   const hasQuestionAvailable =
     activeOpportunity && !isShellEarned(activeOpportunity.id);
-
+  console.log("hasQuestionAvailable", hasQuestionAvailable);
+  console.log('isModalOpen', isModalOpen)
   if (!hasQuestionAvailable) return null;
 
   return (
@@ -56,6 +58,7 @@ export const Img = styled.img`
 
 const ShellButton = styled.button`
   position: absolute;
+  z-index:1000;
   left: 20px;
   top: 20px;
   width: 90px;

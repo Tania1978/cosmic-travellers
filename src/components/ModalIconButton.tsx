@@ -114,7 +114,7 @@ const pulseGlow = keyframes`
 const Overlay = styled.div<{ $closing: boolean }>`
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 10001;
   top: 0;
   left: 0;
   width: 100vw;

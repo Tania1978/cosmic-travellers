@@ -85,6 +85,10 @@ export default function AppRoutes() {
         element={
           <GoldenShellsProviderWrapper>
             <Header />
+            <JourneyActions>
+              <MessageButton iconSrc={"/ui/message-button.png"} size={150} />
+              <InfoButton />
+            </JourneyActions>
             <BookPlayerPage />
             <Footer />
           </GoldenShellsProviderWrapper>
