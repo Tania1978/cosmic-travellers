@@ -19,7 +19,7 @@ export const GlowText = styled.p.withConfig({
   shouldForwardProp: (prop) =>
     !["src", "variant", "width", "color"].includes(prop),
 })<GlowTextProps>`
-  font-family: "Fredoka", sans-serif;
+  font-family: "Cause", sans-serif;
 
   line-height: 1.12;
   letter-spacing: 0.4px;

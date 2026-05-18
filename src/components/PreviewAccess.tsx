@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { redeemPreviewCode } from "../requests";
 import { Trigger } from "../theme/sharedStyled";
 import { useUserState } from "../contexts/userContext";
+import { useAuth } from "../auth/authContext";
+import { useLocation } from "react-router-dom";
 
 export function PreviewAccess() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +12,10 @@ export function PreviewAccess() {
   const [error, setError] = useState("");
   const [isRedeeming, setIsRedeeming] = useState(false);
   const { setUnlockedBooksLocal } = useUserState();
+  const location = useLocation();
+  const { isLoggedIn } = useAuth();
+
+  const inHomePage = location.pathname === "/";
 
   const handleClose = () => {
     setIsOpen(false);
@@ -38,6 +44,8 @@ export function PreviewAccess() {
       setIsRedeeming(false);
     }
   };
+
+  if (!inHomePage || !isLoggedIn) return null;
 
   return (
     <>

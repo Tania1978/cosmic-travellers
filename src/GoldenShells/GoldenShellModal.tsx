@@ -8,12 +8,8 @@ const FADE_MS = 1000;
 const CLOSE_MS = 2000;
 
 export function GoldenShellModal() {
-  const {
-    activeOpportunity,
-    isModalOpen,
-    closeModal,
-    submitAnswer,
-  } = useGoldenShells();
+  const { activeOpportunity, isModalOpen, closeModal, submitAnswer } =
+    useGoldenShells();
 
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isClosing, setIsClosing] = useState(false);
@@ -286,7 +282,7 @@ const ChoicesGrid = styled.div`
 
 const ChoiceRow = styled.button`
   width: 100%;
-  font-family: "Fredoka", sans-serif !important;
+  font-family: "Cause", sans-serif !important;
   border: none;
   cursor: pointer;
   text-align: center;
@@ -333,13 +329,12 @@ const ChoiceRow = styled.button`
 `;
 
 const ChoiceLabel = styled.div`
-  font-family: "Fredoka", sans-serif !important;
+  font-family: "Cause", sans-serif !important;
   padding-left: 6px;
   font-size: 20px;
   line-height: 1.35;
   color: rgba(255, 255, 255, 0.92);
 `;
-
 
 const FeedbackText = styled.div`
   margin-top: 12px;

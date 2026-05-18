@@ -12,6 +12,7 @@ import { MessageButton } from "./MessageButton";
 import { useUserState } from "../contexts/userContext";
 import { InfoButton } from "./InfoButton";
 import { PreviewAccess } from "./PreviewAccess";
+import { Trigger } from "../theme/sharedStyled";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -87,30 +88,21 @@ export default function Header() {
           </DesktopOnly>
         </Left>
 
-        <MessageButton
-          iconSrc={
-            inHomePage ? "/ui/message-button1.png" : "/ui/message-button.png"
-          }
-          size={150}
-          isLoggedIn={isLoggedIn}
-          childFirstName={childFirstName}
-        />
+        <MobileOnly>
+          <MessageButton
+            iconSrc={
+              inHomePage ? "/ui/message-button1.png" : "/ui/message-button.png"
+            }
+            size={150}
+          />
+        </MobileOnly>
 
-        {!inHomePage && isLoggedIn && <InfoButton />}
-        {inHomePage && isLoggedIn && <PreviewAccess />}
+        {/* {!inHomePage && isLoggedIn && <InfoButton />} */}
 
         <Right>
-          {/* Desktop-only language selector */}
-
-          <DesktopOnly>
-            <NavTab
-              type="button"
-              $active={location.pathname === "/reviews"}
-              onClick={() => navigate("/reviews")}
-            >
-              Reviews
-            </NavTab>
-          </DesktopOnly>
+          {/* <DesktopOnly>
+            <Trigger onClick={() => navigate("/reviews")}>Reviews</Trigger>
+          </DesktopOnly> */}
 
           <DesktopOnly>
             <LanguageSelect value={language} onChange={changeLanguage} />
@@ -190,9 +182,18 @@ export default function Header() {
           <ParentLoginButton />
 
           <MenuSectionTitle>{t("ui.language")}</MenuSectionTitle>
-          <LanguageRow>
-            <LanguageSelect value={language} onChange={changeLanguage} />
-          </LanguageRow>
+
+          <LanguageSelect value={language} onChange={changeLanguage} />
+
+          <NavTab
+            type="button"
+            $active={location.pathname === "/reviews"}
+            onClick={() => navigate("/reviews")}
+          >
+            Reviews
+          </NavTab>
+
+          {inHomePage && isLoggedIn && <PreviewAccess />}
         </DrawerContent>
       </Drawer>
       <ParentAuthModal
@@ -265,15 +266,16 @@ const Right = styled.div`
   gap: 16px;
 `;
 
-const DesktopOnly = styled.div`
+export const DesktopOnly = styled.div`
   display: block;
+  min-width: 140px;
 
   @media (max-width: 700px) {
     display: none;
   }
 `;
 
-const MobileOnly = styled.div`
+export const MobileOnly = styled.div`
   display: none;
 
   @media (max-width: 700px) {

@@ -30,7 +30,6 @@ const Button = styled.button<{ $size: number }>`
   cursor: pointer;
 
   width: ${({ $size }) => $size}px;
-  height: ${({ $size }) => $size}px;
 
   display: flex;
   align-items: center;
