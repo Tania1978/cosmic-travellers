@@ -10,6 +10,8 @@ import {
 } from "react";
 import type { GoldenShellsStore, ShellOpportunity } from "./types";
 import { loadShellsStore, saveShellsStore } from "./storage";
+import { useUserState } from "../contexts/userContext";
+import { saveGoldenShells } from "../requests";
 
 type GoldenShellsContextValue = {
   bookletId: string;
@@ -22,13 +24,14 @@ type GoldenShellsContextValue = {
   setActiveOpportunity: (opportunity: ShellOpportunity | null) => void;
   openModal: () => void;
   closeModal: () => void;
-  submitAnswer: (choiceId: string) => {
+  submitAnswer: (choiceId: string) => Promise<{
     correct: boolean;
     completedBooklet: boolean;
-  };
+  }>;
   hasEarnedAllBookletShells: boolean;
   shellCompletionVideoSrc?: string;
   correctSoundRef: RefObject<HTMLAudioElement | null>;
+  shouldShowCompletionVideo: boolean;
 };
 
 const GoldenShellsContext = createContext<GoldenShellsContextValue | null>(
@@ -51,6 +54,7 @@ export function GoldenShellsProvider({
   const [store, setStore] = useState<GoldenShellsStore>(() =>
     loadShellsStore(),
   );
+  const { childFirstName } = useUserState();
   const [activeOpportunity, setActiveOpportunity] =
     useState<ShellOpportunity | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -91,21 +95,22 @@ export function GoldenShellsProvider({
     setIsModalOpen(false);
   };
 
-  const submitAnswer = (choiceId: string) => {
+  const submitAnswer = async (choiceId: string) => {
     if (!activeOpportunity) {
       return { correct: false, completedBooklet: false };
     }
 
     const isCorrect = choiceId === activeOpportunity.correctChoiceId;
-    if (isCorrect) {
-      playCorrectSound();
-    }
 
     if (!isCorrect) {
       return { correct: false, completedBooklet: false };
     }
 
-    // 👇 compute BEFORE updating store
+    playCorrectSound();
+
+    const alreadyEarned =
+      store.byBooklet[bookletId]?.[activeOpportunity.id] ?? false;
+
     const completedBooklet =
       requiredShellIds.length > 0 &&
       requiredShellIds.every((id) => {
@@ -113,29 +118,29 @@ export function GoldenShellsProvider({
         return store.byBooklet[bookletId]?.[id] ?? false;
       });
 
-    setStore((prev) => {
-      const alreadyEarned = prev.byBooklet[bookletId]?.[activeOpportunity.id];
+    if (alreadyEarned) {
+      return { correct: true, completedBooklet };
+    }
 
-      if (alreadyEarned) {
-        return prev;
-      }
+    const nextStore: GoldenShellsStore = {
+      ...store,
+      byBooklet: {
+        ...store.byBooklet,
+        [bookletId]: {
+          ...store.byBooklet[bookletId],
+          [activeOpportunity.id]: true,
+        },
+      },
+      totalEarned: store.totalEarned + 1,
+      sessionEarnedByBooklet: {
+        ...store.sessionEarnedByBooklet,
+        [bookletId]: (store.sessionEarnedByBooklet[bookletId] ?? 0) + 1,
+      },
+    };
+    console.log(nextStore);
 
-      return {
-        ...prev,
-        byBooklet: {
-          ...prev.byBooklet,
-          [bookletId]: {
-            ...prev.byBooklet[bookletId],
-            [activeOpportunity.id]: true,
-          },
-        },
-        totalEarned: prev.totalEarned + 1,
-        sessionEarnedByBooklet: {
-          ...prev.sessionEarnedByBooklet,
-          [bookletId]: (prev.sessionEarnedByBooklet[bookletId] ?? 0) + 1,
-        },
-      };
-    });
+    setStore(nextStore);
+    await saveGoldenShells(nextStore);
 
     return { correct: true, completedBooklet };
   };
@@ -143,6 +148,11 @@ export function GoldenShellsProvider({
   const hasEarnedAllBookletShells =
     requiredShellIds.length > 0 &&
     requiredShellIds.every((id) => isShellEarned(id));
+
+  const shouldShowCompletionVideo =
+    !!childFirstName &&
+    !!hasEarnedAllBookletShells &&
+    !!shellCompletionVideoSrc;
 
   const value = useMemo(
     () => ({
@@ -160,6 +170,7 @@ export function GoldenShellsProvider({
       hasEarnedAllBookletShells,
       shellCompletionVideoSrc,
       correctSoundRef,
+      shouldShowCompletionVideo,
     }),
     [
       bookletId,
@@ -170,6 +181,7 @@ export function GoldenShellsProvider({
       isModalOpen,
       shellCompletionVideoSrc,
       correctSoundRef,
+      shouldShowCompletionVideo,
     ],
   );
 

@@ -30,8 +30,9 @@ export function GoldenShellModal() {
     closeModal();
   };
 
-  const onPick = (choiceId: string) => {
-    const res = submitAnswer(choiceId);
+  const onPick = async (choiceId: string) => {
+    console.log('onPick')
+    const res = await submitAnswer(choiceId);
 
     if (res.correct) {
       window.setTimeout(() => {

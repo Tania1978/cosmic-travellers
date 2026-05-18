@@ -26,7 +26,6 @@ export async function saveChildFirstName(childFirstName: string) {
 export async function loadUserState(
   userId: string,
 ): Promise<UserStateRow | null> {
-  console.log("load user state called from preview access");
   const { data, error } = await supabase
     .from("user_state")
     .select("user_id, child_first_name, golden_shells, unlocked_books")
@@ -40,6 +39,7 @@ export async function loadUserState(
 }
 
 export async function saveGoldenShells(store: GoldenShellsStore) {
+  console.log("store");
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -53,6 +53,7 @@ export async function saveGoldenShells(store: GoldenShellsStore) {
     );
 
   if (error) throw error;
+  loadUserState(user.id);
 }
 
 export async function unlockBook(bookSlug: string) {
