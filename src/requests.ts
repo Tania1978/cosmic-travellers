@@ -162,3 +162,47 @@ export async function getReviews() {
 
   return data as Review[];
 }
+
+export async function canUserAccessBooklet(bookletId: string) {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) return false;
+
+  const { data, error } = await supabase
+    .from("user_state")
+    .select("unlocked_books")
+    .eq("user_id", user.id)
+    .single();
+
+  if (error || !data) return false;
+
+  return Boolean(data.unlocked_books?.[bookletId]);
+}
+
+export async function getSignedVideoUrlForBooklet(
+  bookletId: string,
+  videoPath: string,
+) {
+  const hasAccess = await canUserAccessBooklet(bookletId);
+
+  if (!hasAccess) {
+    throw new Error("Booklet is locked");
+  }
+  // const { data, error } = await supabase.storage
+  //   .from("cosmic-travellers")
+  //   .list("booklet-2");
+
+  // console.log(JSON.stringify(data, null, 2));
+  // console.log(error);
+
+  const { data, error } = await supabase.storage
+    .from("cosmic-travellers")
+    .createSignedUrl(videoPath, 60 * 60);
+
+  if (error) throw error;
+
+  return data.signedUrl;
+}
