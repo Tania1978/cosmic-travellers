@@ -10,7 +10,7 @@ export type BookConfig = {
   slug: string;
   title: string;
   subtitle: string;
-  videoSrc: string;
+  videoPath: string;
   chapters: Chapter[];
   requiredShellIds?: string[]; // ✅ NEW (for hidden chapters)
   shellCompletionVideoSrc?: string;
@@ -20,7 +20,7 @@ export const INTRO_BOOK: BookConfig = {
   slug: "the-mission-begins",
   title: "The Mission Begins",
   subtitle: "A Series Introduction Booklet",
-  videoSrc: "/books/intro/final-intro-music.mp4",
+  videoPath: "intro-booklet/final-intro-music.mp4",
 
   chapters: [
     { page: 1, start: 0, end: 6 },
@@ -52,7 +52,7 @@ export const SECOND_BOOK: BookConfig = {
   slug: "booklet-2",
   title: "Second Booklet",
   subtitle: "Cosmic Travellers",
-  videoSrc: "/books/chapter/booklet-2-music.mp4",
+  videoPath: "booklet-2/booklet-2-music.mp4",
   shellCompletionVideoSrc: "/books/chapter/booklet-2-message.mp4",
   requiredShellIds: ["first-life", "origin-life"],
   chapters: [
@@ -78,7 +78,7 @@ export const THIRD_BOOK: BookConfig = {
   slug: "booklet-3",
   title: "Third Booklet",
   subtitle: "Cosmic Travellers",
-  videoSrc: "/books/chapter/booklet-3-music.mp4",
+  videoPath: "booklet-3/booklet-3-music.mp4",
   requiredShellIds: [
     "stars-are-suns",
     "solar-system",
@@ -104,7 +104,7 @@ export const FOURTH_BOOK: BookConfig = {
   slug: "booklet-4",
   title: "Fourth Booklet",
   subtitle: "Cosmic Travellers",
-  videoSrc: "/books/chapter/booklet-4-music.mp4",
+  videoPath: "booklet-4/booklet-4-music.mp4",
   shellCompletionVideoSrc: "/books/chapter/booklet-4-message.mp4",
   requiredShellIds: [
     "water-evaporation",

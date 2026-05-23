@@ -13,6 +13,7 @@ import { ALL_SHELL_OPPORTUNITIES } from "../data/shells/shells_opportunitites";
 
 import { GoldenShellIcon } from "../GoldenShells/GoldenShellIcon";
 import { GoldenShellModal } from "../GoldenShells/GoldenShellModal";
+import { getSignedVideoUrlForBooklet } from "../requests";
 
 const CHAPTER_PREROLL_SECONDS = 0.5;
 
@@ -40,6 +41,7 @@ export default function BookPlayerPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
+  const [signedVideoSrc, setSignedVideoSrc] = useState("");
 
   const currentPage = Number(page);
 
@@ -120,6 +122,21 @@ export default function BookPlayerPage() {
     goToChapter(prevChapter.page);
   };
 
+  useEffect(() => {
+
+    async function loadVideo() {
+      if (!foundBook?.videoPath) return;
+
+      const url = await getSignedVideoUrlForBooklet(
+        foundBook.slug,
+        foundBook.videoPath,
+      );
+
+      setSignedVideoSrc(url);
+    }
+
+    loadVideo();
+  }, [foundBook]);
   /**
    * Modal behavior:
    * - opening modal pauses video
@@ -377,10 +394,10 @@ export default function BookPlayerPage() {
               </Placeholder>
             ) : (
               <>
-                {!!foundBook.videoSrc && (
+                {!!signedVideoSrc && (
                   <Video
                     ref={videoRef}
-                    src={foundBook.videoSrc}
+                    src={signedVideoSrc}
                     preload="auto"
                     playsInline
                     onPlay={() => setIsPlaying(true)}
