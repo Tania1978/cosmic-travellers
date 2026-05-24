@@ -615,10 +615,14 @@ const Wrap = styled.div`
 
 const Stage = styled.div`
   width: 100%;
-  min-height: 100dvh;
+  min-height: calc(100dvh - 120px);
+
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+
+  padding-top: 24px;
+  box-sizing: border-box;
 `;
 
 // const Video = styled.video`
