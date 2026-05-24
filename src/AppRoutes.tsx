@@ -1,9 +1,4 @@
-import {
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Bookshelf } from "./pages/Bookshelf";
 import BookPlayerPage from "./pages/BookPlayerPage";
 import WriterNotes from "./pages/WriterNotes";
@@ -86,7 +81,7 @@ export default function AppRoutes() {
           </>
         }
       />
-      <Route
+      {/* <Route
         path="/:bookSlug/:page"
         element={
           <GoldenShellsProviderWrapper>
@@ -98,6 +93,16 @@ export default function AppRoutes() {
             <BookPlayerPage />
             <Footer />
           </GoldenShellsProviderWrapper>
+        }
+      /> */}
+      <Route
+        path="/:bookSlug/:page"
+        element={
+          <div
+            style={{ color: "white", background: "black", minHeight: "100vh" }}
+          >
+            BOOK ROUTE WORKS
+          </div>
         }
       />
       <Route path="*" element={<div>Route not found</div>} />
