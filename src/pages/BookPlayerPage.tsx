@@ -435,15 +435,12 @@ export default function BookPlayerPage() {
                     preload="auto"
                     playsInline
                     onLoadedMetadata={(e) => {
-                      alert(`metadata duration: ${e.currentTarget.duration}`);
                       setIsVideoReady(true);
                     }}
                     onLoadedData={() => {
-                      alert("loaded data");
                       setVideoLoading(false);
                     }}
                     onError={(e) => {
-                      alert(`video error: ${e.currentTarget.error?.code}`);
                       setVideoLoading(false);
                     }}
                     onCanPlay={() => setVideoLoading(false)}
