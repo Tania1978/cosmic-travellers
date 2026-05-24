@@ -431,22 +431,27 @@ export default function BookPlayerPage() {
                   <Video
                     ref={videoRef}
                     src={signedVideoSrc}
+                    poster="/books/intro/cover.jpg"
                     preload="auto"
                     playsInline
-                    onLoadedMetadata={() => {
+                    onLoadedMetadata={(e) => {
+                      alert(`metadata duration: ${e.currentTarget.duration}`);
                       setIsVideoReady(true);
                     }}
-                    onLoadedData={() => setVideoLoading(false)}
+                    onLoadedData={() => {
+                      alert("loaded data");
+                      setVideoLoading(false);
+                    }}
+                    onError={(e) => {
+                      alert(`video error: ${e.currentTarget.error?.code}`);
+                      setVideoLoading(false);
+                    }}
                     onCanPlay={() => setVideoLoading(false)}
                     onCanPlayThrough={() => setVideoLoading(false)}
                     onPlaying={() => setVideoLoading(false)}
                     onWaiting={() => setVideoLoading(true)}
                     onSeeking={() => setVideoLoading(true)}
                     onSeeked={() => setVideoLoading(false)}
-                    onError={(e) => {
-                      console.log("video error", e.currentTarget.error);
-                      setVideoLoading(false);
-                    }}
                     onPlay={() => setIsPlaying(true)}
                     onPause={() => setIsPlaying(false)}
                     onTimeUpdate={handleTimeUpdate}
@@ -639,7 +644,7 @@ const Video = styled.video`
   height: 100%;
   object-fit: contain;
   display: block;
-  background: #000;
+  background: red;
 `;
 
 const TopBar = styled.div`
