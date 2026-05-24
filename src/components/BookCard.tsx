@@ -52,7 +52,6 @@ export default function BookCard({
 
   const openBook = () => {
     const path = `/${b.slug}/1`;
-    alert(`${window.location.origin}${path}`);
     if (isLocked) return;
 
     // if (isIPadSafariLike) {

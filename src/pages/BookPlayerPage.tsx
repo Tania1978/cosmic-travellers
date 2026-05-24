@@ -19,7 +19,6 @@ const CHAPTER_PREROLL_SECONDS = 0.5;
 
 export default function BookPlayerPage() {
   const { bookSlug, page } = useParams();
-  alert("BookPlayerPage mounted");
   const { t } = useTranslation();
   const navigate = useNavigate();
 
