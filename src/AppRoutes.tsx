@@ -17,6 +17,7 @@ import styled from "styled-components";
 import { useAuth } from "./auth/authContext";
 import { GoldenShellsProviderWrapper } from "./data/shells/GoldenShellsProviderWrapper";
 import BookPlayerPage from "./pages/BookPlayerPage";
+import BookPlayerErrorBoundary from "./pages/BookPlayerErrorBoundary";
 
 export default function AppRoutes() {
   const navigate = useNavigate();
@@ -93,7 +94,9 @@ export default function AppRoutes() {
               <MessageButton iconSrc={"/ui/message-button.png"} size={150} />
               <InfoButton />
             </JourneyActions>
-            <BookPlayerPage />
+            <BookPlayerErrorBoundary>
+              <BookPlayerPage />
+            </BookPlayerErrorBoundary>
             <Footer />
           </GoldenShellsProviderWrapper>
         }
