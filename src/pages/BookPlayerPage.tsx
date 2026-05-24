@@ -374,8 +374,19 @@ export default function BookPlayerPage() {
     setVideoTime(safeTime);
   };
 
+  // if (!isValidSlug) {
+  //   return <Navigate to="/" replace />;
+  // }
+
   if (!isValidSlug) {
-    return <Navigate to="/" replace />;
+    return (
+      <Fallback>
+        <div>Invalid slug</div>
+        <div>bookSlug: {bookSlug}</div>
+        <div>page: {page}</div>
+        <pre>{JSON.stringify(Object.keys(BOOK_CONFIGS), null, 2)}</pre>
+      </Fallback>
+    );
   }
 
   if (!foundBook || !chapterNow) {
