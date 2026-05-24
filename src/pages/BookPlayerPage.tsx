@@ -434,13 +434,13 @@ export default function BookPlayerPage() {
                     poster="/books/intro/cover.jpg"
                     preload="auto"
                     playsInline
-                    onLoadedMetadata={(e) => {
+                    onLoadedMetadata={() => {
                       setIsVideoReady(true);
                     }}
                     onLoadedData={() => {
                       setVideoLoading(false);
                     }}
-                    onError={(e) => {
+                    onError={() => {
                       setVideoLoading(false);
                     }}
                     onCanPlay={() => setVideoLoading(false)}
