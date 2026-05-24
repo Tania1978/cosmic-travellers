@@ -15,6 +15,8 @@ import { InfoButton } from "./components/InfoButton";
 import { MessageButton } from "./components/MessageButton";
 import styled from "styled-components";
 import { useAuth } from "./auth/authContext";
+import { GoldenShellsProviderWrapper } from "./data/shells/GoldenShellsProviderWrapper";
+import BookPlayerPage from "./pages/BookPlayerPage";
 
 export default function AppRoutes() {
   const navigate = useNavigate();
@@ -98,11 +100,15 @@ export default function AppRoutes() {
       <Route
         path="/:bookSlug/:page"
         element={
-          <div
-            style={{ color: "white", background: "black", minHeight: "100vh" }}
-          >
-            BOOK ROUTE WORKS
-          </div>
+          <GoldenShellsProviderWrapper>
+            <Header />
+            {/* <JourneyActions>
+              <MessageButton iconSrc={"/ui/message-button.png"} size={150} />
+              <InfoButton />
+            </JourneyActions> */}
+            <BookPlayerPage />
+            <Footer />
+          </GoldenShellsProviderWrapper>
         }
       />
       <Route path="*" element={<div>Route not found</div>} />
