@@ -33,6 +33,7 @@ export default function BookPlayerPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
   const wasPlayingRef = useRef(false);
+  const [videoLoading, setVideoLoading] = useState<boolean>(false);
 
   const [videoTime, setVideoTime] = useState(0);
   const [pendingManualPage, setPendingManualPage] = useState<number | null>(
@@ -123,8 +124,8 @@ export default function BookPlayerPage() {
   };
 
   useEffect(() => {
-
     async function loadVideo() {
+      setVideoLoading(true);
       if (!foundBook?.videoPath) return;
 
       const url = await getSignedVideoUrlForBooklet(
@@ -266,21 +267,31 @@ export default function BookPlayerPage() {
     const video = videoRef.current;
 
     try {
+      // iPhone Safari native video fullscreen
       if (video && (video as any).webkitEnterFullscreen) {
         (video as any).webkitEnterFullscreen();
         return;
       }
 
+      const orientation = screen.orientation as any;
+
       if (!document.fullscreenElement) {
         await frame?.requestFullscreen?.();
+
+        try {
+          await orientation?.lock?.("landscape");
+        } catch {}
       } else {
         await document.exitFullscreen();
+
+        try {
+          await orientation?.unlock?.();
+        } catch {}
       }
     } catch (error: any) {
       console.log(`Fullscreen error: ${error?.message || error}`);
     }
   };
-
   /**
    * Shows the next remaining shell for the current page.
    *
@@ -394,6 +405,11 @@ export default function BookPlayerPage() {
               </Placeholder>
             ) : (
               <>
+                {videoLoading && (
+                  <VideoLoader>
+                    <Spinner />
+                  </VideoLoader>
+                )}
                 {!!signedVideoSrc && (
                   <Video
                     ref={videoRef}
@@ -404,6 +420,7 @@ export default function BookPlayerPage() {
                     onPause={() => setIsPlaying(false)}
                     onLoadedMetadata={() => {
                       setIsVideoReady(true);
+                      setVideoLoading(false);
                     }}
                     onTimeUpdate={handleTimeUpdate}
                   />
@@ -490,6 +507,35 @@ export default function BookPlayerPage() {
 }
 /* ---------- styles ---------- */
 
+const VideoLoader = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #000;
+`;
+
+const Spinner = styled.div`
+  width: 54px;
+  height: 54px;
+
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.15);
+  border-top-color: white;
+
+  animation: spin 0.8s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 const ProgressBar = styled.input`
   position: absolute;
   left: 140px;
@@ -544,15 +590,14 @@ const ProgressBar = styled.input`
 `;
 
 const Wrap = styled.div`
-  width: min(60%, 1100px);
-  margin: 80px auto 0;
+  width: 100%;
+  margin: 0 auto;
   z-index: 10;
 `;
 
 const Stage = styled.div`
   width: 100%;
-  min-height: 100vh;
-  min-height: 80dvh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -560,17 +605,20 @@ const Stage = styled.div`
 
 const VideoFrame = styled.div`
   position: relative;
-  width: min(950px, 92vw);
+  width: 100vw;
+  max-width: 950px;
   aspect-ratio: 16 / 9;
-  min-height: 400px;
-  border-radius: 14px;
+
+  border-radius: 0;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: none;
   background: #000;
   z-index: 2;
 
-  &:hover .controlsLayer {
-    opacity: 1;
+  @media (min-width: 768px) {
+    width: min(950px, 92vw);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   }
 `;
 
@@ -581,7 +629,7 @@ const Video = styled.video`
 
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   background: #000;
 `;
@@ -644,10 +692,10 @@ const ControlsLayer = styled.div.attrs({ className: "controlsLayer" })`
   inset: 0;
   z-index: 20;
 
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.25s ease;
 
-  pointer-events: none; /* layer doesn't block video; buttons re-enable */
+  pointer-events: none;
 `;
 
 const CenterControls = styled.div`

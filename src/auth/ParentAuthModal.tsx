@@ -125,11 +125,34 @@ const styles: Record<string, React.CSSProperties> = {
     zIndex: 9999,
   },
   modal: {
-    width: "min(360px, 70%)",
+    width: "92vw",
+    maxWidth: 420,
+    boxSizing: "border-box",
     borderRadius: 16,
     backgroundImage: "url('/ui/bg5.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
     padding: 30,
     boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+  },
+
+  input: {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "10px 12px",
+    borderRadius: 12,
+    border: "1px solid #ccc",
+  },
+
+  secondaryButton: {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "10px 12px",
+    borderRadius: 12,
+    border: "1px solid #ccc",
+    background: "white",
+    cursor: "pointer",
+    fontWeight: 700,
   },
   headerRow: {
     display: "flex",
@@ -149,19 +172,6 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 12,
     border: "none",
     cursor: "pointer",
-  },
-  secondaryButton: {
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid #ccc",
-    background: "white",
-    cursor: "pointer",
-    fontWeight: 700,
-  },
-  input: {
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid #ccc",
   },
   dividerRow: {
     display: "flex",

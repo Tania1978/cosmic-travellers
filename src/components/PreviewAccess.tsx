@@ -94,28 +94,80 @@ export function PreviewAccess() {
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-
   background: rgba(0, 0, 0, 0.6);
-
   z-index: 1000;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 120px 1rem 1rem;
+  box-sizing: border-box;
 `;
 
 const Modal = styled.div`
-  position: absolute;
-
-  top: 120px;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  width: 420px;
+  width: min(92vw, 420px);
+  box-sizing: border-box;
 
   background: #101728;
   border-radius: 20px;
-
   padding: 2rem;
 
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+`;
+
+const CodeInput = styled.input`
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  font-size: 1rem;
+  outline: none;
+
+  &:focus {
+    border-color: #9ecbff;
+  }
+`;
+
+const Actions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+
+  margin-top: 2rem;
+
+  @media (max-width: 420px) {
+    flex-direction: column-reverse;
+  }
+`;
+
+const BaseButton = styled.button`
+  border: none;
+  border-radius: 12px;
+
+  padding: 0.8rem 1.2rem;
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  transition: 0.2s ease;
+
+  @media (max-width: 420px) {
+    width: 100%;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 const Title = styled.h2`
@@ -128,56 +180,9 @@ const Description = styled.p`
   color: rgba(255, 255, 255, 0.8);
 `;
 
-const CodeInput = styled.input`
-  width: 90%;
-
-  padding: 0.9rem 1rem;
-
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-
-  background: rgba(255, 255, 255, 0.06);
-  color: white;
-
-  font-size: 1rem;
-
-  outline: none;
-
-  &:focus {
-    border-color: #9ecbff;
-  }
-`;
-
 const ErrorText = styled.p`
   margin-top: 1rem;
   color: #ff8b8b;
-`;
-
-const Actions = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-
-  margin-top: 2rem;
-`;
-
-const BaseButton = styled.button`
-  border: none;
-  border-radius: 12px;
-
-  padding: 0.8rem 1.2rem;
-
-  cursor: pointer;
-
-  font-size: 0.95rem;
-  font-weight: 600;
-
-  transition: 0.2s ease;
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 `;
 
 const SecondaryButton = styled(BaseButton)`

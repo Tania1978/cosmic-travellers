@@ -20,7 +20,7 @@ export const INTRO_BOOK: BookConfig = {
   slug: "the-mission-begins",
   title: "The Mission Begins",
   subtitle: "A Series Introduction Booklet",
-  videoPath: "intro-booklet/final-intro-music.mp4",
+  videoPath: "the-mission-begins/final-intro-music.mp4",
 
   chapters: [
     { page: 1, start: 0, end: 6 },
