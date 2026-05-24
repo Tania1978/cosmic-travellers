@@ -4,7 +4,7 @@ import styled from "styled-components";
 // import { DISABLE_VIDEO } from "../config/features";
 
 // import { CustomIconButton } from "../components/CustomIconButton";
-//import PageBackground from "../components/PageBackground";
+import PageBackground from "../components/PageBackground";
 import { useTranslation } from "react-i18next";
 import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { BOOKS as BOOK_CONFIGS } from "../data/books";
@@ -31,7 +31,7 @@ export default function BookPlayerPage() {
   } = useGoldenShells();
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const frameRef = useRef<HTMLDivElement | null>(null);
+  //const frameRef = useRef<HTMLDivElement | null>(null);
   const wasPlayingRef = useRef(false);
   //const [videoLoading, setVideoLoading] = useState<boolean>(false);
 
@@ -400,13 +400,13 @@ export default function BookPlayerPage() {
   // );
   return (
     <>
-      {/* <PageBackground src="/ui/bg5.jpg" overlay /> */}
+      <PageBackground src="/ui/bg5.jpg" overlay />
 
       <Wrap>
         <Stage id="Stage">
-          <VideoFrame ref={frameRef} id="VIDEO FRAME">
-            VIDEO FRAME
-            {/* <GoldenShellIcon />
+          {/* <VideoFrame ref={frameRef} id="VIDEO FRAME"> */}
+          STAGE FRAME
+          {/* <GoldenShellIcon />
             <GoldenShellModal />
             {DISABLE_VIDEO ? (
               <Placeholder id="Placeholder">
@@ -510,7 +510,7 @@ export default function BookPlayerPage() {
                 />
               </BottomRight>
             </ControlsLayer> */}
-          </VideoFrame>
+          {/* </VideoFrame> */}
         </Stage>
       </Wrap>
 
@@ -686,28 +686,28 @@ const Stage = styled.div`
 //   font-size: 1.75rem;
 // `;
 
-const VideoFrame = styled.div`
-  position: relative;
-  width: 100vw;
-  max-width: 950px;
-  aspect-ratio: 16 / 9;
+// const VideoFrame = styled.div`
+//   position: relative;
+//   width: 100vw;
+//   max-width: 950px;
+//   aspect-ratio: 16 / 9;
 
-  border-radius: 0;
-  overflow: hidden;
-  box-shadow: none;
-  background: #000;
-  z-index: 2;
+//   border-radius: 0;
+//   overflow: hidden;
+//   box-shadow: none;
+//   background: #000;
+//   z-index: 2;
 
-  &:hover .controlsLayer {
-    opacity: 1;
-  }
+//   &:hover .controlsLayer {
+//     opacity: 1;
+//   }
 
-  @media (min-width: 768px) {
-    width: min(950px, 92vw);
-    border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  }
-`;
+//   @media (min-width: 768px) {
+//     width: min(950px, 92vw);
+//     border-radius: 14px;
+//     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+//   }
+// `;
 
 // const ControlsLayer = styled.div.attrs({
 //   className: "controlsLayer",
