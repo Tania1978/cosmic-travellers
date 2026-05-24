@@ -52,8 +52,8 @@ export const SECOND_BOOK: BookConfig = {
   slug: "booklet-2",
   title: "Second Booklet",
   subtitle: "Cosmic Travellers",
-  videoPath: "booklet-2/booklet-2-music.mp4",
-  shellCompletionVideoSrc: "/books/chapter/booklet-2-music-optimized.mp4",
+  videoPath: "booklet-2/booklet-2-music-optimized.mp4",
+  shellCompletionVideoSrc: "/books/chapter/booklet-2-message.mp4",
   requiredShellIds: ["first-life", "origin-life"],
   chapters: [
     { page: 1, start: 0, end: 6 },
