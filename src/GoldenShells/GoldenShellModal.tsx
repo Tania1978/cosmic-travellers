@@ -100,16 +100,87 @@ export function GoldenShellModal() {
   );
 }
 
+const Title = styled.div`
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  font-size: 20px;
+  color: rgba(255, 235, 215, 0.92);
+
+  @media (orientation: landscape) and (max-height: 500px) {
+    font-size: 16px;
+  }
+`;
+
+const QuestionText = styled.div`
+  margin-top: 14px;
+  font-size: 20px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.92);
+
+  @media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
+    font-size: 15px;
+    margin-top: 8px;
+  }
+`;
+
+const ChoicesGrid = styled.div`
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+
+  @media (orientation: landscape) and (max-height: 500px) {
+    margin-top: 10px;
+    gap: 6px;
+  }
+`;
+
+const ChoiceRow = styled.button`
+  width: 100%;
+  font-family: "Cause", sans-serif !important;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  pointer-events: auto;
+
+  padding: 14px;
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.03)
+  );
+
+  @media (orientation: landscape) and (max-height: 500px) {
+    padding: 8px 12px;
+    min-height: 38px;
+  }
+`;
+
+const ChoiceLabel = styled.div`
+  font-family: "Cause", sans-serif !important;
+  font-size: 20px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.92);
+
+  @media (orientation: landscape) and (max-height: 500px) {
+    font-size: 15px;
+  }
+`;
+
 const CardWrap = styled.div`
   width: min(720px, calc(100vw - 48px));
-
   position: relative;
   padding-top: 70px;
   margin-top: 50px;
 
-  @media (max-width: 768px) {
-    width: calc(100vw - 20px);
-    padding-top: 52px;
+  @media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
+    width: min(620px, calc(100vw - 24px));
+    padding-top: 36px;
     margin-top: 0;
   }
 `;
@@ -131,10 +202,10 @@ const LuminousFrame = styled.div`
     0 0 90px rgba(255, 170, 80, 0.25),
     0 25px 80px rgba(0, 0, 0, 0.5);
 
-  @media (max-width: 768px) {
+  @media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
     min-height: auto;
-    border-radius: 22px;
-    padding: 10px;
+    border-radius: 20px;
+    padding: 8px;
   }
 `;
 
@@ -145,87 +216,30 @@ const GlassPanel = styled.div`
   width: 90%;
   backdrop-filter: blur(1.5px);
   margin: 10px auto;
-
-  box-shadow:
-    inset 0 0 60px rgba(120, 160, 255, 0.08),
-    inset 0 0 0 1px rgba(255, 220, 170, 0.12),
-    0 20px 60px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
 
   color: rgba(255, 245, 225, 0.95);
 
-  @media (max-width: 768px) {
+  @media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
     width: 100%;
     margin: 0;
-    padding: 18px 16px 16px;
-    box-sizing: border-box;
-  }
-`;
-
-const QuestionText = styled.div`
-  margin-top: 14px;
-  font-size: 20px;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.92);
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-  }
-`;
-
-const ChoiceLabel = styled.div`
-  font-family: "Cause", sans-serif !important;
-  padding-left: 6px;
-  font-size: 20px;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.92);
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-    padding-left: 0;
-  }
-`;
-
-const ChoiceRow = styled.button`
-  width: 100%;
-  font-family: "Cause", sans-serif !important;
-  border: none;
-  cursor: pointer;
-  text-align: center;
-  pointer-events: auto;
-
-  padding: 14px 14px;
-  border-radius: 999px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.03)
-  );
-
-  @media (max-width: 768px) {
-    padding: 12px;
-    min-height: 54px;
+    padding: 14px 16px 12px;
   }
 `;
 
 const Medallion = styled.div`
   position: absolute;
   top: 0;
-  left: 45%;
-  transform: translateX(-45%);
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 5;
 
   width: 70px;
   height: 70px;
 
-  @media (max-width: 768px) {
-    width: 54px;
-    height: 54px;
+  @media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
+    width: 42px;
+    height: 42px;
   }
 `;
 
@@ -246,22 +260,22 @@ const fadeOut = keyframes`
 
 const Overlay = styled.div<{ $closing: boolean }>`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-
+  inset: 0;
   z-index: 5000;
 
   display: grid;
   place-items: center;
-  outline: 5px solid red;
 
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(6px);
 
   animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${FADE_MS}ms
     ease forwards;
+
+  @media (orientation: landscape) and (max-height: 500px) {
+    padding: 8px;
+    box-sizing: border-box;
+  }
 `;
 
 const VideoBg = styled.video`
@@ -289,13 +303,6 @@ const Header = styled.div`
   margin-top: 6px;
 `;
 
-const Title = styled.div`
-  font-weight: 650;
-  letter-spacing: 0.2px;
-  font-size: 20px;
-  color: rgba(255, 235, 215, 0.92);
-`;
-
 const CloseButton = styled.button`
   border: none;
   background: transparent;
@@ -310,12 +317,6 @@ const CloseButton = styled.button`
     background: rgba(255, 255, 255, 0.06);
     color: rgba(255, 255, 255, 0.92);
   }
-`;
-
-const ChoicesGrid = styled.div`
-  margin-top: 16px;
-  display: grid;
-  gap: 10px;
 `;
 
 const FeedbackText = styled.div`

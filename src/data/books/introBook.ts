@@ -20,7 +20,7 @@ export const INTRO_BOOK: BookConfig = {
   slug: "the-mission-begins",
   title: "The Mission Begins",
   subtitle: "A Series Introduction Booklet",
-  videoPath: "the-mission-begins/final-intro-music.mp4",
+  videoPath: "the-mission-begins/final-intro-music-optimized.mp4",
 
   chapters: [
     { page: 1, start: 0, end: 6 },
@@ -53,7 +53,7 @@ export const SECOND_BOOK: BookConfig = {
   title: "Second Booklet",
   subtitle: "Cosmic Travellers",
   videoPath: "booklet-2/booklet-2-music.mp4",
-  shellCompletionVideoSrc: "/books/chapter/booklet-2-message.mp4",
+  shellCompletionVideoSrc: "/books/chapter/booklet-2-music-optimized.mp4",
   requiredShellIds: ["first-life", "origin-life"],
   chapters: [
     { page: 1, start: 0, end: 6 },
