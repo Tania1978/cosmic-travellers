@@ -31,7 +31,7 @@ export function GoldenShellModal() {
   };
 
   const onPick = async (choiceId: string) => {
-    console.log('onPick')
+    console.log("onPick");
     const res = await submitAnswer(choiceId);
 
     if (res.correct) {
@@ -100,6 +100,135 @@ export function GoldenShellModal() {
   );
 }
 
+const CardWrap = styled.div`
+  width: min(720px, calc(100vw - 48px));
+
+  position: relative;
+  padding-top: 70px;
+  margin-top: 50px;
+
+  @media (max-width: 768px) {
+    width: calc(100vw - 20px);
+    padding-top: 52px;
+    margin-top: 0;
+  }
+`;
+
+const LuminousFrame = styled.div`
+  position: relative;
+  border-radius: 30px;
+  padding: 14px;
+  min-height: 420px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 215, 140, 0.85),
+    rgba(255, 170, 90, 0.55)
+  );
+
+  box-shadow:
+    0 0 40px rgba(255, 190, 110, 0.45),
+    0 0 90px rgba(255, 170, 80, 0.25),
+    0 25px 80px rgba(0, 0, 0, 0.5);
+
+  @media (max-width: 768px) {
+    min-height: auto;
+    border-radius: 22px;
+    padding: 10px;
+  }
+`;
+
+const GlassPanel = styled.div`
+  border-radius: 20px;
+  padding: 24px 24px 20px;
+  background: transparent;
+  width: 90%;
+  backdrop-filter: blur(1.5px);
+  margin: 10px auto;
+
+  box-shadow:
+    inset 0 0 60px rgba(120, 160, 255, 0.08),
+    inset 0 0 0 1px rgba(255, 220, 170, 0.12),
+    0 20px 60px rgba(0, 0, 0, 0.35);
+
+  color: rgba(255, 245, 225, 0.95);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin: 0;
+    padding: 18px 16px 16px;
+    box-sizing: border-box;
+  }
+`;
+
+const QuestionText = styled.div`
+  margin-top: 14px;
+  font-size: 20px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.92);
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+`;
+
+const ChoiceLabel = styled.div`
+  font-family: "Cause", sans-serif !important;
+  padding-left: 6px;
+  font-size: 20px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.92);
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding-left: 0;
+  }
+`;
+
+const ChoiceRow = styled.button`
+  width: 100%;
+  font-family: "Cause", sans-serif !important;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  pointer-events: auto;
+
+  padding: 14px 14px;
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.03)
+  );
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    min-height: 54px;
+  }
+`;
+
+const Medallion = styled.div`
+  position: absolute;
+  top: 0;
+  left: 45%;
+  transform: translateX(-45%);
+  z-index: 5;
+
+  width: 70px;
+  height: 70px;
+
+  @media (max-width: 768px) {
+    width: 54px;
+    height: 54px;
+  }
+`;
+
 const fadeIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
@@ -134,62 +263,6 @@ const Overlay = styled.div<{ $closing: boolean }>`
   animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${FADE_MS}ms
     ease forwards;
 `;
-const CardWrap = styled.div`
-  width: min(720px, calc(100vw - 48px));
-
-  position: relative;
-  padding-top: 70px; /* space for the medallion overlap */
-  margin-top: 50px;
-`;
-
-const LuminousFrame = styled.div`
-  position: relative;
-  border-radius: 30px;
-  padding: 14px;
-  min-height: 420px;
-
-  /* STRONG radiant gold frame */
-  background: linear-gradient(
-    180deg,
-    rgba(255, 215, 140, 0.85),
-    rgba(255, 170, 90, 0.55)
-  );
-
-  box-shadow:
-    0 0 40px rgba(255, 190, 110, 0.45),
-    /* outer glow */ 0 0 90px rgba(255, 170, 80, 0.25),
-    /* bloom aura */ 0 25px 80px rgba(0, 0, 0, 0.5);
-
-  /* Inner luminous rail */
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 6px;
-    border-radius: 24px;
-    border: 1px solid rgba(255, 225, 170, 0.9);
-    box-shadow:
-      0 0 18px rgba(255, 200, 120, 0.6),
-      inset 0 0 25px rgba(255, 200, 120, 0.25);
-    pointer-events: none;
-  }
-`;
-const GlassPanel = styled.div`
-  border-radius: 20px;
-  padding: 24px 24px 20px;
-  /* SPACE BLUE core (not grey) */
-  background: transparent;
-  width: 90%;
-  /* subtle cosmic depth */
-  backdrop-filter: blur(1.5px);
-  margin: 10px auto;
-
-  box-shadow:
-    inset 0 0 60px rgba(120, 160, 255, 0.08),
-    /* blue ambient */ inset 0 0 0 1px rgba(255, 220, 170, 0.12),
-    0 20px 60px rgba(0, 0, 0, 0.35);
-
-  color: rgba(255, 245, 225, 0.95);
-`;
 
 const VideoBg = styled.video`
   position: absolute;
@@ -205,35 +278,6 @@ const VideoBg = styled.video`
   border-radius: 22px;
 
   z-index: 0;
-`;
-const Medallion = styled.div`
-  position: absolute;
-  top: 0;
-  left: 45%;
-  transform: translateX(-45%); // 👈 fix
-
-  z-index: 5;
-
-  width: 70px;
-  height: 70px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-
-  /* STRONG luminous gold */
-  background: radial-gradient(
-    circle at 50% 40%,
-    rgba(255, 240, 200, 1) 0%,
-    rgba(255, 200, 120, 0.9) 40%,
-    rgba(255, 160, 70, 0.6) 70%
-  );
-
-  box-shadow:
-    0 0 35px rgba(255, 200, 120, 0.8),
-    0 0 80px rgba(255, 170, 90, 0.45),
-    0 20px 70px rgba(0, 0, 0, 0.6);
-
-  animation: ${breathe} 4s ease-in-out infinite;
 `;
 
 /* Top row: title + close */
@@ -268,73 +312,10 @@ const CloseButton = styled.button`
   }
 `;
 
-const QuestionText = styled.div`
-  margin-top: 14px;
-  font-size: 20px;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.92);
-`;
-
 const ChoicesGrid = styled.div`
   margin-top: 16px;
   display: grid;
   gap: 10px;
-`;
-
-const ChoiceRow = styled.button`
-  width: 100%;
-  font-family: "Cause", sans-serif !important;
-  border: none;
-  cursor: pointer;
-  text-align: center;
-  pointer-events: auto;
-
-  padding: 14px 14px;
-  border-radius: 999px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-
-  /* pill line look */
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.03)
-  );
-  box-shadow:
-    0 0 0 1px rgba(255, 220, 170, 0.12) inset,
-    0 10px 26px rgba(0, 0, 0, 0.2);
-
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease,
-    background 0.12s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.085),
-      rgba(255, 255, 255, 0.04)
-    );
-    box-shadow:
-      0 0 0 1px rgba(255, 220, 170, 0.18) inset,
-      0 14px 34px rgba(0, 0, 0, 0.26);
-  }
-
-  &:active {
-    transform: translateY(0px);
-  }
-`;
-
-const ChoiceLabel = styled.div`
-  font-family: "Cause", sans-serif !important;
-  padding-left: 6px;
-  font-size: 20px;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.92);
 `;
 
 const FeedbackText = styled.div`

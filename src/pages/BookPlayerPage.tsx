@@ -414,14 +414,19 @@ export default function BookPlayerPage() {
                   <Video
                     ref={videoRef}
                     src={signedVideoSrc}
-                    preload="auto"
+                    preload="metadata"
                     playsInline
                     onPlay={() => setIsPlaying(true)}
                     onPause={() => setIsPlaying(false)}
+                    onLoadStart={() => setVideoLoading(true)}
                     onLoadedMetadata={() => {
                       setIsVideoReady(true);
-                      setVideoLoading(false);
                     }}
+                    onCanPlay={() => setVideoLoading(false)}
+                    onWaiting={() => setVideoLoading(true)}
+                    onPlaying={() => setVideoLoading(false)}
+                    onSeeking={() => setVideoLoading(true)}
+                    onSeeked={() => setVideoLoading(false)}
                     onTimeUpdate={handleTimeUpdate}
                   />
                 )}
@@ -603,25 +608,6 @@ const Stage = styled.div`
   justify-content: center;
 `;
 
-const VideoFrame = styled.div`
-  position: relative;
-  width: 100vw;
-  max-width: 950px;
-  aspect-ratio: 16 / 9;
-
-  border-radius: 0;
-  overflow: hidden;
-  box-shadow: none;
-  background: #000;
-  z-index: 2;
-
-  @media (min-width: 768px) {
-    width: min(950px, 92vw);
-    border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  }
-`;
-
 const Video = styled.video`
   position: absolute;
   inset: 0;
@@ -687,12 +673,37 @@ const BigButton = styled.button`
   font-size: 1.75rem;
 `;
 
-const ControlsLayer = styled.div.attrs({ className: "controlsLayer" })`
+const VideoFrame = styled.div`
+  position: relative;
+  width: 100vw;
+  max-width: 950px;
+  aspect-ratio: 16 / 9;
+
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: none;
+  background: #000;
+  z-index: 2;
+
+  &:hover .controlsLayer {
+    opacity: 1;
+  }
+
+  @media (min-width: 768px) {
+    width: min(950px, 92vw);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
+`;
+
+const ControlsLayer = styled.div.attrs({
+  className: "controlsLayer",
+})`
   position: absolute;
   inset: 0;
   z-index: 20;
 
-  opacity: 1;
+  opacity: 0;
   transition: opacity 0.25s ease;
 
   pointer-events: none;
@@ -709,16 +720,24 @@ const CenterControls = styled.div`
 
 const BottomLeft = styled.div`
   position: absolute;
-  bottom: -12px;
+  bottom: 18px;
   left: 12px;
   pointer-events: none;
+
+  @media (max-width: 768px) {
+    bottom: 12px;
+  }
 `;
 
 const BottomRight = styled.div`
   position: absolute;
-  bottom: -12px;
+  bottom: 18px;
   right: 12px;
   pointer-events: none;
+
+  @media (max-width: 768px) {
+    bottom: 12px;
+  }
 `;
 
 const Fallback = styled.div`

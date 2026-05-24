@@ -29,8 +29,9 @@ export function PreviewAccess() {
       setIsRedeeming(true);
 
       const data = await redeemPreviewCode(code.trim());
-      if (data?.unlockedBooks) {
-        setUnlockedBooksLocal(data?.unlockedBooks);
+      console.log("data of request", data);
+      if (data?.unlocked_books) {
+        setUnlockedBooksLocal(data?.unlocked_books);
       }
       handleClose();
 
