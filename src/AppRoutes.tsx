@@ -1,4 +1,10 @@
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { Bookshelf } from "./pages/Bookshelf";
 import BookPlayerPage from "./pages/BookPlayerPage";
 import WriterNotes from "./pages/WriterNotes";
@@ -18,9 +24,10 @@ import { useAuth } from "./auth/authContext";
 
 export default function AppRoutes() {
   const navigate = useNavigate();
+  const routerLocation = useLocation();
   const { isLoggedIn } = useAuth();
 
-  const inHomePage = location.pathname === "/";
+  const inHomePage = routerLocation.pathname === "/";
 
   return (
     <Routes>
@@ -94,7 +101,7 @@ export default function AppRoutes() {
           </GoldenShellsProviderWrapper>
         }
       />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<div>Route not found</div>} />
     </Routes>
   );
 }
