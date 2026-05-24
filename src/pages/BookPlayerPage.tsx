@@ -402,9 +402,13 @@ export default function BookPlayerPage() {
     <>
       <PageBackground src="/ui/bg5.jpg" overlay />
 
-      <Wrap>
-        <Stage id="Stage">
-          <VideoFrame ref={frameRef} id="VIDEO FRAME">
+      <Wrap style={{ border: "3px solid green" }}>
+        <Stage id="Stage" style={{ border: "3px solid red" }}>
+          <VideoFrame
+            ref={frameRef}
+            id="VIDEO FRAME"
+            style={{ border: "3px solid blue" }}
+          >
             <GoldenShellIcon />
             <GoldenShellModal />
             {DISABLE_VIDEO ? (
