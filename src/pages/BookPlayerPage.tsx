@@ -31,7 +31,7 @@ export default function BookPlayerPage() {
   } = useGoldenShells();
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const frameRef = useRef<HTMLDivElement | null>(null);
+  //const frameRef = useRef<HTMLDivElement | null>(null);
   const wasPlayingRef = useRef(false);
   //const [videoLoading, setVideoLoading] = useState<boolean>(false);
 
