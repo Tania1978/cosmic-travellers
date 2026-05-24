@@ -51,16 +51,18 @@ export default function BookCard({
   }, []);
 
   const openBook = () => {
+    alert("clicked");
     if (isLocked) return;
 
+    const path = `/${b.slug}/1`;
+
     if (isIPadSafariLike) {
-      navigate(`/${b.slug}/1`);
+      window.location.assign(path);
       return;
     }
 
-    navigate(`/${b.slug}/1`);
+    navigate(path);
   };
-
   const handleOpenBookClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isLocked) {
       e.preventDefault();
