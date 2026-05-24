@@ -690,22 +690,32 @@ const BigButton = styled.button`
 
 const VideoFrame = styled.div`
   position: relative;
-  width: 100vw;
+  width: 100%;
   max-width: 950px;
+
   aspect-ratio: 16 / 9;
+  height: auto;
+  min-height: 220px;
+
+  background: #000;
+  overflow: hidden;
+  z-index: 2;
 
   border-radius: 0;
-  overflow: hidden;
   box-shadow: none;
-  background: #000;
-  z-index: 2;
 
   &:hover .controlsLayer {
     opacity: 1;
   }
 
+  @supports not (aspect-ratio: 16 / 9) {
+    height: 56.25vw;
+    max-height: 534px;
+  }
+
   @media (min-width: 768px) {
     width: min(950px, 92vw);
+    height: min(52vw, 534px);
     border-radius: 14px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   }
