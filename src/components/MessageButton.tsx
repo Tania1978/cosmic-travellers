@@ -28,7 +28,6 @@ export const MessageButton = (props: MessageButtonProps) => {
   const completionVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const shouldShowCompletionVideo =
-    !!childFirstName &&
     !!goldenShells?.hasEarnedAllBookletShells &&
     !!goldenShells?.shellCompletionVideoSrc;
 
@@ -77,9 +76,8 @@ export const MessageButton = (props: MessageButtonProps) => {
   if (!isLoggedIn || isModalOpen) return null;
   const showGreeting = inHomePage && !!childFirstName;
   const showIntroButton = inHomePage && !childFirstName;
-  const showCompletionButton =
-    !inHomePage && !!childFirstName && shouldShowCompletionVideo;
-
+  const showCompletionButton = !inHomePage && shouldShowCompletionVideo;
+  console.log("showCompletionButton", showCompletionButton);
   return (
     <>
       {showGreeting && <Greeting>{`Hi ${childFirstName}!`}</Greeting>}
