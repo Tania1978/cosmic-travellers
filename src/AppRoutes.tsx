@@ -19,6 +19,16 @@ import { GoldenShellsProviderWrapper } from "./data/shells/GoldenShellsProviderW
 import BookPlayerPage from "./pages/BookPlayerPage";
 import { BookPlayerErrorBoundary } from "./pages/BookPlayerErrorBoundary";
 
+
+const BookPlayerRouteShell = styled.main`
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export default function AppRoutes() {
   const navigate = useNavigate();
   const routerLocation = useLocation();
@@ -95,7 +105,9 @@ export default function AppRoutes() {
               <InfoButton />
             </JourneyActions>
             <BookPlayerErrorBoundary>
-              <BookPlayerPage />
+              <BookPlayerRouteShell>
+                <BookPlayerPage />
+              </BookPlayerRouteShell>
             </BookPlayerErrorBoundary>
             <Footer />
           </GoldenShellsProviderWrapper>
