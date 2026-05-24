@@ -126,6 +126,7 @@ export default function BookPlayerPage() {
   useEffect(() => {
     async function loadVideo() {
       setVideoLoading(true);
+      console.log("foundBook", foundBook);
       if (!foundBook?.videoPath) return;
 
       const url = await getSignedVideoUrlForBooklet(
@@ -133,7 +134,12 @@ export default function BookPlayerPage() {
         foundBook.videoPath,
       );
 
+      console.log("url", url);
+
       setSignedVideoSrc(url);
+      window.setTimeout(() => {
+        setVideoLoading(false);
+      }, 3000);
     }
 
     loadVideo();
@@ -425,19 +431,24 @@ export default function BookPlayerPage() {
                   <Video
                     ref={videoRef}
                     src={signedVideoSrc}
-                    preload="metadata"
+                    preload="auto"
                     playsInline
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    onLoadStart={() => setVideoLoading(true)}
                     onLoadedMetadata={() => {
                       setIsVideoReady(true);
                     }}
+                    onLoadedData={() => setVideoLoading(false)}
                     onCanPlay={() => setVideoLoading(false)}
-                    onWaiting={() => setVideoLoading(true)}
+                    onCanPlayThrough={() => setVideoLoading(false)}
                     onPlaying={() => setVideoLoading(false)}
+                    onWaiting={() => setVideoLoading(true)}
                     onSeeking={() => setVideoLoading(true)}
                     onSeeked={() => setVideoLoading(false)}
+                    onError={(e) => {
+                      console.log("video error", e.currentTarget.error);
+                      setVideoLoading(false);
+                    }}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
                     onTimeUpdate={handleTimeUpdate}
                   />
                 )}
