@@ -4,7 +4,7 @@ import styled from "styled-components";
 // import { DISABLE_VIDEO } from "../config/features";
 
 // import { CustomIconButton } from "../components/CustomIconButton";
-import PageBackground from "../components/PageBackground";
+//import PageBackground from "../components/PageBackground";
 import { useTranslation } from "react-i18next";
 import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { BOOKS as BOOK_CONFIGS } from "../data/books";
@@ -400,11 +400,12 @@ export default function BookPlayerPage() {
   // );
   return (
     <>
-      <PageBackground src="/ui/bg5.jpg" overlay />
+      {/* <PageBackground src="/ui/bg5.jpg" overlay /> */}
 
       <Wrap>
         <Stage id="Stage">
           <VideoFrame ref={frameRef} id="VIDEO FRAME">
+            VIDEO FRAME
             {/* <GoldenShellIcon />
             <GoldenShellModal />
             {DISABLE_VIDEO ? (
