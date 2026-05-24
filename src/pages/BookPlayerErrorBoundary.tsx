@@ -1,10 +1,17 @@
 import React from "react";
 
-class BookPlayerErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { error: any }
-> {
-  state = { error: null };
+type State = {
+  error: any;
+};
+
+type Props = {
+  children: React.ReactNode;
+};
+
+export class BookPlayerErrorBoundary extends React.Component<Props, State> {
+  state: State = {
+    error: null,
+  };
 
   static getDerivedStateFromError(error: any) {
     return { error };
@@ -14,9 +21,15 @@ class BookPlayerErrorBoundary extends React.Component<
     if (this.state.error) {
       return (
         <div
-          style={{ color: "white", background: "black", minHeight: "100vh" }}
+          style={{
+            color: "white",
+            background: "black",
+            minHeight: "100vh",
+            padding: 20,
+          }}
         >
           <h2>BookPlayer crashed</h2>
+
           <pre>{String(this.state.error?.message || this.state.error)}</pre>
         </div>
       );
@@ -25,5 +38,3 @@ class BookPlayerErrorBoundary extends React.Component<
     return this.props.children;
   }
 }
-
-export default BookPlayerErrorBoundary;

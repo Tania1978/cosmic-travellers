@@ -17,7 +17,7 @@ import styled from "styled-components";
 import { useAuth } from "./auth/authContext";
 import { GoldenShellsProviderWrapper } from "./data/shells/GoldenShellsProviderWrapper";
 import BookPlayerPage from "./pages/BookPlayerPage";
-import BookPlayerErrorBoundary from "./pages/BookPlayerErrorBoundary";
+import { BookPlayerErrorBoundary } from "./pages/BookPlayerErrorBoundary";
 
 export default function AppRoutes() {
   const navigate = useNavigate();
