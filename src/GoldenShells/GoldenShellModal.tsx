@@ -239,10 +239,10 @@ const fadeOut = keyframes`
   to { opacity: 0; }
 `;
 
-const breathe = keyframes`
-  0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 10px rgba(255,190,120,.25)); }
-  50% { transform: translateY(-1px); filter: drop-shadow(0 0 16px rgba(255,190,120,.35)); }
-`;
+// const breathe = keyframes`
+//   0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 10px rgba(255,190,120,.25)); }
+//   50% { transform: translateY(-1px); filter: drop-shadow(0 0 16px rgba(255,190,120,.35)); }
+// `;
 
 const Overlay = styled.div<{ $closing: boolean }>`
   position: fixed;
