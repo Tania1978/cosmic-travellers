@@ -4,7 +4,7 @@ import styled from "styled-components";
 // import { DISABLE_VIDEO } from "../config/features";
 
 // import { CustomIconButton } from "../components/CustomIconButton";
-// import PageBackground from "../components/PageBackground";
+import PageBackground from "../components/PageBackground";
 import { useTranslation } from "react-i18next";
 import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { BOOKS as BOOK_CONFIGS } from "../data/books";
@@ -24,14 +24,14 @@ export default function BookPlayerPage() {
 
   const {
     isModalOpen,
-    //correctSoundRef,
+    correctSoundRef,
     setActiveOpportunity,
     activeOpportunity,
     isShellEarned,
   } = useGoldenShells();
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  // const frameRef = useRef<HTMLDivElement | null>(null);
+  const frameRef = useRef<HTMLDivElement | null>(null);
   const wasPlayingRef = useRef(false);
   //const [videoLoading, setVideoLoading] = useState<boolean>(false);
 
@@ -263,7 +263,7 @@ export default function BookPlayerPage() {
   // };
 
   // const toggleFullscreen = async () => {
-  //   const frame = frameRef.current;
+  //  const frame = frameRef.current;
   //   const video = videoRef.current;
 
   //   try {
@@ -386,140 +386,140 @@ export default function BookPlayerPage() {
     );
   }
 
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "black",
-        color: "white",
-        padding: 40,
-      }}
-    >
-      BOOK PLAYER RENDERED
-    </div>
-  );
   // return (
-  //   <>
-  //     <PageBackground src="/ui/bg5.jpg" overlay />
-
-  //     <Wrap>
-  //       <Stage id="Stage">
-  //         <VideoFrame ref={frameRef} id="VIDEO FRAME">
-  //           <GoldenShellIcon />
-  //           <GoldenShellModal />
-  //           {DISABLE_VIDEO ? (
-  //             <Placeholder id="Placeholder">
-  //               <CalmBackground id="CalmBackground" />
-  //               <ComingSoonText id="ComingSoonText">
-  //                 ✨ {t("ui.storyAnimationComingSoon")} ✨
-  //               </ComingSoonText>
-  //             </Placeholder>
-  //           ) : (
-  //             <>
-  //               {videoLoading && (
-  //                 <VideoLoader>
-  //                   <Spinner />
-  //                 </VideoLoader>
-  //               )}
-  //               {!!signedVideoSrc && (
-  //                 <Video
-  //                   ref={videoRef}
-  //                   src={signedVideoSrc}
-  //                   preload="metadata"
-  //                   playsInline
-  //                   onPlay={() => setIsPlaying(true)}
-  //                   onPause={() => setIsPlaying(false)}
-  //                   onLoadStart={() => setVideoLoading(true)}
-  //                   onLoadedMetadata={() => {
-  //                     setIsVideoReady(true);
-  //                   }}
-  //                   onCanPlay={() => setVideoLoading(false)}
-  //                   onWaiting={() => setVideoLoading(true)}
-  //                   onPlaying={() => setVideoLoading(false)}
-  //                   onSeeking={() => setVideoLoading(true)}
-  //                   onSeeked={() => setVideoLoading(false)}
-  //                   onTimeUpdate={handleTimeUpdate}
-  //                 />
-  //               )}
-  //             </>
-  //           )}
-
-  //           <ControlsLayer id="ControlsLayer">
-  //             <TopBar id="TopBar">
-  //               <Meta />
-
-  //               <IconButton
-  //                 onClick={toggleFullscreen}
-  //                 aria-label={
-  //                   isFullscreen ? "Exit fullscreen" : "Enter fullscreen"
-  //                 }
-  //                 title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-  //               >
-  //                 {isFullscreen ? "⤢" : "⛶"}
-  //               </IconButton>
-  //             </TopBar>
-
-  //             <CenterControls>
-  //               <BigButton
-  //                 type="button"
-  //                 onClick={DISABLE_VIDEO ? undefined : togglePlayPause}
-  //                 aria-label={
-  //                   DISABLE_VIDEO
-  //                     ? "Story video not available yet"
-  //                     : isPlaying
-  //                       ? "Pause story"
-  //                       : "Play story"
-  //                 }
-  //                 title={
-  //                   DISABLE_VIDEO ? "Coming soon" : isPlaying ? "Pause" : "Play"
-  //                 }
-  //                 disabled={DISABLE_VIDEO}
-  //               >
-  //                 {DISABLE_VIDEO ? "✨" : isPlaying ? "❚❚" : "▶"}
-  //               </BigButton>
-  //             </CenterControls>
-
-  //             <BottomLeft>
-  //               <CustomIconButton
-  //                 src="/ui/comet-left.png"
-  //                 ariaLabel="Previous page"
-  //                 onClick={goPrev}
-  //                 size={120}
-  //               />
-  //             </BottomLeft>
-
-  //             <ProgressBar
-  //               type="range"
-  //               min={chapterNow.start}
-  //               max={chapterNow.end}
-  //               step={0.1}
-  //               value={Math.min(
-  //                 Math.max(videoTime, chapterNow.start),
-  //                 chapterNow.end,
-  //               )}
-  //               onChange={handleProgressChange}
-  //             />
-
-  //             <BottomRight>
-  //               <CustomIconButton
-  //                 src="/ui/comet-right.png"
-  //                 ariaLabel="Next page"
-  //                 onClick={goNext}
-  //                 size={100}
-  //               />
-  //             </BottomRight>
-  //           </ControlsLayer>
-  //         </VideoFrame>
-  //       </Stage>
-  //     </Wrap>
-
-  //     <audio
-  //       ref={correctSoundRef}
-  //       src="/ui/golden-shell-correct.mp3"
-  //       preload="auto"
-  //     />
-  //   </>
+  //   <div
+  //     style={{
+  //       minHeight: "100vh",
+  //       background: "black",
+  //       color: "white",
+  //       padding: 40,
+  //     }}
+  //   >
+  //     BOOK PLAYER RENDERED
+  //   </div>
   // );
+  return (
+    <>
+      <PageBackground src="/ui/bg5.jpg" overlay />
+
+      <Wrap>
+        <Stage id="Stage">
+          <VideoFrame ref={frameRef} id="VIDEO FRAME">
+            {/* <GoldenShellIcon />
+            <GoldenShellModal />
+            {DISABLE_VIDEO ? (
+              <Placeholder id="Placeholder">
+                <CalmBackground id="CalmBackground" />
+                <ComingSoonText id="ComingSoonText">
+                  ✨ {t("ui.storyAnimationComingSoon")} ✨
+                </ComingSoonText>
+              </Placeholder>
+            ) : (
+              <>
+                {videoLoading && (
+                  <VideoLoader>
+                    <Spinner />
+                  </VideoLoader>
+                )}
+                {!!signedVideoSrc && (
+                  <Video
+                    ref={videoRef}
+                    src={signedVideoSrc}
+                    preload="metadata"
+                    playsInline
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onLoadStart={() => setVideoLoading(true)}
+                    onLoadedMetadata={() => {
+                      setIsVideoReady(true);
+                    }}
+                    onCanPlay={() => setVideoLoading(false)}
+                    onWaiting={() => setVideoLoading(true)}
+                    onPlaying={() => setVideoLoading(false)}
+                    onSeeking={() => setVideoLoading(true)}
+                    onSeeked={() => setVideoLoading(false)}
+                    onTimeUpdate={handleTimeUpdate}
+                  />
+                )}
+              </>
+            )}
+
+            <ControlsLayer id="ControlsLayer">
+              <TopBar id="TopBar">
+                <Meta />
+
+                <IconButton
+                  onClick={toggleFullscreen}
+                  aria-label={
+                    isFullscreen ? "Exit fullscreen" : "Enter fullscreen"
+                  }
+                  title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+                >
+                  {isFullscreen ? "⤢" : "⛶"}
+                </IconButton>
+              </TopBar>
+
+              <CenterControls>
+                <BigButton
+                  type="button"
+                  onClick={DISABLE_VIDEO ? undefined : togglePlayPause}
+                  aria-label={
+                    DISABLE_VIDEO
+                      ? "Story video not available yet"
+                      : isPlaying
+                        ? "Pause story"
+                        : "Play story"
+                  }
+                  title={
+                    DISABLE_VIDEO ? "Coming soon" : isPlaying ? "Pause" : "Play"
+                  }
+                  disabled={DISABLE_VIDEO}
+                >
+                  {DISABLE_VIDEO ? "✨" : isPlaying ? "❚❚" : "▶"}
+                </BigButton>
+              </CenterControls>
+
+              <BottomLeft>
+                <CustomIconButton
+                  src="/ui/comet-left.png"
+                  ariaLabel="Previous page"
+                  onClick={goPrev}
+                  size={120}
+                />
+              </BottomLeft>
+
+              <ProgressBar
+                type="range"
+                min={chapterNow.start}
+                max={chapterNow.end}
+                step={0.1}
+                value={Math.min(
+                  Math.max(videoTime, chapterNow.start),
+                  chapterNow.end,
+                )}
+                onChange={handleProgressChange}
+              />
+
+              <BottomRight>
+                <CustomIconButton
+                  src="/ui/comet-right.png"
+                  ariaLabel="Next page"
+                  onClick={goNext}
+                  size={100}
+                />
+              </BottomRight>
+            </ControlsLayer> */}
+          </VideoFrame>
+        </Stage>
+      </Wrap>
+
+      <audio
+        ref={correctSoundRef}
+        src="/ui/golden-shell-correct.mp3"
+        preload="auto"
+      />
+    </>
+  );
 }
 
 // /* ---------- styles ---------- */
@@ -606,19 +606,19 @@ export default function BookPlayerPage() {
 //   }
 // `;
 
-// const Wrap = styled.div`
-//   width: 100%;
-//   margin: 0 auto;
-//   z-index: 10;
-// `;
+const Wrap = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  z-index: 10;
+`;
 
-// const Stage = styled.div`
-//   width: 100%;
-//   min-height: 100dvh;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// `;
+const Stage = styled.div`
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 // const Video = styled.video`
 //   position: absolute;
@@ -685,28 +685,28 @@ export default function BookPlayerPage() {
 //   font-size: 1.75rem;
 // `;
 
-// const VideoFrame = styled.div`
-//   position: relative;
-//   width: 100vw;
-//   max-width: 950px;
-//   aspect-ratio: 16 / 9;
+const VideoFrame = styled.div`
+  position: relative;
+  width: 100vw;
+  max-width: 950px;
+  aspect-ratio: 16 / 9;
 
-//   border-radius: 0;
-//   overflow: hidden;
-//   box-shadow: none;
-//   background: #000;
-//   z-index: 2;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: none;
+  background: #000;
+  z-index: 2;
 
-//   &:hover .controlsLayer {
-//     opacity: 1;
-//   }
+  &:hover .controlsLayer {
+    opacity: 1;
+  }
 
-//   @media (min-width: 768px) {
-//     width: min(950px, 92vw);
-//     border-radius: 14px;
-//     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-//   }
-// `;
+  @media (min-width: 768px) {
+    width: min(950px, 92vw);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
+`;
 
 // const ControlsLayer = styled.div.attrs({
 //   className: "controlsLayer",
