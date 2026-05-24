@@ -644,7 +644,6 @@ const Video = styled.video`
   height: 100%;
   object-fit: contain;
   display: block;
-  background: red;
 `;
 
 const TopBar = styled.div`
