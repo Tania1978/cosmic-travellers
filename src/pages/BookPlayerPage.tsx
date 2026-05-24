@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { DISABLE_VIDEO } from "../config/features";
 
@@ -19,6 +19,7 @@ const CHAPTER_PREROLL_SECONDS = 0.5;
 
 export default function BookPlayerPage() {
   const { bookSlug, page } = useParams();
+  alert("BookPlayerPage mounted");
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -273,7 +274,7 @@ export default function BookPlayerPage() {
         return;
       }
 
-      const orientation = screen.orientation as any;
+      const orientation = (screen as any)?.orientation;
 
       if (!document.fullscreenElement) {
         await frame?.requestFullscreen?.();
@@ -311,7 +312,6 @@ export default function BookPlayerPage() {
     if (activeOpportunity?.id === nextShellForCurrentPage.id) return;
 
     const shellMoment = chapterNow.end - 1;
-    console.log("shellMoment", shellMoment);
 
     if (video.currentTime >= shellMoment) {
       setActiveOpportunity(nextShellForCurrentPage);
@@ -374,19 +374,8 @@ export default function BookPlayerPage() {
     setVideoTime(safeTime);
   };
 
-  // if (!isValidSlug) {
-  //   return <Navigate to="/" replace />;
-  // }
-
   if (!isValidSlug) {
-    return (
-      <Fallback>
-        <div>Invalid slug</div>
-        <div>bookSlug: {bookSlug}</div>
-        <div>page: {page}</div>
-        <pre>{JSON.stringify(Object.keys(BOOK_CONFIGS), null, 2)}</pre>
-      </Fallback>
-    );
+    return <Navigate to="/" replace />;
   }
 
   if (!foundBook || !chapterNow) {
