@@ -51,13 +51,12 @@ export default function BookCard({
   }, []);
 
   const openBook = () => {
-    alert("clicked");
+    const path = `/${b.slug}/1`;
+    alert(`${window.location.origin}${path}`);
     if (isLocked) return;
 
-    const path = `/${b.slug}/1`;
-
     if (isIPadSafariLike) {
-      window.location.assign(path);
+      window.location.href = `${window.location.origin}${path}`;
       return;
     }
 
