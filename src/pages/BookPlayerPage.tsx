@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { DISABLE_VIDEO } from "../config/features";
 
@@ -374,8 +374,19 @@ export default function BookPlayerPage() {
     setVideoTime(safeTime);
   };
 
+  // if (!isValidSlug) {
+  //   return <Navigate to="/" replace />;
+  // }
+
   if (!isValidSlug) {
-    return <Navigate to="/" replace />;
+    return (
+      <Fallback>
+        <div>Invalid slug</div>
+        <div>bookSlug: {bookSlug}</div>
+        <div>page: {page}</div>
+        <pre>{JSON.stringify(Object.keys(BOOK_CONFIGS), null, 2)}</pre>
+      </Fallback>
+    );
   }
 
   if (!foundBook || !chapterNow) {

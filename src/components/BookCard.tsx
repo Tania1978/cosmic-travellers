@@ -55,10 +55,11 @@ export default function BookCard({
     alert(`${window.location.origin}${path}`);
     if (isLocked) return;
 
-    if (isIPadSafariLike) {
-      window.location.href = `${window.location.origin}${path}`;
-      return;
-    }
+    // if (isIPadSafariLike) {
+    //   // window.location.href = `${window.location.origin}${path}`;
+    //   // return;
+
+    // }
 
     navigate(path);
   };
