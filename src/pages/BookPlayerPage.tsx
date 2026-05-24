@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { DISABLE_VIDEO } from "../config/features";
+// import { DISABLE_VIDEO } from "../config/features";
 
-import { CustomIconButton } from "../components/CustomIconButton";
-import PageBackground from "../components/PageBackground";
+// import { CustomIconButton } from "../components/CustomIconButton";
+// import PageBackground from "../components/PageBackground";
 import { useTranslation } from "react-i18next";
 import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { BOOKS as BOOK_CONFIGS } from "../data/books";
 import { BOOKSPAGES } from "../data/books/introBook";
 import { ALL_SHELL_OPPORTUNITIES } from "../data/shells/shells_opportunitites";
 
-import { GoldenShellIcon } from "../GoldenShells/GoldenShellIcon";
-import { GoldenShellModal } from "../GoldenShells/GoldenShellModal";
-import { getSignedVideoUrlForBooklet } from "../requests";
+// import { GoldenShellIcon } from "../GoldenShells/GoldenShellIcon";
+// import { GoldenShellModal } from "../GoldenShells/GoldenShellModal";
+// import { getSignedVideoUrlForBooklet } from "../requests";
 
 const CHAPTER_PREROLL_SECONDS = 0.5;
 
@@ -24,25 +24,25 @@ export default function BookPlayerPage() {
 
   const {
     isModalOpen,
-    correctSoundRef,
+    //correctSoundRef,
     setActiveOpportunity,
     activeOpportunity,
     isShellEarned,
   } = useGoldenShells();
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const frameRef = useRef<HTMLDivElement | null>(null);
+  // const frameRef = useRef<HTMLDivElement | null>(null);
   const wasPlayingRef = useRef(false);
-  const [videoLoading, setVideoLoading] = useState<boolean>(false);
+  //const [videoLoading, setVideoLoading] = useState<boolean>(false);
 
   const [videoTime, setVideoTime] = useState(0);
   const [pendingManualPage, setPendingManualPage] = useState<number | null>(
     null,
   );
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isVideoReady, setIsVideoReady] = useState(false);
-  const [signedVideoSrc, setSignedVideoSrc] = useState("");
+  // const [isPlaying, setIsPlaying] = useState(false);
+  // const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isVideoReady] = useState(false);
+  //const [signedVideoSrc, setSignedVideoSrc] = useState("");
 
   const currentPage = Number(page);
 
@@ -57,25 +57,25 @@ export default function BookPlayerPage() {
     return foundBook?.chapters.find((chapter) => chapter.page === currentPage);
   }, [foundBook, currentPage]);
 
-  const currentChapterIndex = useMemo(() => {
-    if (!foundBook) return -1;
+  // const currentChapterIndex = useMemo(() => {
+  //   if (!foundBook) return -1;
 
-    return foundBook.chapters.findIndex(
-      (chapter) => chapter.page === currentPage,
-    );
-  }, [foundBook, currentPage]);
+  //   return foundBook.chapters.findIndex(
+  //     (chapter) => chapter.page === currentPage,
+  //   );
+  // }, [foundBook, currentPage]);
 
-  const nextChapter = useMemo(() => {
-    if (!foundBook || currentChapterIndex < 0) return undefined;
+  // const nextChapter = useMemo(() => {
+  //   if (!foundBook || currentChapterIndex < 0) return undefined;
 
-    return foundBook.chapters[currentChapterIndex + 1];
-  }, [foundBook, currentChapterIndex]);
+  //   return foundBook.chapters[currentChapterIndex + 1];
+  // }, [foundBook, currentChapterIndex]);
 
-  const prevChapter = useMemo(() => {
-    if (!foundBook || currentChapterIndex <= 0) return undefined;
+  // const prevChapter = useMemo(() => {
+  //   if (!foundBook || currentChapterIndex <= 0) return undefined;
 
-    return foundBook.chapters[currentChapterIndex - 1];
-  }, [foundBook, currentChapterIndex]);
+  //   return foundBook.chapters[currentChapterIndex - 1];
+  // }, [foundBook, currentChapterIndex]);
 
   const shellOpportunities = useMemo(() => {
     if (!foundBook?.requiredShellIds?.length) return [];
@@ -108,36 +108,36 @@ export default function BookPlayerPage() {
    */
   const nextShellForCurrentPage = shellsForCurrentPage[0] ?? null;
 
-  const goToChapter = (targetPage: number) => {
-    setPendingManualPage(targetPage);
-    navigate(`/${bookSlug}/${targetPage}`);
-  };
+  // const goToChapter = (targetPage: number) => {
+  //   setPendingManualPage(targetPage);
+  //   navigate(`/${bookSlug}/${targetPage}`);
+  // };
 
-  const goNext = () => {
-    if (!nextChapter) return;
-    goToChapter(nextChapter.page);
-  };
+  // const goNext = () => {
+  //   if (!nextChapter) return;
+  //   goToChapter(nextChapter.page);
+  // };
 
-  const goPrev = () => {
-    if (!prevChapter) return;
-    goToChapter(prevChapter.page);
-  };
+  // const goPrev = () => {
+  //   if (!prevChapter) return;
+  //   goToChapter(prevChapter.page);
+  // };
 
-  useEffect(() => {
-    async function loadVideo() {
-      setVideoLoading(true);
-      if (!foundBook?.videoPath) return;
+  // useEffect(() => {
+  //   async function loadVideo() {
+  //     setVideoLoading(true);
+  //     if (!foundBook?.videoPath) return;
 
-      const url = await getSignedVideoUrlForBooklet(
-        foundBook.slug,
-        foundBook.videoPath,
-      );
+  //     const url = await getSignedVideoUrlForBooklet(
+  //       foundBook.slug,
+  //       foundBook.videoPath,
+  //     );
 
-      setSignedVideoSrc(url);
-    }
+  //     setSignedVideoSrc(url);
+  //   }
 
-    loadVideo();
-  }, [foundBook]);
+  //   loadVideo();
+  // }, [foundBook]);
   /**
    * Modal behavior:
    * - opening modal pauses video
@@ -224,74 +224,74 @@ export default function BookPlayerPage() {
   /**
    * Fullscreen listener.
    */
-  useEffect(() => {
-    const onFsChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
+  // useEffect(() => {
+  //   const onFsChange = () => {
+  //     setIsFullscreen(!!document.fullscreenElement);
+  //   };
 
-    document.addEventListener("fullscreenchange", onFsChange);
+  //   document.addEventListener("fullscreenchange", onFsChange);
 
-    return () => {
-      document.removeEventListener("fullscreenchange", onFsChange);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("fullscreenchange", onFsChange);
+  //   };
+  // }, []);
 
-  /**
-   * Disabled video safety.
-   */
-  useEffect(() => {
-    if (DISABLE_VIDEO) {
-      setIsPlaying(false);
-    }
-  }, []);
+  // /**
+  //  * Disabled video safety.
+  //  */
+  // useEffect(() => {
+  //   if (DISABLE_VIDEO) {
+  //     setIsPlaying(false);
+  //   }
+  // }, []);
 
-  const togglePlayPause = async () => {
-    if (DISABLE_VIDEO) return;
+  // const togglePlayPause = async () => {
+  //   if (DISABLE_VIDEO) return;
 
-    const video = videoRef.current;
-    if (!video) return;
+  //   const video = videoRef.current;
+  //   if (!video) return;
 
-    try {
-      if (video.paused) {
-        await video.play();
-      } else {
-        video.pause();
-      }
-    } catch (error) {
-      console.log("play/pause error", error);
-    }
-  };
+  //   try {
+  //     if (video.paused) {
+  //       await video.play();
+  //     } else {
+  //       video.pause();
+  //     }
+  //   } catch (error) {
+  //     console.log("play/pause error", error);
+  //   }
+  // };
 
-  const toggleFullscreen = async () => {
-    const frame = frameRef.current;
-    const video = videoRef.current;
+  // const toggleFullscreen = async () => {
+  //   const frame = frameRef.current;
+  //   const video = videoRef.current;
 
-    try {
-      // iPhone Safari native video fullscreen
-      if (video && (video as any).webkitEnterFullscreen) {
-        (video as any).webkitEnterFullscreen();
-        return;
-      }
+  //   try {
+  //     // iPhone Safari native video fullscreen
+  //     if (video && (video as any).webkitEnterFullscreen) {
+  //       (video as any).webkitEnterFullscreen();
+  //       return;
+  //     }
 
-      const orientation = (screen as any)?.orientation;
+  //     const orientation = (screen as any)?.orientation;
 
-      if (!document.fullscreenElement) {
-        await frame?.requestFullscreen?.();
+  //     if (!document.fullscreenElement) {
+  //       await frame?.requestFullscreen?.();
 
-        try {
-          await orientation?.lock?.("landscape");
-        } catch {}
-      } else {
-        await document.exitFullscreen();
+  //       try {
+  //         await orientation?.lock?.("landscape");
+  //       } catch {}
+  //     } else {
+  //       await document.exitFullscreen();
 
-        try {
-          await orientation?.unlock?.();
-        } catch {}
-      }
-    } catch (error: any) {
-      console.log(`Fullscreen error: ${error?.message || error}`);
-    }
-  };
+  //       try {
+  //         await orientation?.unlock?.();
+  //       } catch {}
+  //     }
+  //   } catch (error: any) {
+  //     console.log(`Fullscreen error: ${error?.message || error}`);
+  //   }
+  // };
   /**
    * Shows the next remaining shell for the current page.
    *
@@ -343,35 +343,35 @@ export default function BookPlayerPage() {
    * - does NOT navigate
    * - does NOT seek
    */
-  const handleTimeUpdate = useCallback(
-    (e: React.SyntheticEvent<HTMLVideoElement>) => {
-      const video = e.currentTarget;
+  // const handleTimeUpdate = useCallback(
+  //   (e: React.SyntheticEvent<HTMLVideoElement>) => {
+  //     const video = e.currentTarget;
 
-      setVideoTime(video.currentTime);
-      maybeShowShell();
-    },
-    [maybeShowShell],
-  );
+  //     setVideoTime(video.currentTime);
+  //     maybeShowShell();
+  //   },
+  //   [maybeShowShell],
+  // );
 
   /**
    * Slider behavior:
    * - seeks video inside current chapter only
    * - does NOT navigate
    */
-  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const video = videoRef.current;
-    if (!video || !chapterNow) return;
+  // const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const video = videoRef.current;
+  //   if (!video || !chapterNow) return;
 
-    const nextTime = Number(e.target.value);
+  //   const nextTime = Number(e.target.value);
 
-    const safeTime = Math.min(
-      Math.max(nextTime, chapterNow.start),
-      chapterNow.end - 0.05,
-    );
+  //   const safeTime = Math.min(
+  //     Math.max(nextTime, chapterNow.start),
+  //     chapterNow.end - 0.05,
+  //   );
 
-    video.currentTime = safeTime;
-    setVideoTime(safeTime);
-  };
+  //   video.currentTime = safeTime;
+  //   setVideoTime(safeTime);
+  // };
 
   if (!isValidSlug) {
     return <Navigate to="/" replace />;
@@ -387,357 +387,370 @@ export default function BookPlayerPage() {
   }
 
   return (
-    <>
-      <PageBackground src="/ui/bg5.jpg" overlay />
-
-      <Wrap>
-        <Stage id="Stage">
-          <VideoFrame ref={frameRef} id="VIDEO FRAME">
-            <GoldenShellIcon />
-            <GoldenShellModal />
-            {DISABLE_VIDEO ? (
-              <Placeholder id="Placeholder">
-                <CalmBackground id="CalmBackground" />
-                <ComingSoonText id="ComingSoonText">
-                  ✨ {t("ui.storyAnimationComingSoon")} ✨
-                </ComingSoonText>
-              </Placeholder>
-            ) : (
-              <>
-                {videoLoading && (
-                  <VideoLoader>
-                    <Spinner />
-                  </VideoLoader>
-                )}
-                {!!signedVideoSrc && (
-                  <Video
-                    ref={videoRef}
-                    src={signedVideoSrc}
-                    preload="metadata"
-                    playsInline
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    onLoadStart={() => setVideoLoading(true)}
-                    onLoadedMetadata={() => {
-                      setIsVideoReady(true);
-                    }}
-                    onCanPlay={() => setVideoLoading(false)}
-                    onWaiting={() => setVideoLoading(true)}
-                    onPlaying={() => setVideoLoading(false)}
-                    onSeeking={() => setVideoLoading(true)}
-                    onSeeked={() => setVideoLoading(false)}
-                    onTimeUpdate={handleTimeUpdate}
-                  />
-                )}
-              </>
-            )}
-
-            <ControlsLayer id="ControlsLayer">
-              <TopBar id="TopBar">
-                <Meta />
-
-                <IconButton
-                  onClick={toggleFullscreen}
-                  aria-label={
-                    isFullscreen ? "Exit fullscreen" : "Enter fullscreen"
-                  }
-                  title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-                >
-                  {isFullscreen ? "⤢" : "⛶"}
-                </IconButton>
-              </TopBar>
-
-              <CenterControls>
-                <BigButton
-                  type="button"
-                  onClick={DISABLE_VIDEO ? undefined : togglePlayPause}
-                  aria-label={
-                    DISABLE_VIDEO
-                      ? "Story video not available yet"
-                      : isPlaying
-                        ? "Pause story"
-                        : "Play story"
-                  }
-                  title={
-                    DISABLE_VIDEO ? "Coming soon" : isPlaying ? "Pause" : "Play"
-                  }
-                  disabled={DISABLE_VIDEO}
-                >
-                  {DISABLE_VIDEO ? "✨" : isPlaying ? "❚❚" : "▶"}
-                </BigButton>
-              </CenterControls>
-
-              <BottomLeft>
-                <CustomIconButton
-                  src="/ui/comet-left.png"
-                  ariaLabel="Previous page"
-                  onClick={goPrev}
-                  size={120}
-                />
-              </BottomLeft>
-
-              <ProgressBar
-                type="range"
-                min={chapterNow.start}
-                max={chapterNow.end}
-                step={0.1}
-                value={Math.min(
-                  Math.max(videoTime, chapterNow.start),
-                  chapterNow.end,
-                )}
-                onChange={handleProgressChange}
-              />
-
-              <BottomRight>
-                <CustomIconButton
-                  src="/ui/comet-right.png"
-                  ariaLabel="Next page"
-                  onClick={goNext}
-                  size={100}
-                />
-              </BottomRight>
-            </ControlsLayer>
-          </VideoFrame>
-        </Stage>
-      </Wrap>
-
-      <audio
-        ref={correctSoundRef}
-        src="/ui/golden-shell-correct.mp3"
-        preload="auto"
-      />
-    </>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "black",
+        color: "white",
+        padding: 40,
+      }}
+    >
+      BOOK PLAYER RENDERED
+    </div>
   );
+  // return (
+  //   <>
+  //     <PageBackground src="/ui/bg5.jpg" overlay />
+
+  //     <Wrap>
+  //       <Stage id="Stage">
+  //         <VideoFrame ref={frameRef} id="VIDEO FRAME">
+  //           <GoldenShellIcon />
+  //           <GoldenShellModal />
+  //           {DISABLE_VIDEO ? (
+  //             <Placeholder id="Placeholder">
+  //               <CalmBackground id="CalmBackground" />
+  //               <ComingSoonText id="ComingSoonText">
+  //                 ✨ {t("ui.storyAnimationComingSoon")} ✨
+  //               </ComingSoonText>
+  //             </Placeholder>
+  //           ) : (
+  //             <>
+  //               {videoLoading && (
+  //                 <VideoLoader>
+  //                   <Spinner />
+  //                 </VideoLoader>
+  //               )}
+  //               {!!signedVideoSrc && (
+  //                 <Video
+  //                   ref={videoRef}
+  //                   src={signedVideoSrc}
+  //                   preload="metadata"
+  //                   playsInline
+  //                   onPlay={() => setIsPlaying(true)}
+  //                   onPause={() => setIsPlaying(false)}
+  //                   onLoadStart={() => setVideoLoading(true)}
+  //                   onLoadedMetadata={() => {
+  //                     setIsVideoReady(true);
+  //                   }}
+  //                   onCanPlay={() => setVideoLoading(false)}
+  //                   onWaiting={() => setVideoLoading(true)}
+  //                   onPlaying={() => setVideoLoading(false)}
+  //                   onSeeking={() => setVideoLoading(true)}
+  //                   onSeeked={() => setVideoLoading(false)}
+  //                   onTimeUpdate={handleTimeUpdate}
+  //                 />
+  //               )}
+  //             </>
+  //           )}
+
+  //           <ControlsLayer id="ControlsLayer">
+  //             <TopBar id="TopBar">
+  //               <Meta />
+
+  //               <IconButton
+  //                 onClick={toggleFullscreen}
+  //                 aria-label={
+  //                   isFullscreen ? "Exit fullscreen" : "Enter fullscreen"
+  //                 }
+  //                 title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+  //               >
+  //                 {isFullscreen ? "⤢" : "⛶"}
+  //               </IconButton>
+  //             </TopBar>
+
+  //             <CenterControls>
+  //               <BigButton
+  //                 type="button"
+  //                 onClick={DISABLE_VIDEO ? undefined : togglePlayPause}
+  //                 aria-label={
+  //                   DISABLE_VIDEO
+  //                     ? "Story video not available yet"
+  //                     : isPlaying
+  //                       ? "Pause story"
+  //                       : "Play story"
+  //                 }
+  //                 title={
+  //                   DISABLE_VIDEO ? "Coming soon" : isPlaying ? "Pause" : "Play"
+  //                 }
+  //                 disabled={DISABLE_VIDEO}
+  //               >
+  //                 {DISABLE_VIDEO ? "✨" : isPlaying ? "❚❚" : "▶"}
+  //               </BigButton>
+  //             </CenterControls>
+
+  //             <BottomLeft>
+  //               <CustomIconButton
+  //                 src="/ui/comet-left.png"
+  //                 ariaLabel="Previous page"
+  //                 onClick={goPrev}
+  //                 size={120}
+  //               />
+  //             </BottomLeft>
+
+  //             <ProgressBar
+  //               type="range"
+  //               min={chapterNow.start}
+  //               max={chapterNow.end}
+  //               step={0.1}
+  //               value={Math.min(
+  //                 Math.max(videoTime, chapterNow.start),
+  //                 chapterNow.end,
+  //               )}
+  //               onChange={handleProgressChange}
+  //             />
+
+  //             <BottomRight>
+  //               <CustomIconButton
+  //                 src="/ui/comet-right.png"
+  //                 ariaLabel="Next page"
+  //                 onClick={goNext}
+  //                 size={100}
+  //               />
+  //             </BottomRight>
+  //           </ControlsLayer>
+  //         </VideoFrame>
+  //       </Stage>
+  //     </Wrap>
+
+  //     <audio
+  //       ref={correctSoundRef}
+  //       src="/ui/golden-shell-correct.mp3"
+  //       preload="auto"
+  //     />
+  //   </>
+  // );
 }
-/* ---------- styles ---------- */
 
-const VideoLoader = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 50;
+// /* ---------- styles ---------- */
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+// const VideoLoader = styled.div`
+//   position: absolute;
+//   inset: 0;
+//   z-index: 50;
 
-  background: #000;
-`;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
 
-const Spinner = styled.div`
-  width: 54px;
-  height: 54px;
+//   background: #000;
+// `;
 
-  border-radius: 50%;
-  border: 4px solid rgba(255, 255, 255, 0.15);
-  border-top-color: white;
+// const Spinner = styled.div`
+//   width: 54px;
+//   height: 54px;
 
-  animation: spin 0.8s linear infinite;
+//   border-radius: 50%;
+//   border: 4px solid rgba(255, 255, 255, 0.15);
+//   border-top-color: white;
 
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-`;
+//   animation: spin 0.8s linear infinite;
 
-const ProgressBar = styled.input`
-  position: absolute;
-  left: 140px;
-  right: 140px;
-  bottom: 28px;
-  z-index: 30;
+//   @keyframes spin {
+//     to {
+//       transform: rotate(360deg);
+//     }
+//   }
+// `;
 
-  pointer-events: auto;
-  cursor: pointer;
+// const ProgressBar = styled.input`
+//   position: absolute;
+//   left: 140px;
+//   right: 140px;
+//   bottom: 28px;
+//   z-index: 30;
 
-  -webkit-appearance: none;
-  appearance: none;
-  height: 15px;
-  border-radius: 999px;
+//   pointer-events: auto;
+//   cursor: pointer;
 
-  background: linear-gradient(
-    90deg,
-    rgba(255, 210, 120, 0.8),
-    rgba(255, 170, 80, 0.6)
-  );
+//   -webkit-appearance: none;
+//   appearance: none;
+//   height: 15px;
+//   border-radius: 999px;
 
-  outline: none;
+//   background: linear-gradient(
+//     90deg,
+//     rgba(255, 210, 120, 0.8),
+//     rgba(255, 170, 80, 0.6)
+//   );
 
-  /* Track */
-  &::-webkit-slider-runnable-track {
-    height: 6px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-  }
+//   outline: none;
 
-  /* Thumb (the handle) */
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
+//   /* Track */
+//   &::-webkit-slider-runnable-track {
+//     height: 6px;
+//     border-radius: 999px;
+//     background: rgba(255, 255, 255, 0.12);
+//   }
 
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
+//   /* Thumb (the handle) */
+//   &::-webkit-slider-thumb {
+//     -webkit-appearance: none;
+//     appearance: none;
 
-    background: radial-gradient(
-      circle,
-      rgba(255, 240, 200, 1),
-      rgba(255, 190, 120, 0.9)
-    );
+//     width: 18px;
+//     height: 18px;
+//     border-radius: 50%;
 
-    box-shadow:
-      0 0 10px rgba(255, 200, 120, 0.8),
-      0 0 20px rgba(255, 170, 80, 0.4);
+//     background: radial-gradient(
+//       circle,
+//       rgba(255, 240, 200, 1),
+//       rgba(255, 190, 120, 0.9)
+//     );
 
-    margin-top: -6px;
-  }
-`;
+//     box-shadow:
+//       0 0 10px rgba(255, 200, 120, 0.8),
+//       0 0 20px rgba(255, 170, 80, 0.4);
 
-const Wrap = styled.div`
-  width: 100%;
-  margin: 0 auto;
-  z-index: 10;
-`;
+//     margin-top: -6px;
+//   }
+// `;
 
-const Stage = styled.div`
-  width: 100%;
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+// const Wrap = styled.div`
+//   width: 100%;
+//   margin: 0 auto;
+//   z-index: 10;
+// `;
 
-const Video = styled.video`
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+// const Stage = styled.div`
+//   width: 100%;
+//   min-height: 100dvh;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// `;
 
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  background: #000;
-`;
+// const Video = styled.video`
+//   position: absolute;
+//   inset: 0;
+//   z-index: 1;
 
-const TopBar = styled.div`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
+//   width: 100%;
+//   height: 100%;
+//   object-fit: contain;
+//   display: block;
+//   background: #000;
+// `;
 
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+// const TopBar = styled.div`
+//   position: absolute;
+//   top: 10px;
+//   left: 10px;
+//   right: 10px;
 
-  pointer-events: none;
-`;
+//   display: flex;
+//   align-items: flex-start;
+//   justify-content: space-between;
 
-const Meta = styled.div`
-  color: white;
-  pointer-events: none;
-`;
+//   pointer-events: none;
+// `;
 
-const IconButton = styled.button`
-  pointer-events: auto;
-  width: 40px;
-  height: 36px;
-  border-radius: 10px;
-  border: none;
+// const Meta = styled.div`
+//   color: white;
+//   pointer-events: none;
+// `;
 
-  background: rgba(255, 255, 255, 0.14);
-  color: white;
-  backdrop-filter: blur(10px);
-  cursor: pointer;
+// const IconButton = styled.button`
+//   pointer-events: auto;
+//   width: 40px;
+//   height: 36px;
+//   border-radius: 10px;
+//   border: none;
 
-  display: grid;
-  place-items: center;
-  font-size: 1.125rem;
-`;
+//   background: rgba(255, 255, 255, 0.14);
+//   color: white;
+//   backdrop-filter: blur(10px);
+//   cursor: pointer;
 
-const BigButton = styled.button`
-  pointer-events: auto;
+//   display: grid;
+//   place-items: center;
+//   font-size: 1.125rem;
+// `;
 
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  border: none;
+// const BigButton = styled.button`
+//   pointer-events: auto;
 
-  background: rgba(255, 255, 255, 0.18);
-  color: white;
-  backdrop-filter: blur(10px);
-  cursor: pointer;
+//   width: 72px;
+//   height: 72px;
+//   border-radius: 50%;
+//   border: none;
 
-  display: grid;
-  place-items: center;
-  font-size: 1.75rem;
-`;
+//   background: rgba(255, 255, 255, 0.18);
+//   color: white;
+//   backdrop-filter: blur(10px);
+//   cursor: pointer;
 
-const VideoFrame = styled.div`
-  position: relative;
-  width: 100vw;
-  max-width: 950px;
-  aspect-ratio: 16 / 9;
+//   display: grid;
+//   place-items: center;
+//   font-size: 1.75rem;
+// `;
 
-  border-radius: 0;
-  overflow: hidden;
-  box-shadow: none;
-  background: #000;
-  z-index: 2;
+// const VideoFrame = styled.div`
+//   position: relative;
+//   width: 100vw;
+//   max-width: 950px;
+//   aspect-ratio: 16 / 9;
 
-  &:hover .controlsLayer {
-    opacity: 1;
-  }
+//   border-radius: 0;
+//   overflow: hidden;
+//   box-shadow: none;
+//   background: #000;
+//   z-index: 2;
 
-  @media (min-width: 768px) {
-    width: min(950px, 92vw);
-    border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  }
-`;
+//   &:hover .controlsLayer {
+//     opacity: 1;
+//   }
 
-const ControlsLayer = styled.div.attrs({
-  className: "controlsLayer",
-})`
-  position: absolute;
-  inset: 0;
-  z-index: 20;
+//   @media (min-width: 768px) {
+//     width: min(950px, 92vw);
+//     border-radius: 14px;
+//     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+//   }
+// `;
 
-  opacity: 0;
-  transition: opacity 0.25s ease;
+// const ControlsLayer = styled.div.attrs({
+//   className: "controlsLayer",
+// })`
+//   position: absolute;
+//   inset: 0;
+//   z-index: 20;
 
-  pointer-events: none;
-`;
+//   opacity: 0;
+//   transition: opacity 0.25s ease;
 
-const CenterControls = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 21;
-`;
+//   pointer-events: none;
+// `;
 
-const BottomLeft = styled.div`
-  position: absolute;
-  bottom: 18px;
-  left: 12px;
-  pointer-events: none;
+// const CenterControls = styled.div`
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   pointer-events: none;
+//   z-index: 21;
+// `;
 
-  @media (max-width: 768px) {
-    bottom: 12px;
-  }
-`;
+// const BottomLeft = styled.div`
+//   position: absolute;
+//   bottom: 18px;
+//   left: 12px;
+//   pointer-events: none;
 
-const BottomRight = styled.div`
-  position: absolute;
-  bottom: 18px;
-  right: 12px;
-  pointer-events: none;
+//   @media (max-width: 768px) {
+//     bottom: 12px;
+//   }
+// `;
 
-  @media (max-width: 768px) {
-    bottom: 12px;
-  }
-`;
+// const BottomRight = styled.div`
+//   position: absolute;
+//   bottom: 18px;
+//   right: 12px;
+//   pointer-events: none;
+
+//   @media (max-width: 768px) {
+//     bottom: 12px;
+//   }
+// `;
 
 const Fallback = styled.div`
   min-height: 100vh;
@@ -748,41 +761,41 @@ const Fallback = styled.div`
   font-size: 1rem;
 `;
 
-const Placeholder = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-`;
+// const Placeholder = styled.div`
+//   position: absolute;
+//   inset: 0;
+//   z-index: 1;
+// `;
 
-const CalmBackground = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background:
-    radial-gradient(
-      circle at 30% 30%,
-      rgba(255, 255, 255, 0.12),
-      transparent 45%
-    ),
-    radial-gradient(
-      circle at 70% 60%,
-      rgba(255, 255, 255, 0.1),
-      transparent 45%
-    ),
-    linear-gradient(180deg, rgba(10, 14, 30, 0.9), rgba(5, 8, 18, 0.95));
-`;
+// const CalmBackground = styled.div`
+//   position: absolute;
+//   inset: 0;
+//   z-index: 0;
+//   background:
+//     radial-gradient(
+//       circle at 30% 30%,
+//       rgba(255, 255, 255, 0.12),
+//       transparent 45%
+//     ),
+//     radial-gradient(
+//       circle at 70% 60%,
+//       rgba(255, 255, 255, 0.1),
+//       transparent 45%
+//     ),
+//     linear-gradient(180deg, rgba(10, 14, 30, 0.9), rgba(5, 8, 18, 0.95));
+// `;
 
-const ComingSoonText = styled.p`
-  position: absolute;
-  left: 50%;
-  bottom: 18px;
-  transform: translateX(-50%);
-  z-index: 2;
-  margin: 0;
-  padding: 10px 14px;
-  border-radius: 999px;
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(0, 0, 0, 0.35);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-`;
+// const ComingSoonText = styled.p`
+//   position: absolute;
+//   left: 50%;
+//   bottom: 18px;
+//   transform: translateX(-50%);
+//   z-index: 2;
+//   margin: 0;
+//   padding: 10px 14px;
+//   border-radius: 999px;
+//   color: rgba(255, 255, 255, 0.92);
+//   background: rgba(0, 0, 0, 0.35);
+//   -webkit-backdrop-filter: blur(6px);
+//   backdrop-filter: blur(6px);
+// `;
