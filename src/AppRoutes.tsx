@@ -83,7 +83,8 @@ export default function AppRoutes() {
           </>
         }
       />
-      {/* <Route
+
+      <Route
         path="/:bookSlug/:page"
         element={
           <GoldenShellsProviderWrapper>
@@ -92,20 +93,6 @@ export default function AppRoutes() {
               <MessageButton iconSrc={"/ui/message-button.png"} size={150} />
               <InfoButton />
             </JourneyActions>
-            <BookPlayerPage />
-            <Footer />
-          </GoldenShellsProviderWrapper>
-        }
-      /> */}
-      <Route
-        path="/:bookSlug/:page"
-        element={
-          <GoldenShellsProviderWrapper>
-            <Header />
-            {/* <JourneyActions>
-              <MessageButton iconSrc={"/ui/message-button.png"} size={150} />
-              <InfoButton />
-            </JourneyActions> */}
             <BookPlayerPage />
             <Footer />
           </GoldenShellsProviderWrapper>
