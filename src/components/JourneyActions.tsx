@@ -9,7 +9,6 @@ type JourneyActionsProps = {
 
 export function JourneyActions({ children }: JourneyActionsProps) {
   const location = useLocation();
-  console.log(location.pathname);
   const inHomePage = location.pathname === "/";
   const shouldShowJourneyActions = !inHomePage
     ? useGoldenShells().shouldShowCompletionVideo

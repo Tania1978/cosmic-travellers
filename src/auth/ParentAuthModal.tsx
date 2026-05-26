@@ -122,7 +122,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "grid",
     placeItems: "center",
     padding: 16,
-    zIndex: 9999,
+    zIndex: 20000,
   },
   modal: {
     width: "92vw",
