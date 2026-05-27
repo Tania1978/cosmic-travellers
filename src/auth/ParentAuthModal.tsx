@@ -8,12 +8,14 @@ type ParentAuthModalProps = {
   open: boolean;
   onClose: () => void;
   reason?: "unlock" | "login";
+  setMenuOpen?: (open: boolean) => void;
 };
 
 export default function ParentAuthModal({
   open,
   onClose,
   reason = "login",
+  setMenuOpen,
 }: ParentAuthModalProps) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
@@ -56,6 +58,7 @@ export default function ParentAuthModal({
               size="medium"
               width="250"
               onSuccess={async (cred) => {
+                setMenuOpen?.(false);
                 const { error } = await supabase.auth.signInWithIdToken({
                   provider: "google",
                   token: cred.credential!,

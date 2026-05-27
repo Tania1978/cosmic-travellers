@@ -1,6 +1,15 @@
 import { supabase } from "./auth/supabaseClient";
 import type { GoldenShellsStore, UserStateRow } from "./GoldenShells/types";
 
+const PRIVATE_BUCKET = "cosmic-travellers";
+const PUBLIC_BUCKET = "cosmic-travellers-public";
+
+const FREE_BOOKLETS = ["the-mission-begins"];
+
+export function isFreeBooklet(bookletId: string) {
+  return FREE_BOOKLETS.includes(bookletId);
+}
+
 export async function saveChildFirstName(childFirstName: string) {
   const name = childFirstName.trim();
   if (!name) return;
@@ -164,6 +173,8 @@ export async function getReviews() {
 }
 
 export async function canUserAccessBooklet(bookletId: string) {
+  if (isFreeBooklet(bookletId)) return true;
+
   const {
     data: { user },
     error: userError,
@@ -182,24 +193,26 @@ export async function canUserAccessBooklet(bookletId: string) {
   return Boolean(data.unlocked_books?.[bookletId]);
 }
 
-export async function getSignedVideoUrlForBooklet(
+export async function getVideoUrlForBooklet(
   bookletId: string,
   videoPath: string,
 ) {
+  if (isFreeBooklet(bookletId)) {
+    const { data } = supabase.storage
+      .from(PUBLIC_BUCKET)
+      .getPublicUrl(videoPath);
+
+    return data.publicUrl;
+  }
+
   const hasAccess = await canUserAccessBooklet(bookletId);
 
   if (!hasAccess) {
     throw new Error("Booklet is locked");
   }
-  // const { data, error } = await supabase.storage
-  //   .from("cosmic-travellers")
-  //   .list("booklet-2");
-
-  // console.log(JSON.stringify(data, null, 2));
-  // console.log(error);
 
   const { data, error } = await supabase.storage
-    .from("cosmic-travellers")
+    .from(PRIVATE_BUCKET)
     .createSignedUrl(videoPath, 60 * 60);
 
   if (error) throw error;
