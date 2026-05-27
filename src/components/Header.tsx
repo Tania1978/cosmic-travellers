@@ -36,8 +36,11 @@ export default function Header() {
 
   // Close menu on route change
   React.useEffect(() => {
+    if (isLoggedIn) {
+      setMenuOpen(false);
+    }
     setMenuOpen(false);
-  }, [location.pathname]);
+  }, [location.pathname, isLoggedIn]);
 
   // Escape to close
   React.useEffect(() => {
@@ -196,6 +199,7 @@ export default function Header() {
         open={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         reason="login"
+        setMenuOpen={setMenuOpen}
       />
     </>
   );

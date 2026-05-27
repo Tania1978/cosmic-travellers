@@ -14,12 +14,14 @@ export type BookConfig = {
   chapters: Chapter[];
   requiredShellIds?: string[]; // ✅ NEW (for hidden chapters)
   shellCompletionVideoSrc?: string;
+  thumbnailSrc: string;
 };
 
 export const INTRO_BOOK: BookConfig = {
   slug: "the-mission-begins",
   title: "The Mission Begins",
   subtitle: "A Series Introduction Booklet",
+  thumbnailSrc: "/books/intro/cover.jpg",
   videoPath: "the-mission-begins/final-intro-music-optimized.mp4",
 
   chapters: [
@@ -53,6 +55,7 @@ export const SECOND_BOOK: BookConfig = {
   title: "Second Booklet",
   subtitle: "Cosmic Travellers",
   videoPath: "booklet-2/booklet-2-music-optimized.mp4",
+  thumbnailSrc: "/books/chapter/cover_2.png",
   shellCompletionVideoSrc: "/books/chapter/booklet-2-message.mp4",
   requiredShellIds: ["first-life", "origin-life"],
   chapters: [
@@ -78,6 +81,7 @@ export const THIRD_BOOK: BookConfig = {
   slug: "booklet-3",
   title: "Third Booklet",
   subtitle: "Cosmic Travellers",
+  thumbnailSrc: "/books/chapter/cover_3.png",
   videoPath: "booklet-3/booklet-3-music.mp4",
   requiredShellIds: [
     "stars-are-suns",
@@ -105,6 +109,7 @@ export const FOURTH_BOOK: BookConfig = {
   title: "Fourth Booklet",
   subtitle: "Cosmic Travellers",
   videoPath: "booklet-4/booklet-4-music.mp4",
+  thumbnailSrc: "/books/chapter/cover_3.png",
   shellCompletionVideoSrc: "/books/chapter/booklet-4-message.mp4",
   requiredShellIds: [
     "water-evaporation",

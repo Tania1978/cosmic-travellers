@@ -13,7 +13,7 @@ import { ALL_SHELL_OPPORTUNITIES } from "../data/shells/shells_opportunitites";
 
 import { GoldenShellIcon } from "../GoldenShells/GoldenShellIcon";
 import { GoldenShellModal } from "../GoldenShells/GoldenShellModal";
-import { getSignedVideoUrlForBooklet } from "../requests";
+import { getVideoUrlForBooklet } from "../requests";
 
 const CHAPTER_PREROLL_SECONDS = 0.5;
 
@@ -129,7 +129,7 @@ export default function BookPlayerPage() {
       console.log("foundBook", foundBook);
       if (!foundBook?.videoPath) return;
 
-      const url = await getSignedVideoUrlForBooklet(
+      const url = await getVideoUrlForBooklet(
         foundBook.slug,
         foundBook.videoPath,
       );
@@ -392,18 +392,6 @@ export default function BookPlayerPage() {
     );
   }
 
-  //  return (
-  //    <div
-  //      style={{
-  //        minHeight: "100vh",
-  //        background: "black",
-  //        color: "white",
-  //        padding: 40,
-  //      }}
-  //    >
-  //      BOOK PLAYER RENDERED
-  //    </div>
-  //  );
   return (
     <>
       <PageBackground src="/ui/bg5.jpg" overlay />
@@ -431,7 +419,7 @@ export default function BookPlayerPage() {
                   <Video
                     ref={videoRef}
                     src={signedVideoSrc}
-                    poster="/books/intro/cover.jpg"
+                    poster={foundBook.thumbnailSrc}
                     preload="auto"
                     playsInline
                     onLoadedMetadata={() => {
@@ -712,8 +700,10 @@ const VideoFrame = styled.div`
   border-radius: 0;
   box-shadow: none;
 
-  &:hover .controlsLayer {
-    opacity: 1;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover .controlsLayer {
+      opacity: 1;
+    }
   }
 
   @supports not (aspect-ratio: 16 / 9) {
