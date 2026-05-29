@@ -43,6 +43,20 @@ export default function BookPlayerPage() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [signedVideoSrc, setSignedVideoSrc] = useState("");
+  const [controlsVisible, setControlsVisible] = useState(false);
+  const controlsTimerRef = useRef<number | null>(null);
+
+  const revealControls = () => {
+    setControlsVisible(true);
+
+    if (controlsTimerRef.current) {
+      window.clearTimeout(controlsTimerRef.current);
+    }
+
+    controlsTimerRef.current = window.setTimeout(() => {
+      setControlsVisible(false);
+    }, 2500);
+  };
 
   const currentPage = Number(page);
 
@@ -398,7 +412,12 @@ export default function BookPlayerPage() {
 
       <Wrap>
         <Stage id="Stage">
-          <VideoFrame ref={frameRef} id="VIDEO FRAME">
+          <VideoFrame
+            $controlsVisible={controlsVisible}
+            onClick={revealControls}
+            onTouchStart={revealControls}
+            ref={frameRef}
+          >
             <GoldenShellIcon />
             <GoldenShellModal />
             {DISABLE_VIDEO ? (
@@ -684,7 +703,7 @@ const BigButton = styled.button`
   font-size: 1.75rem;
 `;
 
-const VideoFrame = styled.div`
+const VideoFrame = styled.div<{ $controlsVisible?: boolean }>`
   position: relative;
   width: 100%;
   max-width: 950px;
@@ -699,6 +718,10 @@ const VideoFrame = styled.div`
 
   border-radius: 0;
   box-shadow: none;
+
+  .controlsLayer {
+    opacity: ${({ $controlsVisible }) => ($controlsVisible ? 1 : 0)};
+  }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover .controlsLayer {

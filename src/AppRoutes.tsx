@@ -18,7 +18,7 @@ import { useAuth } from "./auth/authContext";
 import { GoldenShellsProviderWrapper } from "./data/shells/GoldenShellsProviderWrapper";
 import BookPlayerPage from "./pages/BookPlayerPage";
 import { BookPlayerErrorBoundary } from "./pages/BookPlayerErrorBoundary";
-
+import { AuthCallback } from "./auth/AuthCallback";
 
 const BookPlayerRouteShell = styled.main`
   min-height: 100vh;
@@ -113,6 +113,7 @@ export default function AppRoutes() {
           </GoldenShellsProviderWrapper>
         }
       />
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="*" element={<div>Route not found</div>} />
     </Routes>
   );
