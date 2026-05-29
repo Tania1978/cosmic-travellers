@@ -63,10 +63,13 @@ export default function ParentAuthModal({
                   provider: "google",
                   token: cred.credential!,
                 });
-                if (error) console.error(error);
+                if (error) {
+                  alert("Google login failed: " + error.message);
+                  console.error(error)};
               }}
               onError={() => {
                 console.error("Google Login Failed");
+                alert("Google login failed");
               }}
             />
           </div>
