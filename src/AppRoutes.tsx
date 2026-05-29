@@ -113,6 +113,7 @@ export default function AppRoutes() {
           </GoldenShellsProviderWrapper>
         }
       />
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="*" element={<div>Route not found</div>} />
     </Routes>
   );
