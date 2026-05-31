@@ -51,6 +51,10 @@ const Button = styled.button<{ $size: number }>`
   &:active {
     transform: scale(0.95);
   }
+
+  @media (max-width: 768px) {
+    width: ${({ $size }) => $size / 2}px;
+  }
 `;
 
 const Img = styled.img`

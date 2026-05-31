@@ -89,8 +89,7 @@ export default function Header() {
 
         <MobileOnly>
           <MessageButton
-            iconSrc={
-              inHomePage ? "/ui/message-button1.png" : "/ui/message-button.png"
+            iconSrc={"/ui/message-button.png"
             }
             size={150}
           />
