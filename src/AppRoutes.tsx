@@ -45,7 +45,7 @@ export default function AppRoutes() {
             <Header />
 
             <JourneyActions>
-              <MessageButton iconSrc={"/ui/message-button1.png"} size={150} />
+              <MessageButton iconSrc={"/ui/message-button.png"} size={150} />
               <InfoButton />
               {inHomePage && isLoggedIn && (
                 <ButtonSlot id="button slot">
