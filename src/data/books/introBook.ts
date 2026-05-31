@@ -82,7 +82,7 @@ export const THIRD_BOOK: BookConfig = {
   title: "Third Booklet",
   subtitle: "Cosmic Travellers",
   thumbnailSrc: "/books/chapter/cover_3.png",
-  videoPath: "booklet-3/booklet-3-music.mp4",
+  videoPath: "booklet-3/booklet-3-music-optimized.mp4",
   requiredShellIds: [
     "stars-are-suns",
     "solar-system",
