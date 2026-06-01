@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
-import { useLocation } from "react-router-dom";
 
 import { redeemPreviewCode } from "../requests";
 import { Trigger } from "../theme/sharedStyled";
