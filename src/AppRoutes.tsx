@@ -22,7 +22,6 @@ import { AuthCallback } from "./auth/AuthCallback";
 
 const BookPlayerRouteShell = styled.main`
   min-height: 100vh;
-  min-height: 100dvh;
   width: 100%;
   display: flex;
   align-items: center;
@@ -94,22 +93,32 @@ export default function AppRoutes() {
           </>
         }
       />
-
       <Route
         path="/:bookSlug/:page"
         element={
           <GoldenShellsProviderWrapper>
-            <Header />
-            <JourneyActions>
-              <MessageButton iconSrc={"/ui/message-button.png"} size={150} />
-              <InfoButton />
-            </JourneyActions>
-            <BookPlayerErrorBoundary>
-              <BookPlayerRouteShell>
-                <BookPlayerPage />
-              </BookPlayerRouteShell>
-            </BookPlayerErrorBoundary>
-            <Footer />
+            <PageLayout>
+              <Header />
+
+              {isLoggedIn && (
+                <JourneyActions>
+                  <MessageButton iconSrc="/ui/message-button.png" size={150} />
+                  <InfoButton />
+
+                  <ButtonSlot id="button-slot">
+                    <PreviewAccess />
+                  </ButtonSlot>
+                </JourneyActions>
+              )}
+
+              <BookPlayerErrorBoundary>
+                <BookPlayerRouteShell>
+                  <BookPlayerPage />
+                </BookPlayerRouteShell>
+              </BookPlayerErrorBoundary>
+
+              <Footer />
+            </PageLayout>
           </GoldenShellsProviderWrapper>
         }
       />
@@ -119,8 +128,15 @@ export default function AppRoutes() {
   );
 }
 
+const PageLayout = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
+
 const ButtonSlot = styled.div`
   width: 180px;
+  pointer-events: auto;
 
   display: flex;
   align-items: center;

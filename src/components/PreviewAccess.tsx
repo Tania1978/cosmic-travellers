@@ -1,24 +1,25 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
+
 import { redeemPreviewCode } from "../requests";
 import { Trigger } from "../theme/sharedStyled";
 import { useUserState } from "../contexts/userContext";
-import { useAuth } from "../auth/authContext";
-import { useLocation } from "react-router-dom";
 
 export function PreviewAccess() {
-  const [isOpen, setIsOpen] = useState(false);
+  const {
+    isPreviewAccessModalOpen,
+    setIsPreviewAccessModalOpen,
+    setUnlockedBooksLocal,
+  } = useUserState();
+
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [isRedeeming, setIsRedeeming] = useState(false);
-  const { setUnlockedBooksLocal } = useUserState();
-  const location = useLocation();
-  const { isLoggedIn } = useAuth();
-
-  const inHomePage = location.pathname === "/";
 
   const handleClose = () => {
-    setIsOpen(false);
+    setIsPreviewAccessModalOpen(false);
     setCode("");
     setError("");
   };
@@ -29,81 +30,105 @@ export function PreviewAccess() {
       setIsRedeeming(true);
 
       const data = await redeemPreviewCode(code.trim());
-      console.log("data of request", data);
-      if (data?.unlocked_books) {
-        setUnlockedBooksLocal(data?.unlocked_books);
-      }
-      handleClose();
 
-      // TODO:
-      // refresh/reload user state here
+      if (data?.unlocked_books) {
+        setUnlockedBooksLocal(data.unlocked_books);
+      }
+
+      handleClose();
     } catch (error) {
       console.error(error);
-
       setError("That code did not work.");
     } finally {
       setIsRedeeming(false);
     }
   };
 
-  if (!inHomePage || !isLoggedIn) return null;
-
   return (
     <>
-      <Trigger type="button" onClick={() => setIsOpen(true)}>
+      <Trigger type="button" onClick={() => setIsPreviewAccessModalOpen(true)}>
         Preview Access
       </Trigger>
 
-      {isOpen && (
-        <Overlay>
-          <Modal>
-            <Title>Preview Access</Title>
-
-            <Description>
-              Enter your preview code to unlock the books.
-            </Description>
-
-            <CodeInput
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="Enter code"
-              autoFocus
-            />
-
-            {!!error && <ErrorText>{error}</ErrorText>}
-
-            <Actions>
-              <SecondaryButton type="button" onClick={handleClose}>
-                Cancel
-              </SecondaryButton>
-
-              <PrimaryButton
-                type="button"
-                onClick={handleSubmit}
-                disabled={!code.trim() || isRedeeming}
-              >
-                {isRedeeming ? "Unlocking..." : "Unlock Books"}
-              </PrimaryButton>
-            </Actions>
-          </Modal>
-        </Overlay>
-      )}
+      {isPreviewAccessModalOpen &&
+        createPortal(
+          <ModalPortalContent
+            code={code}
+            error={error}
+            isRedeeming={isRedeeming}
+            onCodeChange={setCode}
+            onClose={handleClose}
+            onSubmit={handleSubmit}
+          />,
+          document.body,
+        )}
     </>
   );
 }
 
-const Overlay = styled.div`
+type ModalPortalContentProps = {
+  code: string;
+  error: string;
+  isRedeeming: boolean;
+  onCodeChange: (value: string) => void;
+  onClose: () => void;
+  onSubmit: () => void;
+};
+
+function ModalPortalContent({
+  code,
+  error,
+  isRedeeming,
+  onCodeChange,
+  onClose,
+  onSubmit,
+}: ModalPortalContentProps) {
+  return (
+    <ModalBackdrop onClick={onClose}>
+      <Modal onClick={(e) => e.stopPropagation()}>
+        <Title>Preview Access</Title>
+
+        <Description>Enter your preview code to unlock the books.</Description>
+
+        <CodeInput
+          value={code}
+          onChange={(e) => onCodeChange(e.target.value)}
+          placeholder="Enter code"
+          autoFocus
+        />
+
+        {!!error && <ErrorText>{error}</ErrorText>}
+
+        <Actions>
+          <SecondaryButton type="button" onClick={onClose}>
+            Cancel
+          </SecondaryButton>
+
+          <PrimaryButton
+            type="button"
+            onClick={onSubmit}
+            disabled={!code.trim() || isRedeeming}
+          >
+            {isRedeeming ? "Unlocking..." : "Unlock Books"}
+          </PrimaryButton>
+        </Actions>
+      </Modal>
+    </ModalBackdrop>
+  );
+}
+const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 1000;
+  z-index: 999999;
 
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
 
-  padding: 120px 1rem 1rem;
+  padding: 1rem;
   box-sizing: border-box;
+
+  background: rgba(0, 0, 0, 0.65);
 `;
 
 const Modal = styled.div`

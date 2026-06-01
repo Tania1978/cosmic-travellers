@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { DesktopOnly } from "./Header";
-import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
+//import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
 import { useLocation } from "react-router-dom";
 
 type JourneyActionsProps = {
@@ -8,11 +8,13 @@ type JourneyActionsProps = {
 };
 
 export function JourneyActions({ children }: JourneyActionsProps) {
-  const location = useLocation();
-  const inHomePage = location.pathname === "/";
-  const shouldShowJourneyActions = !inHomePage
-    ? useGoldenShells().shouldShowCompletionVideo
-    : true;
+  // const location = useLocation();
+  // const inHomePage = location.pathname === "/";
+  // const shouldShowJourneyActions = !inHomePage
+  //   ? useGoldenShells().shouldShowCompletionVideo
+  //   : true;
+
+  const shouldShowJourneyActions = true;
   return (
     <DesktopOnly>
       {shouldShowJourneyActions && (
@@ -30,35 +32,38 @@ export function JourneyActions({ children }: JourneyActionsProps) {
 
 const Wrapper = styled.section`
   position: relative;
-  z-index: 10000;
   justify-content: center;
+  margin: 80px auto 0;
 
-  width: min(1100px, calc(100% - 32px));
-  margin: 100px auto 18px;
-  padding: 14px 18px;
-  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  width: 80%;
+  max-width: calc(100% - 48px);
+  box-sizing: border-box;
+
+  padding: 10px 28px;
+  border-radius: 999px;
 
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.24) 0%,
-    rgba(255, 255, 255, 0.14) 100%
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0.08)
   );
 
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.35);
 
   box-shadow:
-    0 18px 60px rgba(36, 96, 146, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 18px 50px rgba(20, 40, 80, 0.25),
+    0 0 35px rgba(180, 220, 255, 0.18);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
   overflow: visible;
-
-  @media (max-width: 700px) {
-    margin-top: 96px;
-    padding: 18px;
-    border-radius: 28px;
-  }
 `;
-
 const Glow = styled.div`
   position: absolute;
 
