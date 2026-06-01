@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import { DesktopOnly } from "./Header";
-//import { useGoldenShells } from "../GoldenShells/GoldenShellsProvider";
-import { useLocation } from "react-router-dom";
 
 type JourneyActionsProps = {
   children: React.ReactNode;
