@@ -14,6 +14,9 @@ import { ALL_SHELL_OPPORTUNITIES } from "../data/shells/shells_opportunitites";
 import { GoldenShellIcon } from "../GoldenShells/GoldenShellIcon";
 import { GoldenShellModal } from "../GoldenShells/GoldenShellModal";
 import { getVideoUrlForBooklet } from "../requests";
+import { useAuth } from "../auth/authContext";
+import { AccessRequiredScreen } from "../auth/AccessRequiredScreen";
+import { useUserState } from "../contexts/userContext";
 
 const CHAPTER_PREROLL_SECONDS = 0.5;
 
@@ -45,6 +48,12 @@ export default function BookPlayerPage() {
   const [signedVideoSrc, setSignedVideoSrc] = useState("");
   const [controlsVisible, setControlsVisible] = useState(false);
   const controlsTimerRef = useRef<number | null>(null);
+  const { unlockedBooks } = useUserState();
+  const { authUser, setAuthModalOpen } = useAuth();
+  const isPreviewMode = true;
+  const { isPreviewAccessModalOpen, setIsPreviewAccessModalOpen } =
+    useUserState();
+  console.log("isPreviewAccessModalOpen", isPreviewAccessModalOpen);
 
   const revealControls = () => {
     setControlsVisible(true);
@@ -137,10 +146,15 @@ export default function BookPlayerPage() {
     goToChapter(prevChapter.page);
   };
 
+  const isAuthenticated = Boolean(authUser);
+  const isFreeBooklet = bookSlug === "the-mission-begins";
+  const isUnlocked =
+    isFreeBooklet ||
+    (isAuthenticated && Boolean(unlockedBooks[bookSlug ?? ""]));
+
   useEffect(() => {
     async function loadVideo() {
       setVideoLoading(true);
-      console.log("foundBook", foundBook);
       if (!foundBook?.videoPath) return;
 
       const url = await getVideoUrlForBooklet(
@@ -157,7 +171,7 @@ export default function BookPlayerPage() {
     }
 
     loadVideo();
-  }, [foundBook]);
+  }, [foundBook, authUser, isUnlocked]);
   /**
    * Modal behavior:
    * - opening modal pauses video
@@ -393,6 +407,46 @@ export default function BookPlayerPage() {
     setVideoTime(safeTime);
   };
 
+  const startStripeCheckout = () => {
+    alert("Payment Flow to be added");
+  };
+
+  if (!isAuthenticated && !isFreeBooklet) {
+    return (
+      <>
+        <PageBackground src="/ui/bg5.jpg" overlay />
+        <AccessRequiredScreen
+          videoSrc="/ui/continue-journey.mp4"
+          title="Continue Your Adventure"
+          message="Sign in to continue exploring with the Cosmic Travellers."
+          buttonLabel="Continue Journey"
+          onAction={() => setAuthModalOpen(true)}
+        />
+      </>
+    );
+  }
+
+  if (isAuthenticated && !isUnlocked) {
+    return (
+      <>
+        <PageBackground src="/ui/bg5.jpg" overlay />
+        <AccessRequiredScreen
+          videoSrc="/ui/unlock-adventure.mp4"
+          title="This Adventure Is Waiting"
+          message="Unlock this booklet to continue your journey."
+          buttonLabel="Unlock Adventure"
+          onAction={() => {
+            if (isPreviewMode) {
+              console.log("isPreviewMode, opening preview access modal");
+              setIsPreviewAccessModalOpen(true);
+            } else {
+              startStripeCheckout();
+            }
+          }}
+        />
+      </>
+    );
+  }
   if (!isValidSlug) {
     return <Navigate to="/" replace />;
   }
@@ -431,7 +485,9 @@ export default function BookPlayerPage() {
               <>
                 {videoLoading && (
                   <VideoLoader>
-                    <Spinner />
+                    <LoaderVideo autoPlay muted loop playsInline>
+                      <source src="/ui/magic-loader.mp4" type="video/mp4" />
+                    </LoaderVideo>
                   </VideoLoader>
                 )}
                 {!!signedVideoSrc && (
@@ -545,32 +601,17 @@ export default function BookPlayerPage() {
 /* ---------- styles ---------- */
 
 const VideoLoader = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 50;
+  width: 100%;
+  height: 100%;
 
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background: #000;
 `;
 
-const Spinner = styled.div`
-  width: 54px;
-  height: 54px;
-
-  border-radius: 50%;
-  border: 4px solid rgba(255, 255, 255, 0.15);
-  border-top-color: white;
-
-  animation: spin 0.8s linear infinite;
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
+const LoaderVideo = styled.video`
+  width: 100%;
+  height: auto;
 `;
 
 const ProgressBar = styled.input`
@@ -712,7 +753,7 @@ const VideoFrame = styled.div<{ $controlsVisible?: boolean }>`
   height: auto;
   min-height: 220px;
 
-  background: #000;
+  background: transparent;
   overflow: hidden;
   z-index: 2;
 

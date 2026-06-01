@@ -31,7 +31,6 @@ export function GoldenShellModal() {
   };
 
   const onPick = async (choiceId: string) => {
-    console.log("onPick");
     const res = await submitAnswer(choiceId);
 
     if (res.correct) {
@@ -159,17 +158,34 @@ const ChoiceRow = styled.button`
     padding: 8px 12px;
     min-height: 38px;
   }
+
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease,
+    text-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 const ChoiceLabel = styled.div`
   font-family: "Cause", sans-serif !important;
   font-size: 20px;
   line-height: 1.35;
-  color: rgba(255, 255, 255, 0.92);
 
   @media (orientation: landscape) and (max-height: 500px) {
     font-size: 15px;
   }
+  color: #fffdf5;
+  font-weight: 700;
+
+  text-shadow:
+    -1px -1px 0 rgba(0, 0, 0, 0.6),
+    1px -1px 0 rgba(0, 0, 0, 0.6),
+    -1px 1px 0 rgba(0, 0, 0, 0.6),
+    1px 1px 0 rgba(0, 0, 0, 0.6),
+    0 0 10px rgba(255, 245, 200, 0.8);
 `;
 
 const CardWrap = styled.div`

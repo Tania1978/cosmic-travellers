@@ -137,14 +137,13 @@ export function GoldenShellsProvider({
         [bookletId]: (store.sessionEarnedByBooklet[bookletId] ?? 0) + 1,
       },
     };
-    console.log(nextStore);
 
     setStore(nextStore);
     await saveGoldenShells(nextStore);
 
     return { correct: true, completedBooklet };
   };
-  console.log("requiredShellIds", requiredShellIds);
+
   const hasEarnedAllBookletShells =
     requiredShellIds.length > 0 &&
     requiredShellIds.every((id) => isShellEarned(id));

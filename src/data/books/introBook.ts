@@ -83,24 +83,29 @@ export const THIRD_BOOK: BookConfig = {
   subtitle: "Cosmic Travellers",
   thumbnailSrc: "/books/chapter/cover_3.png",
   videoPath: "booklet-3/booklet-3-music-optimized.mp4",
+  shellCompletionVideoSrc: "/books/chapter/booklet-3-message.mp4",
   requiredShellIds: [
     "stars-are-suns",
     "solar-system",
+    "gravity",
     "galaxy-home",
     "life-water",
   ],
   chapters: [
-    { page: 1, start: 0, end: 4 }, // 1A.mp4 (5s)
-    { page: 2, start: 4, end: 35.5 }, // 1B.mp4 (32s)
-    { page: 3, start: 35.5, end: 73 }, // 2.mp4 (37s)
-    { page: 4, start: 73, end: 99 }, // 3.mp4 (25s)
-    { page: 5, start: 99, end: 130 }, // 4.mp4 (31s)
-    { page: 6, start: 130, end: 154 }, // 5.mp4 (23s)
-    { page: 7, start: 154, end: 182.5 }, // 6.mp4 (28s)
-    { page: 8, start: 182.5, end: 199.5 }, // 7.mp4 (17s)
-    { page: 9, start: 199.7, end: 217.32 }, // 7b.mp4 (17s)
-    { page: 10, start: 217.32, end: 262.6 }, // 8.mp4 (45s)
-    { page: 11, start: 262.6, end: 293.5 }, // 9.mp4 (31s)
+    { page: 1, start: 0, end: 5 }, // 1A.mp4
+    { page: 2, start: 5, end: 37 }, // 1b.mp4 (32s)
+    { page: 3, start: 37, end: 70 }, // 2.mp4 (33s)
+    { page: 4, start: 70, end: 94 }, // 3.mp4 (24s)
+    { page: 5, start: 94, end: 141 }, // 3a.mp4 (47s)
+    { page: 6, start: 141, end: 172 }, // 3c.mp4 (31s)
+    { page: 7, start: 172, end: 195 }, // 3d.mp4 (23s)
+    { page: 8, start: 195, end: 225 }, // 4.mp4 (30s)
+    { page: 9, start: 225, end: 235 }, // 5.mp4 (10s)
+    { page: 10, start: 235, end: 251 }, // 6.mp4 (14s)
+    { page: 11, start: 251, end: 267 }, // 7.mp4 (16s)
+    { page: 12, start: 267, end: 284 }, // 7b.mp4 (17s)
+    { page: 13, start: 284, end: 290 }, // 8.mp4 (4s)
+    { page: 14, start: 290, end: 321 }, // 9.mp4 (31s)
   ],
 };
 

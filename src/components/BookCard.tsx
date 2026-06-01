@@ -22,7 +22,6 @@ export default function BookCard({
   const { t, i18n } = useTranslation();
   const { language } = i18n;
   const { isLoggedIn, setAuthModalOpen } = useAuth();
-  console.log("isLocked in book card", isLocked);
 
   const titleText = t(b.title);
   const subtitleText = b.subtitle ? t(b.subtitle) : "";

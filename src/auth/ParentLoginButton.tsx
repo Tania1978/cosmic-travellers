@@ -8,7 +8,6 @@ export default function ParentLoginButton() {
 
   const handleLogOut = () => {
     logout();
-    console.log("handleLogOut called");
   };
 
   return (

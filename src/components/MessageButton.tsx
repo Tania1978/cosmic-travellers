@@ -31,7 +31,6 @@ export const MessageButton = (props: MessageButtonProps) => {
     !!goldenShells?.hasEarnedAllBookletShells &&
     !!goldenShells?.shellCompletionVideoSrc;
 
-  console.log("goldenShells", goldenShells);
 
   // 🎬 Normal video playback
   useEffect(() => {
@@ -77,7 +76,7 @@ export const MessageButton = (props: MessageButtonProps) => {
   const showGreeting = inHomePage && !!childFirstName;
   const showIntroButton = inHomePage && !childFirstName;
   const showCompletionButton = !inHomePage && shouldShowCompletionVideo;
-  console.log("showCompletionButton", showCompletionButton);
+
   return (
     <>
       {showGreeting && <Greeting>{`Hi ${childFirstName}!`}</Greeting>}

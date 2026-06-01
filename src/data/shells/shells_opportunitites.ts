@@ -31,7 +31,7 @@ export const BOOKLET3_SHELLS: ShellOpportunity[] = [
   {
     bookletId: "booklet-3",
     id: "stars-are-suns",
-    page: 4,
+    page: 5,
     question: "What are the stars we see in the night sky?",
     choices: [
       { id: "a", label: "✨ Tiny lights" },
@@ -42,8 +42,20 @@ export const BOOKLET3_SHELLS: ShellOpportunity[] = [
   },
   {
     bookletId: "booklet-3",
+    id: "gravity",
+    page: 6,
+    question: "What keeps the planets travelling around the Sun?",
+    choices: [
+      { id: "a", label: "🌐 The Sun's gravity" },
+      { id: "b", label: "🌬️ Space wind" },
+      { id: "c", label: "🚀 Giant rockets" },
+    ],
+    correctChoiceId: "a",
+  },
+  {
+    bookletId: "booklet-3",
     id: "solar-system",
-    page: 5,
+    page: 8,
     question: "What is our Solar System?",
     choices: [
       { id: "a", label: "🌌 A group of stars" },
@@ -55,7 +67,7 @@ export const BOOKLET3_SHELLS: ShellOpportunity[] = [
   {
     bookletId: "booklet-3",
     id: "galaxy-home",
-    page: 7,
+    page: 9,
     question: "Where do we live in space?",
     choices: [
       { id: "a", label: "🌌 In a galaxy called the Milky Way" },
@@ -67,7 +79,7 @@ export const BOOKLET3_SHELLS: ShellOpportunity[] = [
   {
     bookletId: "booklet-3",
     id: "life-water",
-    page: 11,
+    page: 12,
     question: "What makes life possible on Earth?",
     choices: [
       { id: "a", label: "💧 Water" },

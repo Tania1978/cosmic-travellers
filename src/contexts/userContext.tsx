@@ -41,6 +41,8 @@ type UserState = {
   unlockBook: (bookSlug: string) => Promise<void>;
   reload: () => Promise<void>;
   setUnlockedBooksLocal: React.Dispatch<React.SetStateAction<UnlockedBooks>>;
+  isPreviewAccessModalOpen: boolean;
+  setIsPreviewAccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Ctx = createContext<UserState | null>(null);
@@ -56,7 +58,7 @@ export function useUserState() {
 }
 
 export function UserStateProvider({ children }: { children: React.ReactNode }) {
-  const { authUser } = useAuth();
+  const { authUser, isLoggedIn } = useAuth();
 
   const [childFirstName, setChildFirstNameLocal] = useState<string | null>(
     null,
@@ -66,6 +68,8 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
   const [unlockedBooks, setUnlockedBooksLocal] = useState<UnlockedBooks>({});
   const [introStage, setIntroStageLocal] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isPreviewAccessModalOpen, setIsPreviewAccessModalOpen] =
+    useState(false);
 
   const saveTimer = useRef<number | null>(null);
 
@@ -78,7 +82,6 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
   };
 
   const reload = async () => {
-    console.log("reload called authUser", authUser);
     if (!authUser) {
       clearUserState();
       return;
@@ -93,7 +96,6 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
       .maybeSingle();
 
     if (error) throw error;
-    console.log("data after user state", data);
 
     setChildFirstNameLocal((data?.child_first_name as string | null) ?? null);
 
@@ -157,7 +159,6 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authUser?.id]);
-  console.log("unlocked books");
 
   const value = useMemo<UserState>(
     () => ({
@@ -171,8 +172,18 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
       unlockBook,
       reload,
       setUnlockedBooksLocal,
+      isPreviewAccessModalOpen,
+      setIsPreviewAccessModalOpen,
     }),
-    [childFirstName, goldenShells, unlockedBooks, isLoaded, introStage],
+    [
+      childFirstName,
+      goldenShells,
+      unlockedBooks,
+      isLoaded,
+      introStage,
+      isLoggedIn,
+      isPreviewAccessModalOpen,
+    ],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

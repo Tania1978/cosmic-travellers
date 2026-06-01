@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import styled, { css, keyframes } from "styled-components";
 import { CustomIconButton } from "./CustomIconButton";
 
@@ -60,6 +61,17 @@ export function ModalIconButton({
     };
   }, [isVisible, isClosing]);
 
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isVisible]);
+
   if (disabled) return null;
 
   return (
@@ -73,25 +85,37 @@ export function ModalIconButton({
         />
       </PulseWrapper>
 
-      {isVisible && (
-        <Overlay $closing={isClosing}>
-          <Modal ref={modalRef} $closing={isClosing}>
-            {children({ close, isClosing })}
-          </Modal>
-        </Overlay>
-      )}
+      {isVisible &&
+        createPortal(
+          <Overlay $closing={isClosing}>
+            <Modal ref={modalRef} $closing={isClosing}>
+              {children({ close, isClosing })}
+            </Modal>
+          </Overlay>,
+          document.body,
+        )}
     </>
   );
 }
 
 const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 `;
 
 const fadeOut = keyframes`
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 `;
 
 const pulseGlow = keyframes`
@@ -114,33 +138,45 @@ const pulseGlow = keyframes`
 const Overlay = styled.div<{ $closing: boolean }>`
   position: fixed;
   inset: 0;
-  z-index: 10001;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  z-index: 999999;
 
   display: grid;
   place-items: center;
 
-  background: rgba(15, 15, 16, 0.55);
+  padding: 24px;
+  box-sizing: border-box;
+
+  background: rgba(10, 16, 28, 0.58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
   animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${FADE_MS}ms
     ease forwards;
 `;
 
 const Modal = styled.div<{ $closing: boolean }>`
-  width: min(90vw, 720px);
   position: relative;
-  top: 40px;
-  z-index: 10000;
-  min-height: 400px;
+  z-index: 1;
+
+  width: min(90vw, 720px);
+  max-height: min(86vh, 760px);
+
   padding: 20px;
   border-radius: 28px;
+  box-sizing: border-box;
   overflow: hidden;
-  place-items: center;
-  background: rgba(34, 49, 81, 0.55);
-  backdrop-filter: blur(500px);
+
+  background: rgba(34, 49, 81, 0.72);
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
   animation: ${({ $closing }) => ($closing ? fadeOut : fadeIn)} ${FADE_MS}ms
     ease forwards;
 `;
