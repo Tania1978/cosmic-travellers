@@ -31,11 +31,13 @@ export function JourneyActions({ children }: JourneyActionsProps) {
 const Wrapper = styled.section`
   position: relative;
   justify-content: center;
-  margin: 80px auto 0;
+  margin: 90px auto 0;
 
   display: flex;
   align-items: center;
   gap: 1rem;
+
+
 
   width: 80%;
   max-width: calc(100% - 48px);

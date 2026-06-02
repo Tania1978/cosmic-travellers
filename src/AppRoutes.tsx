@@ -24,7 +24,7 @@ const BookPlayerRouteShell = styled.main`
   min-height: 100vh;
   width: 100%;
   display: flex;
-  align-items: center;
+  margin-top: 40px;
   justify-content: center;
 `;
 

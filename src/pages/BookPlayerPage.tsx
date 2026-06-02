@@ -676,7 +676,7 @@ const Wrap = styled.div`
 const Stage = styled.div`
   width: 100%;
   display: flex;
-  align-items: center;
+  margin-top: 20px;
   justify-content: center;
 `;
 
