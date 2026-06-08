@@ -88,17 +88,3 @@ export default function AppRoutes() {
     </Routes>
   );
 }
-
-const PageLayout = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-`;
-
-const ButtonSlot = styled.div`
-  width: 180px;
-  pointer-events: auto;
-
-  display: flex;
-  align-items: center;
-`;
