@@ -20,7 +20,15 @@ import { useUserState } from "../contexts/userContext";
 
 const CHAPTER_PREROLL_SECONDS = 0.5;
 
-export default function BookPlayerPage() {
+interface IBookPlayerPageProps {
+  isPlaying: boolean;
+  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function BookPlayerPage({
+  isPlaying,
+  setIsPlaying,
+}: IBookPlayerPageProps) {
   const { bookSlug, page } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -37,12 +45,10 @@ export default function BookPlayerPage() {
   const frameRef = useRef<HTMLDivElement | null>(null);
   const wasPlayingRef = useRef(false);
   const [videoLoading, setVideoLoading] = useState<boolean>(false);
-
   const [videoTime, setVideoTime] = useState(0);
   const [pendingManualPage, setPendingManualPage] = useState<number | null>(
     null,
   );
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [signedVideoSrc, setSignedVideoSrc] = useState("");
@@ -53,7 +59,14 @@ export default function BookPlayerPage() {
   const isPreviewMode = true;
   const { isPreviewAccessModalOpen, setIsPreviewAccessModalOpen } =
     useUserState();
-  console.log("isPreviewAccessModalOpen", isPreviewAccessModalOpen);
+
+  useEffect(() => {
+    console.log("BOOK PLAYER MOUNT");
+
+    return () => {
+      console.log("BOOK PLAYER UNMOUNT");
+    };
+  }, []);
 
   const revealControls = () => {
     setControlsVisible(true);
@@ -153,6 +166,7 @@ export default function BookPlayerPage() {
     (isAuthenticated && Boolean(unlockedBooks[bookSlug ?? ""]));
 
   useEffect(() => {
+    console.log("loadVideo EFFECT");
     async function loadVideo() {
       setVideoLoading(true);
       if (!foundBook?.videoPath) return;
@@ -171,7 +185,7 @@ export default function BookPlayerPage() {
     }
 
     loadVideo();
-  }, [foundBook, authUser, isUnlocked]);
+  }, [foundBook?.slug, foundBook?.videoPath, isUnlocked]);
   /**
    * Modal behavior:
    * - opening modal pauses video
@@ -207,6 +221,10 @@ export default function BookPlayerPage() {
    *   URL updates to match video.currentTime
    */
   useEffect(() => {
+    console.log("NAVIGATION EFFECT");
+    console.log("pendingManualPage", pendingManualPage);
+    console.log("currentPage", currentPage);
+
     if (!isVideoReady) return;
     if (!foundBook || !bookSlug || !chapterNow) return;
 
@@ -226,20 +244,35 @@ export default function BookPlayerPage() {
     if (pendingManualPage !== null) return;
 
     const actualVideoTime = video.currentTime;
+    console.log("actualVideoTime", actualVideoTime);
 
     const actualTimeBelongsToCurrentUrlPage =
       actualVideoTime >= chapterNow.start - CHAPTER_PREROLL_SECONDS &&
       actualVideoTime < chapterNow.end;
-
+    console.log(
+      "actualTimeBelongsToCurrentUrlPage",
+      actualTimeBelongsToCurrentUrlPage,
+    );
     if (actualTimeBelongsToCurrentUrlPage) return;
 
     const chapterForVideoTime = foundBook.chapters.find(
       (chapter) =>
         actualVideoTime >= chapter.start && actualVideoTime < chapter.end,
     );
-
+    console.log("chapterForVideoTime", chapterForVideoTime);
     if (!chapterForVideoTime) return;
     if (chapterForVideoTime.page === currentPage) return;
+
+    // Direct URL / refresh case:
+    // URL says page 10, but video is still at 0 before we seeked it.
+    if (actualVideoTime === 0 && currentPage > 1) {
+      const startTime = Math.max(0, chapterNow.start - CHAPTER_PREROLL_SECONDS);
+
+      video.currentTime = startTime;
+      setVideoTime(startTime);
+
+      return;
+    }
 
     navigate(`/${bookSlug}/${chapterForVideoTime.page}`, {
       replace: true,
@@ -437,7 +470,6 @@ export default function BookPlayerPage() {
           buttonLabel="Unlock Adventure"
           onAction={() => {
             if (isPreviewMode) {
-              console.log("isPreviewMode, opening preview access modal");
               setIsPreviewAccessModalOpen(true);
             } else {
               startStripeCheckout();
@@ -494,7 +526,7 @@ export default function BookPlayerPage() {
                   <Video
                     ref={videoRef}
                     src={signedVideoSrc}
-                    poster={foundBook.thumbnailSrc}
+                    //poster={foundBook.thumbnailSrc}
                     preload="auto"
                     playsInline
                     onLoadedMetadata={() => {
@@ -676,8 +708,10 @@ const Wrap = styled.div`
 const Stage = styled.div`
   width: 100%;
   display: flex;
-  margin-top: 20px;
   justify-content: center;
+  @media (max-width: 600px) {
+    margin-top: 100px;
+  }
 `;
 
 const Video = styled.video`

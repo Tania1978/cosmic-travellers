@@ -11,7 +11,7 @@ import ParentAuthModal from "../auth/ParentAuthModal";
 import { MessageButton } from "./MessageButton";
 import { PreviewAccess } from "./PreviewAccess";
 
-export default function Header() {
+export default function Header({ isPlaying }: { isPlaying?: boolean }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();
@@ -88,7 +88,11 @@ export default function Header() {
         </Left>
 
         <MobileOnly>
-          <MessageButton iconSrc={"/ui/message-button.png"} size={150} />
+          <MessageButton
+            iconSrc={"/ui/message-button.png"}
+            size={150}
+            isPlaying={isPlaying ?? false}
+          />
         </MobileOnly>
 
         {/* {!inHomePage && isLoggedIn && <InfoButton />} */}

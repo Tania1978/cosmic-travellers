@@ -37,8 +37,6 @@ const Wrapper = styled.section`
   align-items: center;
   gap: 1rem;
 
-
-
   width: 80%;
   max-width: calc(100% - 48px);
   box-sizing: border-box;
@@ -104,6 +102,7 @@ const Inner = styled.div`
 
 const ButtonsRow = styled.div`
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;

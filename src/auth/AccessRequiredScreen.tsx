@@ -15,7 +15,6 @@ export function AccessRequiredScreen({
   buttonLabel,
   onAction,
 }: AccessRequiredScreenProps) {
-  console.log("Rendering AccessRequiredScreen with videoSrc:", videoSrc);
   return (
     <Wrapper>
       <BackgroundVideo key={videoSrc} autoPlay muted loop playsInline>
@@ -37,21 +36,13 @@ export function AccessRequiredScreen({
 
 const Wrapper = styled.div`
   position: relative;
-  width: 100%;
-  height: 100dvh;
+  width: 50%;
+  height: 50dvh;
   overflow: hidden;
+  border-radius: 15px;
 `;
 
 const BackgroundVideo = styled.video`
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-
-  width: 100%;
-  height: 100dvh;
-
-  object-fit: cover;
-
   @media (min-width: 769px) {
     object-position: center center;
   }
@@ -60,6 +51,15 @@ const BackgroundVideo = styled.video`
     object-position: center bottom;
     transform: scale(1.15);
   }
+
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 `;
 
 const Overlay = styled.div`

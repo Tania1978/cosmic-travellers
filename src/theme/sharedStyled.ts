@@ -1,11 +1,16 @@
 import styled from "styled-components";
 
-export const Trigger = styled.button`
+interface TriggerProps {
+  width?: string;
+}
+
+export const Trigger = styled.button<TriggerProps>`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 100%;
+
+  width: ${({ width = "100%" }) => width};
 
   padding: 8px 14px;
   border-radius: 999px;
