@@ -21,7 +21,6 @@ export default function Footer() {
   );
 }
 const Wrap = styled.footer`
-  margin-top: 80px;
   padding: 40px 20px;
   text-align: center;
 

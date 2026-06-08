@@ -1,10 +1,8 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Bookshelf } from "./pages/Bookshelf";
-//import BookPlayerPage from "./pages/BookPlayerPage";
 import WriterNotes from "./pages/WriterNotes";
 import Credits from "./pages/Credits";
 import { TEXTPAGES } from "./data/books/text-pages";
-//import { GoldenShellsProviderWrapper } from "./data/shells/GoldenShellsProviderWrapper";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { ReviewsPage } from "./pages/ReviewPage";
@@ -15,18 +13,8 @@ import { InfoButton } from "./components/InfoButton";
 import { MessageButton } from "./components/MessageButton";
 import styled from "styled-components";
 import { useAuth } from "./auth/authContext";
-import { GoldenShellsProviderWrapper } from "./data/shells/GoldenShellsProviderWrapper";
-import BookPlayerPage from "./pages/BookPlayerPage";
-import { BookPlayerErrorBoundary } from "./pages/BookPlayerErrorBoundary";
 import { AuthCallback } from "./auth/AuthCallback";
-
-const BookPlayerRouteShell = styled.main`
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  margin-top: 40px;
-  justify-content: center;
-`;
+import { BookPlayerRoute } from "./components/BookPlayerRoute";
 
 export default function AppRoutes() {
   const navigate = useNavigate();
@@ -41,19 +29,20 @@ export default function AppRoutes() {
         path="/"
         element={
           <>
-            <Header />
+            <Header isPlaying={false} />
 
             <JourneyActions>
-              <MessageButton iconSrc={"/ui/message-button.png"} size={150} />
+              <MessageButton
+                iconSrc={"/ui/message-button.png"}
+                size={150}
+                isPlaying={false}
+              />
               <InfoButton />
-              {inHomePage && isLoggedIn && (
-                <ButtonSlot id="button slot">
-                  <PreviewAccess />
-                </ButtonSlot>
-              )}
-              <ButtonSlot>
-                <Trigger onClick={() => navigate("/reviews")}>Reviews</Trigger>
-              </ButtonSlot>
+              {inHomePage && isLoggedIn && <PreviewAccess />}
+
+              <Trigger onClick={() => navigate("/reviews")} width={"50%"}>
+                Reviews
+              </Trigger>
             </JourneyActions>
 
             <Bookshelf />
@@ -93,35 +82,7 @@ export default function AppRoutes() {
           </>
         }
       />
-      <Route
-        path="/:bookSlug/:page"
-        element={
-          <GoldenShellsProviderWrapper>
-            <PageLayout>
-              <Header />
-
-              {isLoggedIn && (
-                <JourneyActions>
-                  <MessageButton iconSrc="/ui/message-button.png" size={150} />
-                  <InfoButton />
-
-                  <ButtonSlot id="button-slot">
-                    <PreviewAccess />
-                  </ButtonSlot>
-                </JourneyActions>
-              )}
-
-              <BookPlayerErrorBoundary>
-                <BookPlayerRouteShell>
-                  <BookPlayerPage />
-                </BookPlayerRouteShell>
-              </BookPlayerErrorBoundary>
-
-              <Footer />
-            </PageLayout>
-          </GoldenShellsProviderWrapper>
-        }
-      />
+      <Route path="/:bookSlug/:page" element={<BookPlayerRoute />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="*" element={<div>Route not found</div>} />
     </Routes>

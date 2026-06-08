@@ -9,10 +9,11 @@ import { useAuth } from "../auth/authContext";
 type MessageButtonProps = {
   iconSrc?: string;
   size?: number;
+  isPlaying: boolean;
 };
 
 export const MessageButton = (props: MessageButtonProps) => {
-  const { iconSrc = "/ui/message-button.png", size = 150 } = props;
+  const { iconSrc = "/ui/message-button.png", size = 150, isPlaying } = props;
   const location = useLocation();
   const { isLoggedIn } = useAuth();
   const inHomePage = location.pathname === "/";
@@ -30,7 +31,6 @@ export const MessageButton = (props: MessageButtonProps) => {
   const shouldShowCompletionVideo =
     !!goldenShells?.hasEarnedAllBookletShells &&
     !!goldenShells?.shellCompletionVideoSrc;
-
 
   // 🎬 Normal video playback
   useEffect(() => {
@@ -75,7 +75,8 @@ export const MessageButton = (props: MessageButtonProps) => {
   if (!isLoggedIn || isModalOpen) return null;
   const showGreeting = inHomePage && !!childFirstName;
   const showIntroButton = inHomePage && !childFirstName;
-  const showCompletionButton = !inHomePage && shouldShowCompletionVideo;
+  const showCompletionButton =
+    !inHomePage && shouldShowCompletionVideo && !isPlaying;
 
   return (
     <>
