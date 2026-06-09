@@ -59,7 +59,7 @@ export default function BookPlayerPage({
   const isPreviewMode = true;
   const { isPreviewAccessModalOpen, setIsPreviewAccessModalOpen } =
     useUserState();
-
+  console.log(isPreviewAccessModalOpen);
   const revealControls = () => {
     setControlsVisible(true);
 
