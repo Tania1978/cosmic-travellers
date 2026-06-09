@@ -19,6 +19,7 @@ export const MessageButton = (props: MessageButtonProps) => {
   const inHomePage = location.pathname === "/";
   const goldenShells = useOptionalGoldenShells();
   const isModalOpen = goldenShells?.isModalOpen;
+  console.log('goldenShells',goldenShells)
 
   const { setChildFirstName, childFirstName } = useUserState();
 
@@ -31,6 +32,8 @@ export const MessageButton = (props: MessageButtonProps) => {
   const shouldShowCompletionVideo =
     !!goldenShells?.hasEarnedAllBookletShells &&
     !!goldenShells?.shellCompletionVideoSrc;
+
+     console.log("shouldShowCompletionVideo", shouldShowCompletionVideo);
 
   // 🎬 Normal video playback
   useEffect(() => {
@@ -77,6 +80,8 @@ export const MessageButton = (props: MessageButtonProps) => {
   const showIntroButton = inHomePage && !childFirstName;
   const showCompletionButton =
     !inHomePage && shouldShowCompletionVideo && !isPlaying;
+  console.log("showCompletionButton", showCompletionButton);
+   console.log("isPlaying", isPlaying);
 
   return (
     <>
