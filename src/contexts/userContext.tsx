@@ -82,6 +82,7 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
   };
 
   const reload = async () => {
+    console.log("RELOAD");
     if (!authUser) {
       clearUserState();
       return;
@@ -147,6 +148,7 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    console.log("USEEFFECT RELOAD");
     reload().catch(() => {
       setIsLoaded(true);
     });

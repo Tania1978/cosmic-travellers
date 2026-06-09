@@ -60,14 +60,6 @@ export default function BookPlayerPage({
   const { isPreviewAccessModalOpen, setIsPreviewAccessModalOpen } =
     useUserState();
   console.log(isPreviewAccessModalOpen);
-  useEffect(() => {
-    console.log("BOOK PLAYER MOUNT");
-
-    return () => {
-      console.log("BOOK PLAYER UNMOUNT");
-    };
-  }, []);
-
   const revealControls = () => {
     setControlsVisible(true);
 
@@ -166,7 +158,6 @@ export default function BookPlayerPage({
     (isAuthenticated && Boolean(unlockedBooks[bookSlug ?? ""]));
 
   useEffect(() => {
-    console.log("loadVideo EFFECT");
     async function loadVideo() {
       setVideoLoading(true);
       if (!foundBook?.videoPath) return;
@@ -175,8 +166,6 @@ export default function BookPlayerPage({
         foundBook.slug,
         foundBook.videoPath,
       );
-
-      console.log("url", url);
 
       setSignedVideoSrc(url);
       window.setTimeout(() => {
@@ -221,10 +210,6 @@ export default function BookPlayerPage({
    *   URL updates to match video.currentTime
    */
   useEffect(() => {
-    console.log("NAVIGATION EFFECT");
-    console.log("pendingManualPage", pendingManualPage);
-    console.log("currentPage", currentPage);
-
     if (!isVideoReady) return;
     if (!foundBook || !bookSlug || !chapterNow) return;
 
@@ -244,22 +229,18 @@ export default function BookPlayerPage({
     if (pendingManualPage !== null) return;
 
     const actualVideoTime = video.currentTime;
-    console.log("actualVideoTime", actualVideoTime);
 
     const actualTimeBelongsToCurrentUrlPage =
       actualVideoTime >= chapterNow.start - CHAPTER_PREROLL_SECONDS &&
       actualVideoTime < chapterNow.end;
-    console.log(
-      "actualTimeBelongsToCurrentUrlPage",
-      actualTimeBelongsToCurrentUrlPage,
-    );
+
     if (actualTimeBelongsToCurrentUrlPage) return;
 
     const chapterForVideoTime = foundBook.chapters.find(
       (chapter) =>
         actualVideoTime >= chapter.start && actualVideoTime < chapter.end,
     );
-    console.log("chapterForVideoTime", chapterForVideoTime);
+
     if (!chapterForVideoTime) return;
     if (chapterForVideoTime.page === currentPage) return;
 
@@ -397,7 +378,6 @@ export default function BookPlayerPage({
    * - video time may not change immediately, so onTimeUpdate may not fire
    */
   useEffect(() => {
-    console.log("chapterNow", chapterNow);
     if (isModalOpen) return;
 
     maybeShowShell();
@@ -497,7 +477,7 @@ export default function BookPlayerPage({
       <PageBackground src="/ui/bg5.jpg" overlay />
 
       <Wrap>
-        <Stage id="Stage">
+        <Stage id="Stage" isPlaying={isPlaying}>
           <VideoFrame
             $controlsVisible={controlsVisible}
             onClick={revealControls}
@@ -705,10 +685,13 @@ const Wrap = styled.div`
   z-index: 10;
 `;
 
-const Stage = styled.div`
+const Stage = styled.div<{ isPlaying: boolean }>`
   width: 100%;
   display: flex;
   justify-content: center;
+
+  margin-top: ${({ isPlaying }) => (isPlaying ? "215px" : "20px")};
+
   @media (max-width: 600px) {
     margin-top: 100px;
   }

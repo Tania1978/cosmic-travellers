@@ -40,20 +40,22 @@ export function BookPlayerRoute() {
       <PageLayout>
         <Header />
 
-        <JourneyActions>
-          <MessageButton
-            iconSrc="/ui/message-button.png"
-            size={150}
-            isPlaying={isPlaying}
-          />
-          <InfoButton />
+        {!isPlaying && (
+          <JourneyActions>
+            <MessageButton
+              iconSrc="/ui/message-button.png"
+              size={150}
+              isPlaying={isPlaying}
+            />
+            <InfoButton />
 
-          {isLoggedIn && <PreviewAccess />}
+            {isLoggedIn && <PreviewAccess />}
 
-          <Trigger onClick={() => navigate("/reviews")} width={"50%"}>
-            Reviews
-          </Trigger>
-        </JourneyActions>
+            <Trigger onClick={() => navigate("/reviews")} width={"50%"}>
+              Reviews
+            </Trigger>
+          </JourneyActions>
+        )}
 
         <BookPlayerErrorBoundary>
           <BookPlayerRouteShell>

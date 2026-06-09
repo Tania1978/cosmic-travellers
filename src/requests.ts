@@ -117,6 +117,15 @@ export async function redeemPreviewCode(code: string) {
   );
 
   if (error) throw error;
+  if (data) {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) return false;
+    loadUserState(user?.id);
+  }
 
   return data;
 }
@@ -184,7 +193,7 @@ export async function canUserAccessBooklet(bookletId: string) {
 
   const { data, error } = await supabase
     .from("user_state")
-    .select("unlocked_books")
+    .select("user_id, child_first_name, golden_shells, unlocked_books")
     .eq("user_id", user.id)
     .single();
 
