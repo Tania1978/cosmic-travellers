@@ -9,7 +9,7 @@ import { useAuth } from "../auth/authContext";
 type MessageButtonProps = {
   iconSrc?: string;
   size?: number;
- isPlaying: boolean | null;
+  isPlaying: boolean | null;
 };
 
 export const MessageButton = (props: MessageButtonProps) => {
@@ -78,7 +78,6 @@ export const MessageButton = (props: MessageButtonProps) => {
   const showCompletionButton =
     !inHomePage && shouldShowCompletionVideo && !isPlaying;
 
-
   return (
     <>
       {showGreeting && <Greeting>{`Hi ${childFirstName}!`}</Greeting>}
@@ -92,10 +91,12 @@ export const MessageButton = (props: MessageButtonProps) => {
           {() => (
             <>
               <Video
-                ref={videoRef}
-                src={`${import.meta.env.BASE_URL}ui/sebba-msg.mp4`}
+                autoPlay
                 playsInline
                 preload="auto"
+                muted
+                ref={videoRef}
+                src={`/ui/sebba-msg.mp4`}
                 onLoadedData={(e) => {
                   const v = e.currentTarget;
                   v.currentTime = 0;

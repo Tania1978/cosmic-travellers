@@ -191,13 +191,14 @@ const ChoiceLabel = styled.div`
 const CardWrap = styled.div`
   width: min(720px, calc(100vw - 48px));
   position: relative;
+
   padding-top: 70px;
-  margin-top: 50px;
+  margin-top: 120px;
 
   @media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
     width: min(620px, calc(100vw - 24px));
     padding-top: 36px;
-    margin-top: 0;
+    margin-top: 80px;
   }
 `;
 
