@@ -193,12 +193,12 @@ const CardWrap = styled.div`
   position: relative;
 
   padding-top: 70px;
-  margin-top: 120px;
+  margin-top: 150px;
 
   @media (max-width: 768px), (orientation: landscape) and (max-height: 500px) {
     width: min(620px, calc(100vw - 24px));
     padding-top: 36px;
-    margin-top: 80px;
+    margin-top: 110px;
   }
 `;
 
