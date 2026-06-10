@@ -102,9 +102,11 @@ export default function Header({ isPlaying }: { isPlaying?: boolean | null }) {
         {!inHomePage && isLoggedIn && <InfoButton />}
 
         <Right>
-          <DesktopOnly>
-            <Trigger onClick={() => navigate("/reviews")}>Reviews</Trigger>
-          </DesktopOnly>
+          {!inHomePage && (
+            <DesktopOnly>
+              <Trigger onClick={() => navigate("/reviews")}>Reviews</Trigger>
+            </DesktopOnly>
+          )}
 
           <DesktopOnly>
             <LanguageSelect value={language} onChange={changeLanguage} />
