@@ -226,6 +226,9 @@ const LuminousFrame = styled.div`
 `;
 
 const GlassPanel = styled.div`
+  position: relative;
+  z-index: 2;
+
   border-radius: 20px;
   padding: 24px 24px 20px;
   background: transparent;
@@ -345,6 +348,7 @@ const FeedbackText = styled.div`
 /* Optional: subtle dust in the corners (no asset needed) */
 const Dust = styled.div`
   pointer-events: none;
+  z-index: 1;
   position: absolute;
   inset: -40px -40px -50px -40px;
   border-radius: 38px;

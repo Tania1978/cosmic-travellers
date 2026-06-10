@@ -5,7 +5,6 @@ export function GoldenShellIcon() {
   const { activeOpportunity, isShellEarned, openModal, isModalOpen } =
     useGoldenShells();
 
-
   const hasQuestionAvailable =
     activeOpportunity && !isShellEarned(activeOpportunity.id);
 
@@ -57,9 +56,9 @@ export const Img = styled.img`
 
 const ShellButton = styled.button`
   position: absolute;
-  z-index:1000;
-  left: 20px;
-  top: 20px;
+  z-index: 1000;
+  left: 50px;
+  top: 50px;
   width: 90px;
   height: 90px;
   border-radius: 999px;

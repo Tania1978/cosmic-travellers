@@ -12,8 +12,6 @@ import { AuthProvider } from "./auth/authContext.tsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { UserStateProvider } from "./contexts/userContext.tsx";
 import { SoundProvider } from "./contexts/soundContext.tsx";
-//import { AppAudio } from "./components/AppAudio.tsx";
-import { SoundControls } from "./components/SoundControls.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -25,7 +23,7 @@ createRoot(document.getElementById("root")!).render(
             <UserStateProvider>
               <SoundProvider>
                 {/* <AppAudio /> */}
-                <SoundControls />
+                {/* <SoundControls /> */}
                 <App />
               </SoundProvider>
             </UserStateProvider>
