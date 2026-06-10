@@ -9,6 +9,7 @@ type ModalIconButtonProps = {
   size?: number;
   children: (helpers: { close: () => void; isClosing: boolean }) => ReactNode;
   disabled?: boolean;
+  onOpen?: () => void;
 };
 
 const FADE_MS = 1000;
@@ -20,6 +21,7 @@ export function ModalIconButton({
   size = 120,
   children,
   disabled = false,
+  onOpen
 }: ModalIconButtonProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -28,6 +30,7 @@ export function ModalIconButton({
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   const open = () => {
+    onOpen?.();
     setHasBeenOpened(true);
     setIsVisible(true);
   };

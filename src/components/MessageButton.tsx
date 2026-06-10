@@ -87,6 +87,11 @@ export const MessageButton = (props: MessageButtonProps) => {
           iconSrc={iconSrc}
           ariaLabel="message-button"
           size={size}
+          onOpen={() => {
+            setTimeout(() => {
+              videoRef.current?.play();
+            }, 0);
+          }}
         >
           {() => (
             <>
@@ -94,7 +99,6 @@ export const MessageButton = (props: MessageButtonProps) => {
                 autoPlay
                 playsInline
                 preload="auto"
-                muted
                 ref={videoRef}
                 src={`/ui/sebba-msg.mp4`}
                 onLoadedData={(e) => {
