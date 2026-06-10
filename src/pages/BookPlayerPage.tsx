@@ -668,7 +668,7 @@ const Stage = styled.div<{ isPlaying: boolean | null }>`
   display: flex;
   justify-content: center;
 
-  margin-top: 180px;
+  margin-top: 100px;
 
   @media (max-width: 600px) {
     margin-top: 100px;
