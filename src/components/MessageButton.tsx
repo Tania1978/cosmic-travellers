@@ -135,6 +135,11 @@ export const MessageButton = (props: MessageButtonProps) => {
           iconSrc={iconSrc}
           ariaLabel="message-button"
           size={size}
+          onOpen={() => {
+            setTimeout(() => {
+              completionVideoRef.current?.play();
+            }, 0);
+          }}
         >
           {({ close }) => (
             <VideoShell>
