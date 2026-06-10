@@ -48,7 +48,6 @@ export async function loadUserState(
 }
 
 export async function saveGoldenShells(store: GoldenShellsStore) {
-  console.log("store");
   const {
     data: { user },
   } = await supabase.auth.getUser();

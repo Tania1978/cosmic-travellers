@@ -6,12 +6,6 @@ type JourneyActionsProps = {
 };
 
 export function JourneyActions({ children }: JourneyActionsProps) {
-  // const location = useLocation();
-  // const inHomePage = location.pathname === "/";
-  // const shouldShowJourneyActions = !inHomePage
-  //   ? useGoldenShells().shouldShowCompletionVideo
-  //   : true;
-
   const shouldShowJourneyActions = true;
   return (
     <DesktopOnly>
@@ -30,8 +24,9 @@ export function JourneyActions({ children }: JourneyActionsProps) {
 
 const Wrapper = styled.section`
   position: relative;
+  top: 100px;
   justify-content: center;
-  margin: 90px auto 0;
+  margin: 20px auto 0;
 
   display: flex;
   align-items: center;
@@ -65,7 +60,7 @@ const Wrapper = styled.section`
 const Glow = styled.div`
   position: absolute;
 
-  top: -120px;
+  top: -40px;
   left: 50%;
 
   transform: translateX(-50%);
@@ -86,19 +81,6 @@ const Inner = styled.div`
   position: relative;
   z-index: 1;
 `;
-
-// const Title = styled.h2`
-//   margin: 0 0 10px;
-//   text-align: center;
-//   font-size: 0.8rem;
-//   font-weight: 900;
-//   letter-spacing: 0.18em;
-//   text-transform: uppercase;
-
-//   color: rgba(255, 255, 255, 0.82);
-
-//   text-shadow: 0 2px 10px rgba(43, 91, 139, 0.28);
-// `;
 
 const ButtonsRow = styled.div`
   display: flex;

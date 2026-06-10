@@ -1,7 +1,8 @@
 import styled from "styled-components";
+import { OtherVideo } from "../components/VideoLoader";
 
 type AccessRequiredScreenProps = {
-  videoSrc: string;
+  src: string;
   title: string;
   message: string;
   buttonLabel: string;
@@ -9,7 +10,7 @@ type AccessRequiredScreenProps = {
 };
 
 export function AccessRequiredScreen({
-  videoSrc,
+  src,
   title,
   message,
   buttonLabel,
@@ -17,79 +18,16 @@ export function AccessRequiredScreen({
 }: AccessRequiredScreenProps) {
   return (
     <Wrapper>
-      <BackgroundVideo key={videoSrc} autoPlay muted loop playsInline>
-        <source src={videoSrc} type="video/mp4" />
-      </BackgroundVideo>
-
-      <Overlay />
+      <OtherVideo src={src} />
 
       <Content>
         <Title>{title}</Title>
-
         <Message>{message}</Message>
-
         <Button onClick={onAction}>{buttonLabel}</Button>
       </Content>
     </Wrapper>
   );
 }
-
-const Wrapper = styled.div`
-  position: relative;
-  width: 50%;
-  height: 50dvh;
-  overflow: hidden;
-  border-radius: 15px;
-`;
-
-const BackgroundVideo = styled.video`
-  @media (min-width: 769px) {
-    object-position: center center;
-  }
-
-  @media (max-width: 768px) {
-    object-position: center bottom;
-    transform: scale(1.15);
-  }
-
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-`;
-
-const Overlay = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.65),
-    rgba(0, 0, 0, 0.15) 50%,
-    rgba(0, 0, 0, 0.45)
-  );
-`;
-
-const Content = styled.div`
-  position: relative;
-  z-index: 2;
-
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-
-  text-align: center;
-
-  padding: 48px 24px 72px;
-`;
 
 const Title = styled.h1`
   color: white;
@@ -139,4 +77,29 @@ const Button = styled.button`
   &:active {
     transform: scale(0.97);
   }
+`;
+
+const Wrapper = styled.div`
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Content = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+
+  text-align: center;
+  padding: 48px 24px 72px;
 `;

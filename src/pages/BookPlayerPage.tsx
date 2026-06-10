@@ -17,6 +17,7 @@ import { getVideoUrlForBooklet } from "../requests";
 import { useAuth } from "../auth/authContext";
 import { AccessRequiredScreen } from "../auth/AccessRequiredScreen";
 import { useUserState } from "../contexts/userContext";
+import { OtherVideo } from "../components/VideoLoader";
 
 const CHAPTER_PREROLL_SECONDS = 0.5;
 
@@ -59,7 +60,7 @@ export default function BookPlayerPage({
   const isPreviewMode = true;
   const { isPreviewAccessModalOpen, setIsPreviewAccessModalOpen } =
     useUserState();
-  console.log(isPreviewAccessModalOpen);
+
   const revealControls = () => {
     setControlsVisible(true);
 
@@ -153,9 +154,13 @@ export default function BookPlayerPage({
 
   const isAuthenticated = Boolean(authUser);
   const isFreeBooklet = bookSlug === "the-mission-begins";
-  const isUnlocked =
-    isFreeBooklet ||
-    (isAuthenticated && Boolean(unlockedBooks[bookSlug ?? ""]));
+  const isUnlocked = isFreeBooklet
+    ? true
+    : !isAuthenticated
+      ? false
+      : unlockedBooks[bookSlug ?? ""] === undefined
+        ? null
+        : Boolean(unlockedBooks[bookSlug ?? ""]);
 
   useEffect(() => {
     async function loadVideo() {
@@ -168,13 +173,14 @@ export default function BookPlayerPage({
       );
 
       setSignedVideoSrc(url);
-      window.setTimeout(() => {
-        setVideoLoading(false);
-      }, 3000);
+      requestAnimationFrame(() => {
+        videoRef.current?.play();
+      });
     }
 
     loadVideo();
   }, [foundBook?.slug, foundBook?.videoPath, isUnlocked]);
+
   /**
    * Modal behavior:
    * - opening modal pauses video
@@ -424,41 +430,6 @@ export default function BookPlayerPage({
     alert("Payment Flow to be added");
   };
 
-  if (!isAuthenticated && !isFreeBooklet) {
-    return (
-      <>
-        <PageBackground src="/ui/bg5.jpg" overlay />
-        <AccessRequiredScreen
-          videoSrc="/ui/continue-journey.mp4"
-          title="Continue Your Adventure"
-          message="Sign in to continue exploring with the Cosmic Travellers."
-          buttonLabel="Continue Journey"
-          onAction={() => setAuthModalOpen(true)}
-        />
-      </>
-    );
-  }
-
-  if (isAuthenticated && !isUnlocked) {
-    return (
-      <>
-        <PageBackground src="/ui/bg5.jpg" overlay />
-        <AccessRequiredScreen
-          videoSrc="/ui/unlock-adventure.mp4"
-          title="This Adventure Is Waiting"
-          message="Unlock this booklet to continue your journey."
-          buttonLabel="Unlock Adventure"
-          onAction={() => {
-            if (isPreviewMode) {
-              setIsPreviewAccessModalOpen(true);
-            } else {
-              startStripeCheckout();
-            }
-          }}
-        />
-      </>
-    );
-  }
   if (!isValidSlug) {
     return <Navigate to="/" replace />;
   }
@@ -495,40 +466,62 @@ export default function BookPlayerPage({
               </Placeholder>
             ) : (
               <>
-                {videoLoading && (
-                  <VideoLoader>
-                    <LoaderVideo autoPlay muted loop playsInline>
-                      <source src="/ui/magic-loader.mp4" type="video/mp4" />
-                    </LoaderVideo>
-                  </VideoLoader>
-                )}
-                {!!signedVideoSrc && (
-                  <Video
-                    ref={videoRef}
-                    src={signedVideoSrc}
-                    //poster={foundBook.thumbnailSrc}
-                    preload="auto"
-                    playsInline
-                    onLoadedMetadata={() => {
-                      setIsVideoReady(true);
+                {isAuthenticated && isUnlocked === false && (
+                  <AccessRequiredScreen
+                    src="/ui/unlock-adventure.mp4"
+                    title="This Adventure Is Waiting"
+                    message="Unlock this booklet to continue your journey."
+                    buttonLabel="Unlock Adventure"
+                    onAction={() => {
+                      if (isPreviewMode) {
+                        setIsPreviewAccessModalOpen(true);
+                      } else {
+                        startStripeCheckout();
+                      }
                     }}
-                    onLoadedData={() => {
-                      setVideoLoading(false);
-                    }}
-                    onError={() => {
-                      setVideoLoading(false);
-                    }}
-                    onCanPlay={() => setVideoLoading(false)}
-                    onCanPlayThrough={() => setVideoLoading(false)}
-                    onPlaying={() => setVideoLoading(false)}
-                    onWaiting={() => setVideoLoading(true)}
-                    onSeeking={() => setVideoLoading(true)}
-                    onSeeked={() => setVideoLoading(false)}
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    onTimeUpdate={handleTimeUpdate}
                   />
                 )}
+                {!isAuthenticated && !isFreeBooklet && (
+                  <AccessRequiredScreen
+                    src="/ui/continue-journey.mp4"
+                    title="Continue Your Adventure"
+                    message="Sign in to continue exploring with the Cosmic Travellers."
+                    buttonLabel="Continue Journey"
+                    onAction={() => setAuthModalOpen(true)}
+                  />
+                )}
+                {videoLoading && <OtherVideo src="/ui/magic-loader.mp4" />}
+                {(isFreeBooklet || (isAuthenticated && isUnlocked)) &&
+                  !!signedVideoSrc && (
+                    <Video
+                      ref={videoRef}
+                      src={signedVideoSrc}
+                      preload="auto"
+                      playsInline
+                      onLoadStart={() => {
+                        setVideoLoading(true);
+                      }}
+                      onLoadedMetadata={() => {
+                        setIsVideoReady(true);
+                      }}
+                      onLoadedData={() => {
+                        setVideoLoading(false);
+                      }}
+                      onCanPlay={() => {
+                        setVideoLoading(false);
+                      }}
+                      onPlaying={() => {
+                        setVideoLoading(false);
+                      }}
+                      onWaiting={() => setVideoLoading(true)}
+                      onSeeking={() => setVideoLoading(true)}
+                      onSeeked={() => setVideoLoading(false)}
+                      onError={() => setVideoLoading(false)}
+                      onPlay={() => setIsPlaying(true)}
+                      onPause={() => setIsPlaying(false)}
+                      onTimeUpdate={handleTimeUpdate}
+                    />
+                  )}
               </>
             )}
 
@@ -612,20 +605,6 @@ export default function BookPlayerPage({
 
 /* ---------- styles ---------- */
 
-const VideoLoader = styled.div`
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const LoaderVideo = styled.video`
-  width: 100%;
-  height: auto;
-`;
-
 const ProgressBar = styled.input`
   position: absolute;
   left: 140px;
@@ -690,7 +669,7 @@ const Stage = styled.div<{ isPlaying: boolean }>`
   display: flex;
   justify-content: center;
 
-  margin-top: ${({ isPlaying }) => (isPlaying ? "215px" : "20px")};
+  margin-top: 180px;
 
   @media (max-width: 600px) {
     margin-top: 100px;
@@ -700,7 +679,7 @@ const Stage = styled.div<{ isPlaying: boolean }>`
 const Video = styled.video`
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 0;
 
   width: 100%;
   height: 100%;

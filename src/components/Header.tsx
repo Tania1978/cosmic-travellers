@@ -10,6 +10,8 @@ import ParentLoginButton from "../auth/ParentLoginButton";
 import ParentAuthModal from "../auth/ParentAuthModal";
 import { MessageButton } from "./MessageButton";
 import { PreviewAccess } from "./PreviewAccess";
+import { InfoButton } from "./InfoButton";
+import { Trigger } from "../theme/sharedStyled";
 
 export default function Header({ isPlaying }: { isPlaying?: boolean }) {
   const navigate = useNavigate();
@@ -87,20 +89,22 @@ export default function Header({ isPlaying }: { isPlaying?: boolean }) {
           </DesktopOnly>
         </Left>
 
-        <MobileOnly>
+        {/* <MobileOnly> */}
+        {!inHomePage && isPlaying === false && (
           <MessageButton
             iconSrc={"/ui/message-button.png"}
             size={150}
             isPlaying={isPlaying ?? false}
           />
-        </MobileOnly>
+        )}
+        {/* </MobileOnly> */}
 
-        {/* {!inHomePage && isLoggedIn && <InfoButton />} */}
+        {!inHomePage && isLoggedIn && <InfoButton />}
 
         <Right>
-          {/* <DesktopOnly>
+          <DesktopOnly>
             <Trigger onClick={() => navigate("/reviews")}>Reviews</Trigger>
-          </DesktopOnly> */}
+          </DesktopOnly>
 
           <DesktopOnly>
             <LanguageSelect value={language} onChange={changeLanguage} />
@@ -211,7 +215,7 @@ const Bar = styled.header`
   top: 0;
   left: 0;
   right: 0;
-  height: 70px;
+  height: 100px;
   padding: 0 24px;
   z-index: 50;
 

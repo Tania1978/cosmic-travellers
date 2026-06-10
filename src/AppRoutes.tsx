@@ -14,11 +14,13 @@ import { MessageButton } from "./components/MessageButton";
 import { useAuth } from "./auth/authContext";
 import { AuthCallback } from "./auth/AuthCallback";
 import { BookPlayerRoute } from "./components/BookPlayerRoute";
+import { useState } from "react";
 
 export default function AppRoutes() {
   const navigate = useNavigate();
   const routerLocation = useLocation();
   const { isLoggedIn } = useAuth();
+  const [isPlaying, setIsPlaying] = useState<boolean | null>(null);
 
   const inHomePage = routerLocation.pathname === "/";
 
@@ -75,13 +77,18 @@ export default function AppRoutes() {
         path="/art-credits"
         element={
           <>
-            <Header />
+            <Header isPlaying={isPlaying} />
             <Credits data={TEXTPAGES["/art-credits"]} />
             <Footer />
           </>
         }
       />
-      <Route path="/:bookSlug/:page" element={<BookPlayerRoute />} />
+      <Route
+        path="/:bookSlug/:page"
+        element={
+          <BookPlayerRoute isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+        }
+      />
       <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="*" element={<div>Route not found</div>} />
     </Routes>

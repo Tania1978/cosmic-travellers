@@ -13,6 +13,7 @@ const Page = styled.div`
   max-width: 1400px;
   margin: 10px auto;
   color: #0b1220;
+  margin-top: 100px;
 
   @media (max-width: 700px) {
     margin-top: 90px;
