@@ -22,8 +22,8 @@ import { OtherVideo } from "../components/VideoLoader";
 const CHAPTER_PREROLL_SECONDS = 0.5;
 
 interface IBookPlayerPageProps {
-  isPlaying: boolean;
-  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  isPlaying: boolean | null;
+  setIsPlaying: React.Dispatch<React.SetStateAction<boolean | null>>;
 }
 
 export default function BookPlayerPage({
@@ -58,8 +58,7 @@ export default function BookPlayerPage({
   const { unlockedBooks } = useUserState();
   const { authUser, setAuthModalOpen } = useAuth();
   const isPreviewMode = true;
-  const { isPreviewAccessModalOpen, setIsPreviewAccessModalOpen } =
-    useUserState();
+  const { setIsPreviewAccessModalOpen } = useUserState();
 
   const revealControls = () => {
     setControlsVisible(true);
@@ -664,7 +663,7 @@ const Wrap = styled.div`
   z-index: 10;
 `;
 
-const Stage = styled.div<{ isPlaying: boolean }>`
+const Stage = styled.div<{ isPlaying: boolean | null }>`
   width: 100%;
   display: flex;
   justify-content: center;

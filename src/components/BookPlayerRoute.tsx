@@ -21,8 +21,8 @@ const BookPlayerRouteShell = styled.main`
 `;
 
 interface IBookPlayerPageProps {
-  isPlaying: boolean;
-  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  isPlaying: boolean | null;
+  setIsPlaying: React.Dispatch<React.SetStateAction<boolean | null>>;
 }
 
 export function BookPlayerRoute({

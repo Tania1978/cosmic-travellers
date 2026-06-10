@@ -13,7 +13,7 @@ import { PreviewAccess } from "./PreviewAccess";
 import { InfoButton } from "./InfoButton";
 import { Trigger } from "../theme/sharedStyled";
 
-export default function Header({ isPlaying }: { isPlaying?: boolean }) {
+export default function Header({ isPlaying }: { isPlaying?: boolean | null }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();

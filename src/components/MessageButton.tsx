@@ -9,7 +9,7 @@ import { useAuth } from "../auth/authContext";
 type MessageButtonProps = {
   iconSrc?: string;
   size?: number;
-  isPlaying: boolean;
+ isPlaying: boolean | null;
 };
 
 export const MessageButton = (props: MessageButtonProps) => {
