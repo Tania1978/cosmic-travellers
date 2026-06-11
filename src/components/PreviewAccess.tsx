@@ -48,7 +48,7 @@ export function PreviewAccess() {
       <Trigger
         type="button"
         onClick={() => setIsPreviewAccessModalOpen(true)}
-        width={"50%"}
+        width={"40%"}
       >
         Preview Access
       </Trigger>
