@@ -1,12 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { Trigger } from "../theme/sharedStyled";
 import { useAuth } from "./authContext";
+import { clearShellsStore } from "../GoldenShells/storage";
 
 export default function ParentLoginButton() {
   const { setAuthModalOpen, isLoggedIn, logout } = useAuth();
   const { t } = useTranslation();
 
   const handleLogOut = () => {
+    clearShellsStore();
     logout();
   };
 
