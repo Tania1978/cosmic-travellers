@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 interface TriggerProps {
   width?: string;
+  minimal?: boolean;
 }
 
 export const Trigger = styled.button<TriggerProps>`
@@ -12,26 +13,37 @@ export const Trigger = styled.button<TriggerProps>`
 
   width: ${({ width = "100%" }) => width};
 
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px);
+  padding: ${({ minimal }) => (minimal ? "0" : "8px 14px")};
+
+  border-radius: ${({ minimal }) => (minimal ? "0" : "999px")};
+
+  border: ${({ minimal }) =>
+    minimal ? "none" : "1px solid rgba(255, 255, 255, 0.35)"};
+
+  background: ${({ minimal }) =>
+    minimal ? "transparent" : "rgba(255, 255, 255, 0.12)"};
+
+  backdrop-filter: ${({ minimal }) => (minimal ? "none" : "blur(12px)")};
+
   cursor: pointer;
 
   color: white;
   font-weight: 600;
 
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.18),
-    0 0 14px rgba(120, 180, 255, 0.18);
+  box-shadow: ${({ minimal }) =>
+    minimal
+      ? "none"
+      : `
+        0 8px 24px rgba(0, 0, 0, 0.18),
+        0 0 14px rgba(120, 180, 255, 0.18)
+      `};
 
   transition:
     transform 200ms ease,
     filter 200ms ease;
 
   &:hover {
-    transform: translateY(-1px);
+    transform: ${({ minimal }) => (minimal ? "none" : "translateY(-1px)")};
     filter: brightness(1.08);
   }
 `;

@@ -59,7 +59,6 @@ export default function BookPlayerPage({
   const { authUser, setAuthModalOpen } = useAuth();
   const isPreviewMode = true;
   const { setIsPreviewAccessModalOpen } = useUserState();
-  const [isPseudoFullscreen, setIsPseudoFullscreen] = useState(false);
 
   const revealControls = () => {
     setControlsVisible(true);
@@ -316,26 +315,14 @@ export default function BookPlayerPage({
     }
   };
 
-  const isIPad =
-    navigator.userAgent.includes("iPad") ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
-  const isIPhone = /iPhone|iPod/.test(navigator.userAgent);
-
   const toggleFullscreen = async () => {
     const frame = frameRef.current;
     const video = videoRef.current;
 
     try {
-      // iPhone only: native video fullscreen
-      if (isIPhone && video && (video as any).webkitEnterFullscreen) {
+      // iPhone Safari native video fullscreen
+      if (video && (video as any).webkitEnterFullscreen) {
         (video as any).webkitEnterFullscreen();
-        return;
-      }
-
-      // iPad fallback: fake fullscreen so React overlays stay visible
-      if (isIPad && !frame?.requestFullscreen) {
-        setIsPseudoFullscreen((prev) => !prev);
         return;
       }
 
@@ -463,7 +450,6 @@ export default function BookPlayerPage({
         <Stage id="Stage" isPlaying={isPlaying}>
           <VideoFrame
             $controlsVisible={controlsVisible}
-            $pseudoFullscreen={isPseudoFullscreen}
             onClick={revealControls}
             onTouchStart={revealControls}
             ref={frameRef}
@@ -753,23 +739,43 @@ const BigButton = styled.button`
   font-size: 1.75rem;
 `;
 
-const VideoFrame = styled.div<{
-  $controlsVisible: boolean;
-  $pseudoFullscreen: boolean;
-}>`
+const VideoFrame = styled.div<{ $controlsVisible?: boolean }>`
   position: relative;
-  overflow: hidden;
+  width: 100%;
+  max-width: 950px;
 
-  ${({ $pseudoFullscreen }) =>
-    $pseudoFullscreen &&
-    `
-      position: fixed;
-      inset: 0;
-      z-index: 999999;
-      width: 100vw;
-      height: 100dvh;
-      background: black;
-    `}
+  aspect-ratio: 16 / 9;
+  height: auto;
+  min-height: 220px;
+
+  background: transparent;
+  overflow: hidden;
+  z-index: 2;
+
+  border-radius: 0;
+  box-shadow: none;
+
+  .controlsLayer {
+    opacity: ${({ $controlsVisible }) => ($controlsVisible ? 1 : 0)};
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover .controlsLayer {
+      opacity: 1;
+    }
+  }
+
+  @supports not (aspect-ratio: 16 / 9) {
+    height: 56.25vw;
+    max-height: 534px;
+  }
+
+  @media (min-width: 768px) {
+    width: min(950px, 92vw);
+    height: min(52vw, 534px);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
 `;
 
 const ControlsLayer = styled.div.attrs({

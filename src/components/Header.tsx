@@ -104,7 +104,9 @@ export default function Header({ isPlaying }: { isPlaying?: boolean | null }) {
         <Right>
           {!inHomePage && (
             <DesktopOnly>
-              <Trigger onClick={() => navigate("/reviews")}>Reviews</Trigger>
+              <Trigger onClick={() => navigate("/reviews")} minimal>
+                Reviews
+              </Trigger>
             </DesktopOnly>
           )}
 
