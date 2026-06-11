@@ -34,6 +34,7 @@ export function GoldenShellIcon() {
           onClick={openModal}
           aria-label="Golden Shell"
           title="Golden Shell"
+          ref={buttonRef}
         >
           <Img src="/ui/golden-shell.png" alt="" draggable={false} />
         </ShellButton>
