@@ -1,12 +1,29 @@
 import styled, { keyframes } from "styled-components";
 import { useGoldenShells } from "./GoldenShellsProvider";
+import { useEffect, useRef } from "react";
 
 export function GoldenShellIcon() {
   const { activeOpportunity, isShellEarned, openModal, isModalOpen } =
     useGoldenShells();
 
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
   const hasQuestionAvailable =
     activeOpportunity && !isShellEarned(activeOpportunity.id);
+
+  useEffect(() => {
+    if (!buttonRef.current || !hasQuestionAvailable) return;
+
+    const rect = buttonRef.current.getBoundingClientRect();
+
+    alert(
+      `Golden Shell rendered\n\n` +
+        `x: ${Math.round(rect.left)}\n` +
+        `y: ${Math.round(rect.top)}\n` +
+        `width: ${Math.round(rect.width)}\n` +
+        `height: ${Math.round(rect.height)}`,
+    );
+  }, [hasQuestionAvailable]);
 
   if (!hasQuestionAvailable) return null;
 
