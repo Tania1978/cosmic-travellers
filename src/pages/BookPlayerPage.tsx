@@ -332,6 +332,10 @@ export default function BookPlayerPage({
       const orientation = (screen as any)?.orientation;
 
       if (!document.fullscreenElement) {
+        if (!frame?.requestFullscreen) {
+          alert("requestFullscreen not available");
+          return;
+        }
         await frame?.requestFullscreen?.();
 
         try {
