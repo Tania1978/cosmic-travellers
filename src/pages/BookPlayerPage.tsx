@@ -315,13 +315,16 @@ export default function BookPlayerPage({
     }
   };
 
+  const isIPhone = /iPhone|iPod/.test(navigator.userAgent);
+
   const toggleFullscreen = async () => {
     const frame = frameRef.current;
     const video = videoRef.current;
 
     try {
-      // iPhone Safari native video fullscreen
-      if (video && (video as any).webkitEnterFullscreen) {
+      // iPhone only: native Safari video fullscreen
+      // iPad + Android should use frame fullscreen so React overlays stay visible
+      if (isIPhone && video && (video as any).webkitEnterFullscreen) {
         (video as any).webkitEnterFullscreen();
         return;
       }
