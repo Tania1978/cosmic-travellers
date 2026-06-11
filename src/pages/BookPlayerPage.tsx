@@ -59,6 +59,7 @@ export default function BookPlayerPage({
   const { authUser, setAuthModalOpen } = useAuth();
   const isPreviewMode = true;
   const { setIsPreviewAccessModalOpen } = useUserState();
+  const [isPseudoFullscreen, setIsPseudoFullscreen] = useState(false);
 
   const revealControls = () => {
     setControlsVisible(true);
@@ -315,6 +316,10 @@ export default function BookPlayerPage({
     }
   };
 
+  const isIPad =
+    navigator.userAgent.includes("iPad") ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
   const isIPhone = /iPhone|iPod/.test(navigator.userAgent);
 
   const toggleFullscreen = async () => {
@@ -322,20 +327,21 @@ export default function BookPlayerPage({
     const video = videoRef.current;
 
     try {
-      // iPhone only: native Safari video fullscreen
-      // iPad + Android should use frame fullscreen so React overlays stay visible
+      // iPhone only: native video fullscreen
       if (isIPhone && video && (video as any).webkitEnterFullscreen) {
         (video as any).webkitEnterFullscreen();
+        return;
+      }
+
+      // iPad fallback: fake fullscreen so React overlays stay visible
+      if (isIPad && !frame?.requestFullscreen) {
+        setIsPseudoFullscreen((prev) => !prev);
         return;
       }
 
       const orientation = (screen as any)?.orientation;
 
       if (!document.fullscreenElement) {
-        if (!frame?.requestFullscreen) {
-          alert("requestFullscreen not available");
-          return;
-        }
         await frame?.requestFullscreen?.();
 
         try {
@@ -457,6 +463,7 @@ export default function BookPlayerPage({
         <Stage id="Stage" isPlaying={isPlaying}>
           <VideoFrame
             $controlsVisible={controlsVisible}
+            $pseudoFullscreen={isPseudoFullscreen}
             onClick={revealControls}
             onTouchStart={revealControls}
             ref={frameRef}
@@ -746,43 +753,23 @@ const BigButton = styled.button`
   font-size: 1.75rem;
 `;
 
-const VideoFrame = styled.div<{ $controlsVisible?: boolean }>`
+const VideoFrame = styled.div<{
+  $controlsVisible: boolean;
+  $pseudoFullscreen: boolean;
+}>`
   position: relative;
-  width: 100%;
-  max-width: 950px;
-
-  aspect-ratio: 16 / 9;
-  height: auto;
-  min-height: 220px;
-
-  background: transparent;
   overflow: hidden;
-  z-index: 2;
 
-  border-radius: 0;
-  box-shadow: none;
-
-  .controlsLayer {
-    opacity: ${({ $controlsVisible }) => ($controlsVisible ? 1 : 0)};
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover .controlsLayer {
-      opacity: 1;
-    }
-  }
-
-  @supports not (aspect-ratio: 16 / 9) {
-    height: 56.25vw;
-    max-height: 534px;
-  }
-
-  @media (min-width: 768px) {
-    width: min(950px, 92vw);
-    height: min(52vw, 534px);
-    border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  }
+  ${({ $pseudoFullscreen }) =>
+    $pseudoFullscreen &&
+    `
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      width: 100vw;
+      height: 100dvh;
+      background: black;
+    `}
 `;
 
 const ControlsLayer = styled.div.attrs({
