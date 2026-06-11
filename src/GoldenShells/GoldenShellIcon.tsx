@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { useGoldenShells } from "./GoldenShellsProvider";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function GoldenShellIcon() {
   const { activeOpportunity, isShellEarned, openModal, isModalOpen } =
@@ -11,24 +11,48 @@ export function GoldenShellIcon() {
   const hasQuestionAvailable =
     activeOpportunity && !isShellEarned(activeOpportunity.id);
 
+  const [debugPosition, setDebugPosition] = useState("");
+
   useEffect(() => {
     if (!buttonRef.current || !hasQuestionAvailable) return;
 
-    const rect = buttonRef.current.getBoundingClientRect();
+    const update = () => {
+      const rect = buttonRef.current!.getBoundingClientRect();
 
-    alert(
-      `Golden Shell rendered\n\n` +
-        `x: ${Math.round(rect.left)}\n` +
-        `y: ${Math.round(rect.top)}\n` +
-        `width: ${Math.round(rect.width)}\n` +
-        `height: ${Math.round(rect.height)}`,
-    );
+      setDebugPosition(
+        `x:${Math.round(rect.left)} y:${Math.round(rect.top)} w:${Math.round(rect.width)} h:${Math.round(rect.height)}`,
+      );
+    };
+
+    update();
+
+    const interval = window.setInterval(update, 500);
+
+    return () => window.clearInterval(interval);
   }, [hasQuestionAvailable]);
 
   if (!hasQuestionAvailable) return null;
 
   return (
     <>
+      {debugPosition && (
+        <div
+          style={{
+            position: "absolute",
+            left: 20,
+            top: 20,
+            zIndex: 999999,
+            background: "red",
+            color: "white",
+            padding: "8px 12px",
+            fontSize: 18,
+            fontWeight: 700,
+            pointerEvents: "none",
+          }}
+        >
+          {debugPosition}
+        </div>
+      )}
       {!isModalOpen && (
         <ShellButton
           onClick={openModal}
