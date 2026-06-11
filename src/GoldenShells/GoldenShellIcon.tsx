@@ -1,64 +1,23 @@
 import styled, { keyframes } from "styled-components";
 import { useGoldenShells } from "./GoldenShellsProvider";
-import { useEffect, useRef, useState } from "react";
 
 export function GoldenShellIcon() {
   const { activeOpportunity, isShellEarned, openModal, isModalOpen } =
     useGoldenShells();
 
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
   const hasQuestionAvailable =
     activeOpportunity && !isShellEarned(activeOpportunity.id);
 
-  const [debugPosition, setDebugPosition] = useState("");
-
-  useEffect(() => {
-    if (!buttonRef.current || !hasQuestionAvailable) return;
-
-    const update = () => {
-      const rect = buttonRef.current!.getBoundingClientRect();
-
-      setDebugPosition(
-        `x:${Math.round(rect.left)} y:${Math.round(rect.top)} w:${Math.round(rect.width)} h:${Math.round(rect.height)}`,
-      );
-    };
-
-    update();
-
-    const interval = window.setInterval(update, 500);
-
-    return () => window.clearInterval(interval);
-  }, [hasQuestionAvailable]);
 
   if (!hasQuestionAvailable) return null;
 
   return (
     <>
-      {debugPosition && (
-        <div
-          style={{
-            position: "absolute",
-            left: 20,
-            top: 20,
-            zIndex: 999999,
-            background: "red",
-            color: "white",
-            padding: "8px 12px",
-            fontSize: 18,
-            fontWeight: 700,
-            pointerEvents: "none",
-          }}
-        >
-          {debugPosition}
-        </div>
-      )}
       {!isModalOpen && (
         <ShellButton
           onClick={openModal}
           aria-label="Golden Shell"
           title="Golden Shell"
-          ref={buttonRef}
         >
           <Img src="/ui/golden-shell.png" alt="" draggable={false} />
         </ShellButton>
