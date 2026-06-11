@@ -113,7 +113,7 @@ export const FOURTH_BOOK: BookConfig = {
   slug: "booklet-4",
   title: "Fourth Booklet",
   subtitle: "Cosmic Travellers",
-  videoPath: "booklet-4/booklet-4-music.mp4",
+  videoPath: "booklet-4/booklet-4-music-optimized.mp4",
   thumbnailSrc: "/books/chapter/cover_3.png",
   shellCompletionVideoSrc: "/books/chapter/booklet-4-message.mp4",
   requiredShellIds: [

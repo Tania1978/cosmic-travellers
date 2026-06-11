@@ -41,7 +41,7 @@ export default function AppRoutes() {
               <InfoButton />
               {inHomePage && isLoggedIn && <PreviewAccess />}
 
-              <Trigger onClick={() => navigate("/reviews")} width={"50%"}>
+              <Trigger onClick={() => navigate("/reviews")} width={"40%"}>
                 Reviews
               </Trigger>
             </JourneyActions>
