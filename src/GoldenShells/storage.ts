@@ -31,3 +31,7 @@ export function loadShellsStore(): GoldenShellsStore {
 export function saveShellsStore(store: GoldenShellsStore) {
   localStorage.setItem(LS_KEY, JSON.stringify(store));
 }
+
+export function clearShellsStore() {
+  localStorage.removeItem(LS_KEY);
+}

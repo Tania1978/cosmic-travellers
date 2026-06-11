@@ -170,6 +170,7 @@ export function GoldenShellsProvider({
       shellCompletionVideoSrc,
       correctSoundRef,
       shouldShowCompletionVideo,
+      saveShellsStore,
     }),
     [
       bookletId,
@@ -181,6 +182,7 @@ export function GoldenShellsProvider({
       shellCompletionVideoSrc,
       correctSoundRef,
       shouldShowCompletionVideo,
+      saveShellsStore,
     ],
   );
 

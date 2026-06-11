@@ -13,6 +13,11 @@ import {
 } from "../requests";
 import { supabase } from "../auth/supabaseClient";
 import { useAuth } from "../auth/authContext";
+import {
+  clearShellsStore,
+  loadShellsStore,
+  saveShellsStore,
+} from "../GoldenShells/storage";
 
 export type UnlockedBookSource = "free" | "preview_code" | "stripe";
 
@@ -88,20 +93,21 @@ export function UserStateProvider({ children }: { children: React.ReactNode }) {
     }
 
     setIsLoaded(false);
-
+    console.log("reload");
     const { data, error } = await supabase
       .from("user_state")
       .select("child_first_name, golden_shells, unlocked_books, intro_stage")
       .eq("user_id", authUser.id)
       .maybeSingle();
-
+    console.log("data", data);
     if (error) throw error;
 
     setChildFirstNameLocal((data?.child_first_name as string | null) ?? null);
-
+    console.log("setGoldenShellsLocal", data?.golden_shells);
     setGoldenShellsLocal(
       (data?.golden_shells as GoldenShellsStore | null) ?? null,
     );
+    saveShellsStore(data?.golden_shells);
 
     setUnlockedBooksLocal((data?.unlocked_books as UnlockedBooks | null) ?? {});
 
